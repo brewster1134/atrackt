@@ -1,9 +1,9 @@
-#
-# Tracking Library
-# @version 0.3.0
-#
-# @author Ryan Brewster
-#
+###
+Atrackt Tracking Library
+@version 0.3.0
+@author Ryan Brewster
+###
+
 window.console = { log: -> } unless window.console?
 
 (($) ->
@@ -173,7 +173,7 @@ window.console = { log: -> } unless window.console?
     catArray.join defaults.delimiters.category
 
   buildCtaValue = (el) ->
-    el.text() || el.val() || el.attr('id') || el.attr('class')
+    el.attr('title') || el.attr('name') || el.text() || el.val() || el.attr('id') || el.attr('class')
 
   buildEvent = (el) ->
     el.data('track-event') || defaults.event

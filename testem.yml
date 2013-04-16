@@ -1,0 +1,13 @@
+test_page: spec/index.html
+before_tests: coffee -o js/ -c src/atrackt.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee && coffee -c spec/atrackt_spec.coffee
+src_files:
+  - src/atrackt.coffee
+  - spec/index.html
+  - spec/atrackt_spec.coffee
+serve_files:
+  - spec/*
+launch_in_dev:
+  - phantomjs
+launch_in_ci:
+  - phantomjs
+on_exit: rm spec/atrackt_spec.js
