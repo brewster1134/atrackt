@@ -175,7 +175,7 @@ Atrackt Tracking Library
       });
       return $el.hover(function() {
         $(this).addClass('tracking-highlight');
-        return _consoleCurrentElement.html(JSON.stringify($(this).data('track-object')));
+        return _consoleCurrentElement.html('<dt>Categories</dt><dd>' + $(this).data('track-object').categories + '</dd>' + '<dt>Value</dt><dd>' + $(this).data('track-object').value + '</dd>' + '<dt>Event</dt><dd>' + $(this).data('track-object').event + '</dd>');
       }, function() {
         return $(this).removeClass('tracking-highlight');
       });

@@ -174,7 +174,11 @@ window.Atrackt =
 
     $el.hover ->
       $(@).addClass 'tracking-highlight'
-      _consoleCurrentElement.html JSON.stringify($(@).data('track-object'))
+      _consoleCurrentElement.html(
+        '<dt>Categories</dt><dd>' + $(@).data('track-object').categories + '</dd>' +
+        '<dt>Value</dt><dd>' + $(@).data('track-object').value + '</dd>' +
+        '<dt>Event</dt><dd>' + $(@).data('track-object').event + '</dd>'
+      )
     , ->
       $(@).removeClass 'tracking-highlight'
 

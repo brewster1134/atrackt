@@ -13,7 +13,7 @@ body{
       z-index: 999;
       top: 0;
       border-bottom: 2px solid black; }
-      body.tracking-debug #tracking-debug #tracking-debug-content div {
+      body.tracking-debug #tracking-debug #tracking-debug-content > div {
         border-bottom: 1px solid red;
         padding: 5px; }
       body.tracking-debug #tracking-debug #tracking-debug-content #tracking-elements {
