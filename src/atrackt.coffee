@@ -11,6 +11,7 @@ window.Atrackt =
   plugins: {}
 
   registerPlugin: (name, options) ->
+    console.log 'ATRACKT PLUGIN REGISTERED', name, options
     @plugins[name] = options
     $ =>
       @_bindEvents options.events

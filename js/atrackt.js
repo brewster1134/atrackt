@@ -19,6 +19,7 @@ Atrackt Tracking Library
     plugins: {},
     registerPlugin: function(name, options) {
       var _this = this;
+      console.log('ATRACKT PLUGIN REGISTERED', name, options);
       this.plugins[name] = options;
       return $(function() {
         return _this._bindEvents(options.events);

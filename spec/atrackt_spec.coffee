@@ -12,10 +12,14 @@ describe 'Atrackt', ->
       before ->
         el = $('<a></a>')
         $('body').append(el)
+        Atrackt.plugins = {}
         Atrackt.registerPlugin 'fooPlugin',
           events:
             click: [ 'a' ]
           send: ->
+
+      after ->
+        $('a').off 'click'
 
       it 'should add an object to plugins', ->
         expect(Atrackt.plugins['fooPlugin'].send).to.be.a 'function'
@@ -31,8 +35,7 @@ describe 'Atrackt', ->
       Atrackt.registerPlugin 'barPlugin',
         events:
           click: [ 'a' ]
-        send: (obj) ->
-          console.log 'plugin:send', obj
+        send: ->
 
       sendSpy = sinon.spy Atrackt.plugins['barPlugin'], 'send'
 
@@ -41,6 +44,7 @@ describe 'Atrackt', ->
 
     after ->
       sendSpy.restore()
+      $('a').off 'click'
 
     describe '#track', ->
       context 'with an element', ->
