@@ -16,7 +16,7 @@ A script for making tracking easier.
 
 * Add the script to your page
   * `<script src="atrackt.js"></script>`
-* Add a plugin to your page (or write your own! *see below)
+* Add a plugin to your page _([or write your own!](#registering-plugins))_
   * `<script src="atrackt.siteCatalyst.js"></script>`
 
 That's it!  The settings from your plugin will register events to elements and start tracking!
@@ -29,7 +29,7 @@ To manually track any JS object, just pass it as an argument to the track method
 Atrackt.track(object)
 ```
 
-If you add new elements to your page (and are not using liveQuery) you can scan the dom again an re-bind elements.
+If you add new elements to your page (and are not using liveQuery) you can scan the dom again and re-bind elements.
 
 ```coffee
 Atrackt.refresh()
@@ -37,9 +37,9 @@ Atrackt.refresh()
 
 #### Registering Plugins
 
-Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking you can quickly create a new plugin by calling the `registerPlugin` method.
+Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking, you can quickly create a new plugin by calling the `registerPlugin` method.
 
-The minimum a plugin needs is a `send` method.  This is a function that accepts a tracking object as an argument.  You can do additional processing to the object and send it where ever you like to track it.
+The minimum a plugin needs is a `send` method.  This is a function that accepts a tracking object as an argument.  From here, you can do additional processing on the object and send it where ever you like to track it.
 
 ```coffee
 Atrackt.registerPlugin 'testPlugin',
@@ -47,7 +47,7 @@ Atrackt.registerPlugin 'testPlugin',
     # do stuff to the object and send it somewhere
 ```
 
-Typically though just creating a send method for you to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event(s) to track.
+Typically just creating a send method for you to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
 
 You can accomplish this by passing an events object.  The events object accepts a click event as the key, and an array of jquery selectors as the value.  Any matching selectors will be bound and tracked when that event fires.
 
@@ -68,19 +68,16 @@ To better visualize what elements are being tracked, you can add `?debugTracking
 
 It is a bit crude, but it gives you a visual overview of your elements.
 
-The console shows all the elements currently being tracked, along with their various values.
-
-If you hover over an element in your console, it will scroll to that element on your page and highlight it.
-
-If you hover over an element on your page, it will show you the data object that is being passed to your plugin(s).
-
-The debugger will also show you errors if you have any.  For example if you have multiple elements on your page that are tracking the exact same data, they will turn red and show the error in the error column.
+* The console shows all the elements currently being tracked, along with their various values.
+* If you hover over an element in your console, it will scroll to that element on your page and highlight it.
+* If you hover over an element on your page, it will show you the data object that is being passed to your plugin(s).
+* The debugger will also show you errors if you have any.  For example if you have multiple elements on your page that are tracking the exact same data, they will turn red and show the error in the error column.
 
 ## Demo
 
-Download the project and open `demo/.index.html` in your browser.
+Download the project and open `demo/index.html` in your browser.
 
-Visit `demo/.index.html?debugTracking=true` to view the debugging console.
+Visit `demo/index.html?debugTracking=true` to view the debugging console.
 
 ## Development
 
@@ -90,7 +87,7 @@ Visit `demo/.index.html?debugTracking=true` to view the debugging console.
 
 Do **NOT** modify `atrackt.js` directly.  Modify `src/atrackt.coffee` and generate `atrackt.js`.
 
-The can be done by either running testem _(see the Testing section below)_, or by compiling with CoffeeScript directly.
+The can be done by either running testem _(see the [Testing](#testing) section below)_, or by compiling with CoffeeScript directly.
 
 `coffee -o js/ -c src/atrackt.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee`
 
