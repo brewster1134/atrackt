@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="atrackt.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../js/atrackt.js"></script>
+    <script>
+      Atrackt.registerPlugin('testPlugin', {
+        events: {
+          click: ['a']
+        },
+        send: function(obj) {
+          console.log('TRACK', obj)
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div data-track-cat='one'>
+      <div data-track-cat='two'>
+        <a>TEST</a>
+        <a>PARTY</a>
+      </div>
+    </div>
+  </body>
+</html>

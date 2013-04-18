@@ -1,0 +1,29 @@
+body{
+  margin: 0; }
+  body.tracking-debug {
+    margin-top: 300px; }
+    body.tracking-debug #tracking-debug {
+      font-family: monospace;
+      height: 300px;
+      background-color: white;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      border-bottom: 2px solid black; }
+      body.tracking-debug #tracking-debug #tracking-debug-content div {
+        border-bottom: 1px solid red;
+        padding: 5px; }
+      body.tracking-debug #tracking-debug #tracking-debug-content #tracking-elements {
+        width: 100%;
+        text-align: left;
+        padding: 5px; }
+        body.tracking-debug #tracking-debug #tracking-debug-content #tracking-elements .tracking-element.error td{
+          background-color: red;
+          color: white;
+        }
+    body.tracking-debug .tracking-highlight {
+      background-color: red !important;
+      color: white !important; }

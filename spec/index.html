@@ -4,10 +4,12 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="/testem/mocha.js"></script>
     <script src="/testem.js"></script>
-    <script src="/spec/chai.js"></script>
+    <script src="/spec/vendor/chai.js"></script>
+    <script src="/spec/vendor/sinon.js"></script>
+    <script src="/spec/vendor/sinon-chai.js"></script>
     <script>
       mocha.setup('bdd');
-      mocha.globals(['jQuery']);
+      mocha.setup({ignoreLeaks: true});
       window.expect = chai.expect;
     </script>
     <script src="/js/atrackt.js"></script>

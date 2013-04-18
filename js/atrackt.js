@@ -2,7 +2,7 @@
 
 /*
 Atrackt Tracking Library
-@version 0.3.0
+@version 0.4.0
 @author Ryan Brewster
 */
 
@@ -15,83 +15,115 @@ Atrackt Tracking Library
     };
   }
 
-  (function($) {
-    var buildCategories, buildCtaValue, buildElData, buildElementId, buildEvent, buildGlobalData, buildLinkName, buildLocation, buildSObject, debugEl, debugGlobal, defaults, init, initEl, initGlobal, keyLookup, trackEl, urlParams;
-    defaults = {
-      event: 'click',
-      propLimit: 100,
-      siteCatalystVer: 14,
-      selectors: ['a', 'button'],
-      delimiters: {
-        linkName: '/',
-        category: '|',
-        elementId: '-'
-      },
-      propMap: {
-        'location': 'prop1',
-        'categories': 'prop2',
-        'ctaValue': 'prop3',
-        'event': 'prop4',
-        'model': 'prop20',
-        'trimline': 'prop30'
-      }
-    };
-    init = function() {
-      if (typeof Track === "undefined" || Track === null) {
-        initGlobal();
-      }
+  window.Atrackt = {
+    plugins: {},
+    registerPlugin: function(name, options) {
+      var _this = this;
+      this.plugins[name] = options;
       return $(function() {
-        var selectors;
-        selectors = $(defaults.selectors.join(','));
-        if ($(document).livequery != null) {
-          return selectors.livequery(function() {
-            return initEl($(this));
-          });
-        } else {
-          return selectors.each(function() {
-            return initEl($(this));
-          });
-        }
+        return _this._bindEvents(options.events);
       });
-    };
-    initGlobal = function() {
-      window.Track = {
-        globalData: {},
-        debug: urlParams('debugTracking') === 'true',
-        location: buildLocation(),
-        refresh: function() {
-          return init();
-        },
-        send: function(trackObject) {
-          $.extend(trackObject, buildGlobalData());
-          if ((typeof s !== "undefined" && s !== null) && s.tl) {
-            buildSObject(trackObject);
-            return s.tl(true, 'o', buildLinkName(trackObject));
-          } else {
-            console.log('SiteCatalyst script not loaded!');
-            return console.log(trackObject);
-          }
+    },
+    track: function(data) {
+      var pluginData, pluginName, _ref, _results;
+      _ref = this.plugins;
+      _results = [];
+      for (pluginName in _ref) {
+        pluginData = _ref[pluginName];
+        _results.push(pluginData.send(this._getTrackObject(data)));
+      }
+      return _results;
+    },
+    refresh: function() {
+      var pluginData, pluginName, _ref, _results;
+      _ref = this.plugins;
+      _results = [];
+      for (pluginName in _ref) {
+        pluginData = _ref[pluginName];
+        _results.push(this._bindEvents(pluginData.events));
+      }
+      return _results;
+    },
+    _debug: function() {
+      return this._urlParams('debugTracking') === 'true';
+    },
+    _getTrackObject: function(data) {
+      var $el, _base;
+      if (data instanceof jQuery) {
+        $el = data;
+        if (typeof (_base = $el.data('track-function')) === "function") {
+          _base();
         }
-      };
-      if (Track.debug) {
-        return $(function() {
-          return debugGlobal();
+        $el.data('track-object', {
+          location: this._getLocation(),
+          categories: this._getCategories($el),
+          value: this._getValue($el),
+          event: this._getEvent($el)
         });
+        return $el.data('track-object');
+      } else if (data instanceof Object) {
+        $.extend(data, {
+          location: this._getLocation()
+        });
+        return data;
+      } else {
+        console.log('DATA IS NOT TRACKABLE', data);
+        return false;
       }
-    };
-    initEl = function(el) {
-      el.data('track-object', buildElData(el));
-      el.on(el.data('track-data').event, function(e) {
-        return trackEl($(this));
+    },
+    _getLocation: function() {
+      return $('body').data('track-location') || $(document).attr('title') || document.URL;
+    },
+    _getCategories: function($el) {
+      var catArray;
+      catArray = [];
+      if ($el.data('track-cat')) {
+        catArray.unshift($el.data('track-cat'));
+      }
+      $el.parents('[data-track-cat]').each(function() {
+        return catArray.unshift($(this).data('track-cat'));
       });
-      if (Track.debug) {
-        return debugEl(el);
+      return catArray;
+    },
+    _getValue: function($el) {
+      return $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class');
+    },
+    _getEvent: function($el) {
+      return $el.data('track-event');
+    },
+    _bindEvents: function(eventsObject) {
+      var eventType, selectorArray, selectors, _results;
+      if (!eventsObject) {
+        return false;
       }
-    };
-    trackEl = function(el) {
-      return Track.send(el.data('track-object'));
-    };
-    urlParams = function(key) {
+      _results = [];
+      for (eventType in eventsObject) {
+        selectorArray = eventsObject[eventType];
+        selectors = $(selectorArray.join(','));
+        selectors.each(function(index, selector) {
+          return $(selector).data('track-event', eventType);
+        });
+        if ($(document).livequery != null) {
+          _results.push(selectors.livequery(function() {
+            return Atrackt._initEl($(this));
+          }));
+        } else {
+          _results.push(selectors.each(function() {
+            return Atrackt._initEl($(this));
+          }));
+        }
+      }
+      return _results;
+    },
+    _initEl: function($el) {
+      $el.on(this._getEvent($el), function() {
+        return Atrackt.track($el);
+      });
+      if (this._debug()) {
+        return this._debugEl($el);
+      }
+    },
+    _urlParams: function(key) {
       var paramString, params;
       if (key == null) {
         key = null;
@@ -108,94 +140,51 @@ Atrackt Tracking Library
       } else {
         return params;
       }
-    };
-    debugGlobal = function() {
-      $('body').addClass('tracking-debug');
-      return Track.debugConsole = $('<div id="tracking-debug">').append('<div id="tracking-debug-content">' + '<h6 id="tracking-location">Location: ' + Track.location + '</h6>' + '<table class="table" id="tracking-elements">' + '<thead><tr>' + '<th>Categories</th>' + '<th>CTA</th>' + '<th>Event Type</th>' + '</tr></thead>' + '<tbody></tbody>' + '</table>' + '</div>' + '</div>').prependTo('body');
-    };
-    debugEl = function(el) {
-      var _elContent, _elDiv, _elId, _elsDiv;
-      _elId = buildElementId(el);
-      _elsDiv = Track.debugConsole.find('#tracking-elements tbody');
-      _elDiv = _elsDiv.find('#' + _elId);
-      _elContent = $('<tr class="tracking-element" id=' + _elId + '>');
-      el.addClass(_elId);
-      _elContent.append('<td class="tracking-categories">' + el.data('track-data').categories + '</td>' + '<td class="tracking-cta-value">' + el.data('track-data').ctaValue + '</td>' + '<td class="tracking-event">' + el.data('track-data').event + '</td>' + '</tr>');
-      if (_elDiv.length === 0) {
-        _elsDiv.append(_elContent);
-      } else {
-        _elDiv.replaceWith(_elContent);
+    },
+    _debugConsole: function() {
+      var _this = this;
+      return $(function() {
+        $('body').addClass('tracking-debug');
+        return Atrackt.debugConsole = $('<div id="tracking-debug">').append('<div id="tracking-debug-content">' + '<div id="tracking-location">Location: ' + _this._getLocation() + '</div>' + '<div id="tracking-current-element">Hover over an element to see the tracked data associated with it.</div>' + '<table class="table" id="tracking-elements">' + '<thead><tr>' + '<th>Categories</th>' + '<th>Value</th>' + '<th>Event</th>' + '<th>Error</th>' + '</tr></thead>' + '<tbody></tbody>' + '</table>' + '</div>' + '</div>').prependTo('body');
+      });
+    },
+    _debugEl: function($el) {
+      var matchingBodyEls, matchingConsoleEls, mathingEls, _consoleBody, _consoleCurrentElement, _elId;
+      this._getTrackObject($el);
+      _elId = this._debugElementId($el);
+      $el.attr('id', _elId);
+      _consoleCurrentElement = Atrackt.debugConsole.find('#tracking-current-element');
+      _consoleBody = Atrackt.debugConsole.find('#tracking-elements tbody');
+      _consoleBody.append('<tr class="tracking-element" id=' + _elId + '>' + '<td class="tracking-categories">' + $el.data('track-object').categories + '</td>' + '<td class="tracking-value">' + $el.data('track-object').value + '</td>' + '<td class="tracking-event">' + $el.data('track-object').event + '</td>' + '<td class="tracking-error"></td>' + '</tr>');
+      mathingEls = $('body #' + _elId);
+      matchingConsoleEls = mathingEls.filter('.tracking-element');
+      matchingBodyEls = mathingEls.not('.tracking-element');
+      if (matchingBodyEls.length > 1) {
+        console.log('THERE ARE DUPLICATE ELEMENTS!', matchingBodyEls);
+        matchingConsoleEls.addClass('error');
+        matchingConsoleEls.find('.tracking-error').append('DUPLICATE');
       }
-      return _elsDiv.find('#' + _elId).hover(function() {
-        el.addClass('tracking-highlight');
+      matchingConsoleEls.hover(function() {
+        $el.addClass('tracking-highlight');
         return $('html, body').stop().animate({
-          scrollTop: el.offset().top - $('#tracking-debug').height() - 20
+          scrollTop: $el.offset().top - $('#tracking-debug').height() - 20
         }, 500);
       }, function() {
-        return el.removeClass('tracking-highlight');
+        return $el.removeClass('tracking-highlight');
       });
-    };
-    keyLookup = function(key) {
-      var _newKey;
-      if (defaults.siteCatalystVer >= 15) {
-        return key;
-      }
-      _newKey = defaults.propMap[key];
-      if (!_newKey) {
-        console.log('No mapping for "' + key + '" found.');
-      }
-      return _newKey || key;
-    };
-    buildGlobalData = function() {
-      var _globalData;
-      _globalData = {};
-      $.each(Track.globalData, function(k, v) {
-        return _globalData[keyLookup(k)] = v;
+      return $el.hover(function() {
+        $(this).addClass('tracking-highlight');
+        return _consoleCurrentElement.html(JSON.stringify($(this).data('track-object')));
+      }, function() {
+        return $(this).removeClass('tracking-highlight');
       });
-      return _globalData;
-    };
-    buildElData = function(el) {
-      var _trackObject;
-      el.data('track-data', {
-        categories: buildCategories(el),
-        ctaValue: buildCtaValue(el),
-        event: buildEvent(el)
-      });
-      _trackObject = {};
-      _trackObject[keyLookup('location')] = Track.location;
-      _trackObject[keyLookup('categories')] = el.data('track-data').categories;
-      _trackObject[keyLookup('ctaValue')] = el.data('track-data').ctaValue;
-      _trackObject[keyLookup('event')] = el.data('track-data').event;
-      return _trackObject;
-    };
-    buildLocation = function() {
-      if (!$('body').data('track-location')) {
-        console.log('The <body> element does not have the data-track-location attribute set.');
-      }
-      return $('body').data('track-location') || $(document).attr('title') || document.URL;
-    };
-    buildCategories = function(el) {
-      var catArray;
-      catArray = [];
-      if (el.data('track-cat')) {
-        catArray.unshift(el.data('track-cat'));
-      }
-      el.parents('[data-track-cat]').each(function() {
-        return catArray.unshift($(this).data('track-cat'));
-      });
-      return catArray.join(defaults.delimiters.category);
-    };
-    buildCtaValue = function(el) {
-      return el.attr('title') || el.attr('name') || el.text() || el.val() || el.attr('id') || el.attr('class');
-    };
-    buildEvent = function(el) {
-      return el.data('track-event') || defaults.event;
-    };
-    buildElementId = function(el) {
+    },
+    _debugElementId: function($el) {
       var idArray, _categories, _ctaValue, _event;
-      _categories = el.data('track-data').categories;
-      _ctaValue = el.data('track-data').ctaValue;
-      _event = el.data('track-data').event;
+      console.log($el.data());
+      _categories = $el.data('track-object').categories;
+      _ctaValue = $el.data('track-object').value;
+      _event = $el.data('track-object').event;
       idArray = [];
       if (_categories) {
         idArray.push(_categories);
@@ -206,43 +195,14 @@ Atrackt Tracking Library
       if (_event) {
         idArray.push(_event);
       }
-      return idArray.join(defaults.delimiters.elementId).toLowerCase().replace(/[^\w]/g, '');
-    };
-    buildSObject = function(trackObject) {
-      var eventsArray, i, varsArray, _i, _len, _ref;
-      switch (defaults.siteCatalystVer) {
-        case 14:
-          varsArray = ['products', 'events'];
-          eventsArray = [];
-          _ref = Array(defaults.propLimit);
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            i = _ref[_i];
-            varsArray.push('prop' + (_i + 1));
-            varsArray.push('eVar' + (_i + 1));
-            eventsArray.push('event' + (_i + 1));
-          }
-          s.linkTrackVars = varsArray.join(',');
-          s.linkTrackEvents = eventsArray.join(',');
-          $.extend(s, trackObject);
-          break;
-        case 15:
-          s.contextData = trackObject;
-      }
-      return s;
-    };
-    buildLinkName = function(trackObject) {
-      var linkName;
-      linkName = [];
-      switch (defaults.siteCatalystVer) {
-        case 14:
-          linkName = [trackObject.prop1, trackObject.prop2, trackObject.prop3];
-          break;
-        case 15:
-          linkName = [trackObject.location, trackObject.categories, trackObject.ctaValue];
-      }
-      return linkName.join(defaults.delimiters.linkName);
-    };
-    return init();
-  })(jQuery);
+      return idArray.join().toLowerCase().replace(/[^\w]/g, '');
+    }
+  };
+
+  Atrackt.refresh();
+
+  if (Atrackt._debug()) {
+    Atrackt._debugConsole();
+  }
 
 }).call(this);
