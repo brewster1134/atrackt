@@ -14,6 +14,7 @@ A script for making tracking easier.
 
 ## Usage
 
+* Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.js) _(right-click & save as)_
 * Add the script to your page
   * `<script src="atrackt.js"></script>`
 * Add a plugin to your page _([or write your own!](#registering-plugins))_
