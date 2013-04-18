@@ -19,19 +19,33 @@ Atrackt Tracking Library
     plugins: {},
     registerPlugin: function(name, options) {
       var _this = this;
+      if (typeof options.send !== 'function') {
+        return console.log("NO SEND METHOD DEFINED!");
+      }
       console.log('ATRACKT PLUGIN REGISTERED', name, options);
-      this.plugins[name] = options;
-      return $(function() {
-        return _this._bindEvents(options.events);
-      });
+      options.bindEvents = function(eventsObject) {
+        options.events = eventsObject;
+        return _this._bindEvents(eventsObject);
+      };
+      return this.plugins[name] = options;
     },
-    track: function(data) {
-      var pluginData, pluginName, _ref, _results;
+    track: function(data, event) {
+      var pluginData, pluginName, selectors, _ref, _results;
       _ref = this.plugins;
       _results = [];
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        _results.push(pluginData.send(this._getTrackObject(data)));
+        if (data instanceof jQuery) {
+          if (!(event != null) || (selectors = pluginData.events[event] && (data.is(selectors != null ? selectors.join(',') : void 0) != null))) {
+            _results.push(pluginData.send(this._getTrackObject(data)));
+          } else {
+            _results.push(void 0);
+          }
+        } else if (data instanceof Object) {
+          _results.push(pluginData.send(this._getTrackObject(data)));
+        } else {
+          _results.push(void 0);
+        }
       }
       return _results;
     },
@@ -117,8 +131,8 @@ Atrackt Tracking Library
       return _results;
     },
     _initEl: function($el) {
-      $el.on(this._getEvent($el), function() {
-        return Atrackt.track($el);
+      $el.on(this._getEvent($el), function(e) {
+        return Atrackt.track($el, e.type);
       });
       if (this._debug()) {
         return this._debugEl($el);
@@ -182,7 +196,6 @@ Atrackt Tracking Library
     },
     _debugElementId: function($el) {
       var idArray, _categories, _ctaValue, _event;
-      console.log($el.data());
       _categories = $el.data('track-object').categories;
       _ctaValue = $el.data('track-object').value;
       _event = $el.data('track-object').event;

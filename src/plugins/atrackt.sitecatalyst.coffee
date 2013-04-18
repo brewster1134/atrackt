@@ -1,9 +1,15 @@
+###
+Atrackt SiteCatalyst Plugin
+@author Ryan Brewster
+@version 0.0.1
+###
+
 window.Atrackt.registerPlugin 'siteCatalyst',
   events:
     click: [ 'a', 'button' ]
   send: (obj) ->
     $.extend obj, @translatePropMap obj
-    obj.categories = obj.categories.join @options.delimiters.category
+    obj.categories = obj.categories?.join @options.delimiters.category
 
     if s? and s.tl
       @buildSObject obj
@@ -28,7 +34,6 @@ window.Atrackt.registerPlugin 'siteCatalyst',
 
   # siteCatalyst specific
   buildSObject: (obj) ->
-    console.log @options.version
     switch @options.version
       when 14
         varsArray = ['products', 'events']
@@ -68,11 +73,11 @@ window.Atrackt.registerPlugin 'siteCatalyst',
     return obj if @options.version > 14
 
     _globalData = {}
-    $.each obj, (k,v) ->
-      _globalData[keyLookup k] = v
+    $.each obj, (k,v) =>
+      _globalData[@keyLookup k] = v
     _globalData
 
   keyLookup: (key) ->
     _newKey = @options.propMap[key]
-    console.log 'No mapping for "' + key + '" found.' unless _newKey
+    console.log 'NO MAPPING FOR "' + key + '" FOUND.' unless _newKey
     _newKey || key

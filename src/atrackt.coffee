@@ -11,14 +11,26 @@ window.Atrackt =
   plugins: {}
 
   registerPlugin: (name, options) ->
-    console.log 'ATRACKT PLUGIN REGISTERED', name, options
-    @plugins[name] = options
-    $ =>
-      @_bindEvents options.events
+    return console.log "NO SEND METHOD DEFINED!" unless typeof options.send is 'function'
 
-  track: (data) ->
+    console.log 'ATRACKT PLUGIN REGISTERED', name, options
+
+    # Create bindEvents method
+    options.bindEvents = (eventsObject) =>
+      options.events = eventsObject
+      @_bindEvents eventsObject
+
+    # set plugin to global plugins object
+    @plugins[name] = options
+
+  track: (data, event) ->
     for pluginName, pluginData of @plugins
-      pluginData.send @_getTrackObject data
+      if data instanceof jQuery
+        # check that the click event is supported and the element matches the selectors for the plugin
+        if !event? || ( selectors = pluginData.events[event] && data.is(selectors?.join(','))? )
+          pluginData.send @_getTrackObject data
+      else if data instanceof Object
+        pluginData.send @_getTrackObject data
 
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
@@ -91,8 +103,8 @@ window.Atrackt =
 
   # bind an individual element
   _initEl: ($el) ->
-    $el.on @_getEvent($el), ->
-      Atrackt.track $el
+    $el.on @_getEvent($el), (e) ->
+      Atrackt.track $el, e.type
 
     @_debugEl $el if @_debug()
 
@@ -152,8 +164,7 @@ window.Atrackt =
       '</tr>'
     )
 
-    # ERROR CHECKING
-    #
+    # errors:
     # if element with the same tracking information exists...
     mathingEls = $('body #' + _elId)
     matchingConsoleEls = mathingEls.filter('.tracking-element')
@@ -164,6 +175,8 @@ window.Atrackt =
       matchingConsoleEls.addClass 'error'
       matchingConsoleEls.find('.tracking-error').append('DUPLICATE')
 
+    # events
+    # events for elements in the console log
     matchingConsoleEls.hover ->
       $el.addClass 'tracking-highlight'
       $('html, body').stop().animate
@@ -172,6 +185,7 @@ window.Atrackt =
     , ->
       $el.removeClass 'tracking-highlight'
 
+    # events for elements on the page
     $el.hover ->
       $(@).addClass 'tracking-highlight'
       _consoleCurrentElement.html(
@@ -182,10 +196,8 @@ window.Atrackt =
     , ->
       $(@).removeClass 'tracking-highlight'
 
-
   # Build a unique ID for each element
   _debugElementId: ($el) ->
-    console.log $el.data()
     _categories = $el.data('track-object').categories
     _ctaValue = $el.data('track-object').value
     _event = $el.data('track-object').event

@@ -22,7 +22,6 @@ describe 'Plugin: SiteCatalyst', ->
       expect(s.foo).to_exist
 
     it 'shoule create empty props/eVars/events', ->
-      console.log s
       expect(s.linkTrackVars).to.equal 'products,events,prop1,eVar1'
       expect(s.linkTrackEvents).to.equal 'event1'
 

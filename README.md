@@ -50,17 +50,14 @@ Atrackt.registerPlugin 'testPlugin',
 
 Typically just creating a send method for you to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
 
-You can accomplish this by passing an events object.  The events object accepts a click event as the key, and an array of jquery selectors as the value.  Any matching selectors will be bound and tracked when that event fires.
+You can accomplish this by calling the `bindEvents` method. an events object.  The method accepts click events as the key, and an array of jquery selectors as the values.  Any matching selectors will be bound and tracked when that event fires.
 
 ```coffee
-Atrackt.registerPlugin 'testPlugin',
-  send: (obj) ->
-    # do stuff to the object and send it somewhere
-  events:
-    # track every anchor on click
-    click: ['a']
-    # track every anchor and button on hover
-    hover: ['a', 'button' ]
+Atrackt.plugins['testPlugin'].bindEvents
+  # track every anchor on click
+  click: ['a']
+  # track every anchor and button on hover
+  hover: ['a', 'button' ]
 ```
 
 ## Debugging Console

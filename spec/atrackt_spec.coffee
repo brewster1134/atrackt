@@ -9,35 +9,83 @@ describe 'Atrackt', ->
       expect(window.Atrackt).to.exist
 
     describe '#registerPlugin', ->
+      elFoo = null
+      fooPlugin = null
+      fooSpy = null
+
+      elBar = null
+      barPlugin = null
+      barSpy = null
+
       before ->
-        el = $('<a></a>')
-        $('body').append(el)
+        $('body').append(
+          '<a class="foo"></a>'
+          '<a class="bar"></a>'
+        )
+        elFoo = $('a.foo')
+        elBar = $('a.bar')
+
         Atrackt.plugins = {}
         Atrackt.registerPlugin 'fooPlugin',
-          events:
-            click: [ 'a' ]
           send: ->
+            console.log 'fooPlugin'
+        Atrackt.registerPlugin 'barPlugin',
+          send: ->
+            console.log 'barPlugin'
+
+        fooPlugin = Atrackt.plugins['fooPlugin']
+        barPlugin = Atrackt.plugins['barPlugin']
+        fooSpy = sinon.spy fooPlugin, 'send'
+        barSpy = sinon.spy barPlugin, 'send'
+
+        fooPlugin.bindEvents
+          click: [ 'a.foo' ]
+        barPlugin.bindEvents
+          hover: [ 'a.bar' ]
+
+      afterEach ->
+        fooSpy.reset()
+        barSpy.reset()
 
       after ->
+        fooSpy.restore()
+        barSpy.restore()
         $('a').off 'click'
 
       it 'should add an object to plugins', ->
         expect(Atrackt.plugins['fooPlugin'].send).to.be.a 'function'
 
-      it 'should bind default events', ->
-        expect($._data(el[0], 'events').click).to.exist
+      it 'should bind events', ->
+        expect(Object.keys($._data(elFoo[0]).events)).to.have.length 1
+        expect($._data(elFoo[0]).events.click).to.exist
+
+        expect(Object.keys($._data(elBar[0]).events)).to.have.length 1
+        expect($._data(elBar[0]).events.hover).to.exist
+
+      it 'should track only events from the foo plugin', ->
+        $('a').trigger 'click'
+
+        expect(fooSpy).to.be.called.once
+        expect(barSpy).to.not.be.called
+
+      it 'should track only events from the bar plugin', ->
+        $('a').trigger 'hover'
+
+        expect(fooSpy).to.not.be.called
+        expect(barSpy).to.be.called.once
 
   context 'after plugin registered', ->
     sendSpy = null
 
     before ->
       Atrackt.plugins = {}
-      Atrackt.registerPlugin 'barPlugin',
-        events:
-          click: [ 'a' ]
+      plugin = Atrackt.registerPlugin 'testPlugin',
         send: ->
 
-      sendSpy = sinon.spy Atrackt.plugins['barPlugin'], 'send'
+      plugin.bindEvents
+        click: [ 'a' ]
+
+      sendSpy = sinon.spy Atrackt.plugins['testPlugin'], 'send'
 
     afterEach ->
       sendSpy.reset()
@@ -49,7 +97,7 @@ describe 'Atrackt', ->
     describe '#track', ->
       context 'with an element', ->
         beforeEach ->
-          el = $('<div></div>')
+          el = $('<a></a>')
           Atrackt.track el
 
         it 'should create the data-track-object on the element', ->
