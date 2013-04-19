@@ -69,9 +69,6 @@ Atrackt Tracking Library
       }
       return _results;
     },
-    _debug: function() {
-      return this._urlParams('debugTracking') === 'true';
-    },
     _getTrackObject: function(data, additionalData) {
       var $el, trackObject, _base;
       if (additionalData == null) {
@@ -140,7 +137,7 @@ Atrackt Tracking Library
       $el.on(this._getEvent($el), function(e) {
         return Atrackt.track($el, e.type);
       });
-      if (this._debug()) {
+      if (typeof this._debug === "function" ? this._debug() : void 0) {
         return this._debugEl($el);
       }
     },
@@ -161,71 +158,9 @@ Atrackt Tracking Library
       } else {
         return params;
       }
-    },
-    _debugConsole: function() {
-      var _this = this;
-      return $(function() {
-        $('body').addClass('tracking-debug');
-        return Atrackt.debugConsole = $('<div id="tracking-debug">').append('<div id="tracking-debug-content">' + '<div id="tracking-location">Location: ' + _this._getLocation() + '</div>' + '<table class="table" id="tracking-elements">' + '<thead><tr>' + '<th>Categories</th>' + '<th>Value</th>' + '<th>Event</th>' + '<th>Error</th>' + '</tr></thead>' + '<tbody></tbody>' + '</table>' + '</div>' + '</div>').prependTo('body');
-      });
-    },
-    _debugEl: function($el) {
-      var matchingBodyEls, matchingConsoleEls, mathingEls, _consoleBody, _consoleCurrentElement, _elId;
-      this._getTrackObject($el);
-      _elId = this._debugElementId($el);
-      $el.attr('id', _elId);
-      _consoleCurrentElement = Atrackt.debugConsole.find('#tracking-current-element');
-      _consoleBody = Atrackt.debugConsole.find('#tracking-elements tbody');
-      _consoleBody.append('<tr class="tracking-element" id=' + _elId + '>' + '<td class="tracking-categories">' + $el.data('track-object').categories + '</td>' + '<td class="tracking-value">' + $el.data('track-object').value + '</td>' + '<td class="tracking-event">' + $el.data('track-object').event + '</td>' + '<td class="tracking-error"></td>' + '</tr>');
-      mathingEls = $('body #' + _elId);
-      matchingConsoleEls = mathingEls.filter('.tracking-element');
-      matchingBodyEls = mathingEls.not('.tracking-element');
-      if (matchingBodyEls.length > 1) {
-        console.log('THERE ARE DUPLICATE ELEMENTS!', matchingBodyEls);
-        matchingConsoleEls.addClass('error');
-        matchingConsoleEls.find('.tracking-error').append('DUPLICATE');
-      }
-      matchingConsoleEls.hover(function() {
-        $el.addClass('tracking-highlight');
-        return $('html, body').scrollTop($el.offset().top - $('#tracking-debug').height() - 20);
-      }, function() {
-        return $el.removeClass('tracking-highlight');
-      });
-      return $el.hover(function() {
-        var elIndex, scrollTo, totalEls, viewportHeight;
-        matchingConsoleEls.addClass('tracking-highlight');
-        viewportHeight = $('#tracking-elements tbody').height();
-        totalEls = $('#tracking-elements .tracking-element').length;
-        elIndex = $('#tracking-elements .tracking-element').index(matchingConsoleEls);
-        scrollTo = (elIndex / totalEls) * viewportHeight;
-        return $('#tracking-debug').scrollTop(scrollTo);
-      }, function() {
-        return matchingConsoleEls.removeClass('tracking-highlight');
-      });
-    },
-    _debugElementId: function($el) {
-      var idArray, _categories, _ctaValue, _event;
-      _categories = $el.data('track-object').categories;
-      _ctaValue = $el.data('track-object').value;
-      _event = $el.data('track-object').event;
-      idArray = [];
-      if (_categories) {
-        idArray.push(_categories);
-      }
-      if (_ctaValue) {
-        idArray.push(_ctaValue);
-      }
-      if (_event) {
-        idArray.push(_event);
-      }
-      return idArray.join().toLowerCase().replace(/[^\w]/g, '');
     }
   };
 
   Atrackt.refresh();
-
-  if (Atrackt._debug()) {
-    Atrackt._debugConsole();
-  }
 
 }).call(this);

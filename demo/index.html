@@ -1,8 +1,8 @@
 <html>
   <head>
-    <link rel="stylesheet" href="atrackt.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../js/atrackt.js"></script>
+    <script src="../js/atrackt.debug.js"></script>
     <script>
       Atrackt.registerPlugin('testPlugin', {
         send: function(obj) {
@@ -14,7 +14,8 @@
       });
     </script>
   </head>
-  <body>
+  <body data-track-location="Atrackt Debug Console">
+    <a href='?debugTracking=true'>Show Debugging Console</a>
     <div data-track-cat='one'>
       <div data-track-cat='two'>
         <div class="foo">Foo0</div>

@@ -109,7 +109,7 @@ Atrackt.plugins['testPlugin'].setOptions
 
 ## Debugging Console
 
-To better visualize what elements are being tracked, you can add `?debugTracking=true` to the end of any URL to show the debugging console.
+To better visualize what elements are being tracked, you can load the `js/atrackt.debug.js` script and add `?debugTracking=true` to the end of any URL to show the debugging console.
 
 It is a bit crude, but it gives you a visual overview of your elements.
 
@@ -122,7 +122,7 @@ It is a bit crude, but it gives you a visual overview of your elements.
 
 Download the project and open `demo/index.html` in your browser.
 
-Visit `demo/index.html?debugTracking=true` to view the debugging console.
+Click the link or visit `demo/index.html?debugTracking=true` to view the debugging console.
 
 ## Development
 
@@ -134,7 +134,7 @@ Do **NOT** modify `atrackt.js` directly.  Modify `src/atrackt.coffee` and genera
 
 The can be done by either running testem _(see the [Testing](#testing) section below)_, or by compiling with CoffeeScript directly.
 
-`coffee -o js/ -c src/atrackt.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee`
+`coffee -o js/ -c src/*.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee`
 
 ## Testing
 

@@ -12,7 +12,6 @@ window.Atrackt =
 
   registerPlugin: (name, attrs) ->
     return console.log "NO SEND METHOD DEFINED!" unless typeof attrs.send is 'function'
-
     console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
 
     # Create bindEvents method
@@ -45,9 +44,6 @@ window.Atrackt =
     for pluginName, pluginData of @plugins
       @_bindEvents pluginData.events
 
-  _debug: ->
-    @_urlParams('debugTracking') == 'true'
-
   # builds the object to be passed to the custom send method
   _getTrackObject: (data, additionalData = {}) ->
     trackObject = if data instanceof jQuery
@@ -73,7 +69,6 @@ window.Atrackt =
     else
       console.log 'DATA IS NOT TRACKABLE', data
       false
-
 
   _getLocation: ->
     $('body').data('track-location') || $(document).attr('title') || document.URL
@@ -118,7 +113,7 @@ window.Atrackt =
     $el.on @_getEvent($el), (e) ->
       Atrackt.track $el, e.type
 
-    @_debugEl $el if @_debug()
+    @_debugEl $el if @_debug?()
 
   # build an object of url paramaters.
   # @param pass an optional key to just return that value
@@ -133,93 +128,4 @@ window.Atrackt =
     else
       params
 
-  # DEBUGGING UI
-  #
-
-  # Add the debugging console template to the dom
-  _debugConsole: ->
-    $ =>
-      $('body').addClass('tracking-debug')
-      Atrackt.debugConsole = $('<div id="tracking-debug">').append(
-        '<div id="tracking-debug-content">' +
-        '<div id="tracking-location">Location: ' + @_getLocation() + '</div>' +
-        '<table class="table" id="tracking-elements">' +
-        '<thead><tr>' +
-        '<th>Categories</th>' +
-        '<th>Value</th>' +
-        '<th>Event</th>' +
-        '<th>Error</th>' +
-        '</tr></thead>' +
-        '<tbody></tbody>' +
-        '</table>' +
-        '</div>' +
-        '</div>'
-      ).prependTo('body')
-
-  # Add each tracked element to the console
-  _debugEl: ($el) ->
-    # set track-object since we want to show the data before it gets tracked.
-    @_getTrackObject $el
-
-    _elId = @_debugElementId $el
-    $el.attr 'id', _elId
-
-    _consoleCurrentElement = Atrackt.debugConsole.find('#tracking-current-element')
-    _consoleBody = Atrackt.debugConsole.find('#tracking-elements tbody')
-    _consoleBody.append(
-      '<tr class="tracking-element" id=' + _elId + '>' +
-      '<td class="tracking-categories">' + $el.data('track-object').categories + '</td>' +
-      '<td class="tracking-value">' + $el.data('track-object').value + '</td>' +
-      '<td class="tracking-event">' + $el.data('track-object').event + '</td>' +
-      '<td class="tracking-error"></td>' +
-      '</tr>'
-    )
-
-    # errors:
-    # if element with the same tracking information exists...
-    mathingEls = $('body #' + _elId)
-    matchingConsoleEls = mathingEls.filter('.tracking-element')
-    matchingBodyEls = mathingEls.not('.tracking-element')
-
-    if matchingBodyEls.length > 1
-      console.log 'THERE ARE DUPLICATE ELEMENTS!', matchingBodyEls
-      matchingConsoleEls.addClass 'error'
-      matchingConsoleEls.find('.tracking-error').append('DUPLICATE')
-
-    # events
-    # events for elements in the console log
-    matchingConsoleEls.hover ->
-      $el.addClass 'tracking-highlight'
-      $('html, body').scrollTop($el.offset().top - $('#tracking-debug').height() - 20)
-    , ->
-      $el.removeClass 'tracking-highlight'
-
-    # events for elements on the page
-    $el.hover ->
-      matchingConsoleEls.addClass 'tracking-highlight'
-
-      # crazy stuff for scrolling in the overflow hidden element.
-      # this is probably not as accurate as it could be, but it works.  goodnight.
-      viewportHeight = $('#tracking-elements tbody').height()
-      totalEls = $('#tracking-elements .tracking-element').length
-      elIndex = $('#tracking-elements .tracking-element').index matchingConsoleEls
-      scrollTo = ((elIndex / totalEls) * viewportHeight)
-      $('#tracking-debug').scrollTop(scrollTo)
-    , ->
-      matchingConsoleEls.removeClass 'tracking-highlight'
-
-  # Build a unique ID for each element
-  _debugElementId: ($el) ->
-    _categories = $el.data('track-object').categories
-    _ctaValue = $el.data('track-object').value
-    _event = $el.data('track-object').event
-
-    idArray = []
-    idArray.push _categories if _categories
-    idArray.push _ctaValue if _ctaValue
-    idArray.push _event if _event
-
-    idArray.join().toLowerCase().replace(/[^\w]/g, '')
-
 Atrackt.refresh()
-Atrackt._debugConsole() if Atrackt._debug()

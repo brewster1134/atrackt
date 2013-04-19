@@ -1,5 +1,5 @@
 test_page: spec/index.html
-before_tests: coffee -o js/ -c src/atrackt.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee && coffee -c spec/*.coffee
+before_tests: coffee -o js/ -c src/*.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee && coffee -c spec/*.coffee
 src_files:
   - src/**/*.coffee
   - spec/*.coffee
