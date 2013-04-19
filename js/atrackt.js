@@ -37,37 +37,31 @@ Atrackt Tracking Library
       return this.plugins[name] = attrs;
     },
     track: function(data, event) {
-      var addnData, pluginData, pluginName, selectors, _ref, _results;
+      var pluginData, pluginName, selectors, trackObject, _ref;
       _ref = this.plugins;
-      _results = [];
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        addnData = {
+        trackObject = this._getTrackObject(data, {
           plugin: pluginName
-        };
+        });
         if (data instanceof jQuery) {
           if (!(event != null) || (selectors = pluginData.events[event] && (data.is(selectors != null ? selectors.join(',') : void 0) != null))) {
-            _results.push(pluginData.send(this._getTrackObject(data, addnData)));
-          } else {
-            _results.push(void 0);
+            pluginData.send(trackObject);
           }
         } else if (data instanceof Object) {
-          _results.push(pluginData.send(this._getTrackObject(data, addnData)));
-        } else {
-          _results.push(void 0);
+          pluginData.send(trackObject);
         }
       }
-      return _results;
+      return true;
     },
     refresh: function() {
-      var pluginData, pluginName, _ref, _results;
+      var pluginData, pluginName, _ref;
       _ref = this.plugins;
-      _results = [];
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        _results.push(this._bindEvents(pluginData.events));
+        this._bindEvents(pluginData.events);
       }
-      return _results;
+      return true;
     },
     _getTrackObject: function(data, additionalData) {
       var $el, trackObject, _base;

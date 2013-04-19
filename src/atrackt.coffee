@@ -29,20 +29,24 @@ window.Atrackt =
 
   track: (data, event) ->
     for pluginName, pluginData of @plugins
-      addnData =
+      trackObject = @_getTrackObject data,
         plugin: pluginName
+
       if data instanceof jQuery
         # check that the click event is supported and the element matches the selectors for the plugin
         if !event? || ( selectors = pluginData.events[event] && data.is(selectors?.join(','))? )
-          pluginData.send @_getTrackObject data, addnData
+          pluginData.send trackObject
+
       else if data instanceof Object
-        pluginData.send @_getTrackObject data, addnData
+        pluginData.send trackObject
+    true
 
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
   refresh: ->
     for pluginName, pluginData of @plugins
       @_bindEvents pluginData.events
+    true
 
   # builds the object to be passed to the custom send method
   _getTrackObject: (data, additionalData = {}) ->

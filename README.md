@@ -17,12 +17,12 @@ A library for making complex tracking & analytics easier.
 When an element is tracked, there are several peices that are included.
 
 * location: This represents the page that tracking event happened. It will track the first value it finds from the following:
-  * `$('body').data('track-location')` - A custom value attached to the `body` element's `data-track-location`
-  * `$(document).attr('title')` - The page's title value
-  * `document.URL` - The URL of the page
+  * `$('body').data('track-location')` - The custom value attached to the body element's `data-track-location` attribute.
+  * `$(document).attr('title')` - The page title
+  * `document.URL` - The page URL
 
 * categories: This represents the elements location on the page.  It traverses the dom from the element the event fires on and collects all the `data-track-cat` values along the way (including the element itself).
-  * For example... In the exmaple below, if the `a` element is tracked, the categories value will be an array containing `[ 'one', 'two', 'three' ]`
+  * In the exmaple below, if the `a` element is tracked, the value for the categories attribute will be an array of `[ 'one', 'two', 'three' ]`
 
 ```html
 <div data-track-cat='one'>
@@ -52,23 +52,23 @@ When an element is tracked, there are several peices that are included.
 * Add a plugin to your page _([or write your own!](#registering-plugins))_ _AFTER_ `atrackt.js`
   * `<script src="atrackt.plugin.js"></script>`
 
-That's it!  The settings from your plugin will register events to elements and start tracking!
+That's it!  The settings from your plugin will bind events to elements and you can start tracking!
 
 ### Advanced Usage
 
 To manually track any JS object, just pass it as an argument to the track method.
 
 ```coffee
-Atrackt.track(object)
+Atrackt.track({ foo: 'bar' })
 ```
 
-If you add new elements to your page (and are not using liveQuery) you can scan the dom again and re-bind elements.
+If you add new elements to your page (and are not using liveQuery) you may need to re-scan the dom to re-bind those elements.
 
 ```coffee
 Atrackt.refresh()
 ```
 
-You can also bind custom functions to a specific element using the `data-track-function` attribute.  The allows for any last minute custom attributes you want to include. For example, you could track things conditionally...
+You can also bind custom functions to a specific element using the `data-track-function` attribute.  This function will be run before the send method is called.  It allows for any custom manipulatons to the tracking object on a per-element basis. For example, you could track things conditionally...
 
 ```coffee
 # You can only bind to events that exist so load your scripts at the end of the page, or fire them after the dom is ready with jQuery's document.ready event.
@@ -80,9 +80,9 @@ $ ->
 
 #### Registering Plugins
 
-Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking, you can quickly create a new plugin by calling the `registerPlugin` method.
+Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking you can quickly create a new plugin with the `registerPlugin` method.
 
-The minimum a plugin needs is a `send` method.  This is a function that accepts a tracking object as an argument.  From here, you can do additional processing on the object and send it where ever you like to track it.
+The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object as an argument.  You can do additional processing on the object and send it off however you need.
 
 ```coffee
 Atrackt.registerPlugin 'testPlugin',
@@ -90,9 +90,9 @@ Atrackt.registerPlugin 'testPlugin',
     # do stuff to the object and send it somewhere
 ```
 
-Typically just creating a send method for you to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
+Typically just creating a send method to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
 
-You can accomplish this by calling the `bindEvents` method. an events object.  The method accepts click events as the key, and an array of jquery selectors as the values.  Any matching selectors will be bound and tracked when that event fires.
+You can accomplish this by calling the `bindEvents` method on you plugin. The method accepts an object with the event type as the key, and an array of jquery selectors as the values.  Any matching selectors will be automatically bound and tracked when that event fires.
 
 ```coffee
 Atrackt.plugins['testPlugin'].bindEvents
@@ -102,7 +102,7 @@ Atrackt.plugins['testPlugin'].bindEvents
   hover: ['a', 'button' ]
 ```
 
-If you would like your plugin to accept custom objects, you can call the `setOptions` method.  If your plugin already has an options object, custom options well extend over them.
+If you would like your plugin to accept custom objects, you can call the `setOptions` method.  If your plugin already has an options object, custom options well simply extend over them.
 
 ```coffee
 Atrackt.plugins['testPlugin'].setOptions
