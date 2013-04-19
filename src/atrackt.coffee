@@ -143,7 +143,6 @@ window.Atrackt =
       Atrackt.debugConsole = $('<div id="tracking-debug">').append(
         '<div id="tracking-debug-content">' +
         '<div id="tracking-location">Location: ' + @_getLocation() + '</div>' +
-        '<div id="tracking-current-element">Hover over an element to see the tracked data associated with it.</div>' +
         '<table class="table" id="tracking-elements">' +
         '<thead><tr>' +
         '<th>Categories</th>' +
@@ -191,22 +190,23 @@ window.Atrackt =
     # events for elements in the console log
     matchingConsoleEls.hover ->
       $el.addClass 'tracking-highlight'
-      $('html, body').stop().animate
-        scrollTop: $el.offset().top - $('#tracking-debug').height() - 20
-      , 500
+      $('html, body').scrollTop($el.offset().top - $('#tracking-debug').height() - 20)
     , ->
       $el.removeClass 'tracking-highlight'
 
     # events for elements on the page
     $el.hover ->
-      $(@).addClass 'tracking-highlight'
-      _consoleCurrentElement.html(
-        '<dt>Categories</dt><dd>' + $(@).data('track-object').categories + '</dd>' +
-        '<dt>Value</dt><dd>' + $(@).data('track-object').value + '</dd>' +
-        '<dt>Event</dt><dd>' + $(@).data('track-object').event + '</dd>'
-      )
+      matchingConsoleEls.addClass 'tracking-highlight'
+
+      # crazy stuff for scrolling in the overflow hidden element.
+      # this is probably not as accurate as it could be, but it works.  goodnight.
+      viewportHeight = $('#tracking-elements tbody').height()
+      totalEls = $('#tracking-elements .tracking-element').length
+      elIndex = $('#tracking-elements .tracking-element').index matchingConsoleEls
+      scrollTo = ((elIndex / totalEls) * viewportHeight)
+      $('#tracking-debug').scrollTop(scrollTo)
     , ->
-      $(@).removeClass 'tracking-highlight'
+      matchingConsoleEls.removeClass 'tracking-highlight'
 
   # Build a unique ID for each element
   _debugElementId: ($el) ->

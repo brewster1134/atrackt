@@ -25,5 +25,5 @@ body{
           color: white;
         }
     body.tracking-debug .tracking-highlight {
-      background-color: red !important;
+      background-color: green !important;
       color: white !important; }

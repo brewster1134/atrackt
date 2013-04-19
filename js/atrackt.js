@@ -166,7 +166,7 @@ Atrackt Tracking Library
       var _this = this;
       return $(function() {
         $('body').addClass('tracking-debug');
-        return Atrackt.debugConsole = $('<div id="tracking-debug">').append('<div id="tracking-debug-content">' + '<div id="tracking-location">Location: ' + _this._getLocation() + '</div>' + '<div id="tracking-current-element">Hover over an element to see the tracked data associated with it.</div>' + '<table class="table" id="tracking-elements">' + '<thead><tr>' + '<th>Categories</th>' + '<th>Value</th>' + '<th>Event</th>' + '<th>Error</th>' + '</tr></thead>' + '<tbody></tbody>' + '</table>' + '</div>' + '</div>').prependTo('body');
+        return Atrackt.debugConsole = $('<div id="tracking-debug">').append('<div id="tracking-debug-content">' + '<div id="tracking-location">Location: ' + _this._getLocation() + '</div>' + '<table class="table" id="tracking-elements">' + '<thead><tr>' + '<th>Categories</th>' + '<th>Value</th>' + '<th>Event</th>' + '<th>Error</th>' + '</tr></thead>' + '<tbody></tbody>' + '</table>' + '</div>' + '</div>').prependTo('body');
       });
     },
     _debugEl: function($el) {
@@ -187,17 +187,20 @@ Atrackt Tracking Library
       }
       matchingConsoleEls.hover(function() {
         $el.addClass('tracking-highlight');
-        return $('html, body').stop().animate({
-          scrollTop: $el.offset().top - $('#tracking-debug').height() - 20
-        }, 500);
+        return $('html, body').scrollTop($el.offset().top - $('#tracking-debug').height() - 20);
       }, function() {
         return $el.removeClass('tracking-highlight');
       });
       return $el.hover(function() {
-        $(this).addClass('tracking-highlight');
-        return _consoleCurrentElement.html('<dt>Categories</dt><dd>' + $(this).data('track-object').categories + '</dd>' + '<dt>Value</dt><dd>' + $(this).data('track-object').value + '</dd>' + '<dt>Event</dt><dd>' + $(this).data('track-object').event + '</dd>');
+        var elIndex, scrollTo, totalEls, viewportHeight;
+        matchingConsoleEls.addClass('tracking-highlight');
+        viewportHeight = $('#tracking-elements tbody').height();
+        totalEls = $('#tracking-elements .tracking-element').length;
+        elIndex = $('#tracking-elements .tracking-element').index(matchingConsoleEls);
+        scrollTo = (elIndex / totalEls) * viewportHeight;
+        return $('#tracking-debug').scrollTop(scrollTo);
       }, function() {
-        return $(this).removeClass('tracking-highlight');
+        return matchingConsoleEls.removeClass('tracking-highlight');
       });
     },
     _debugElementId: function($el) {
