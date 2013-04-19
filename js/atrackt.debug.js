@@ -78,25 +78,21 @@ Atrackt Debugging Console
         matchingConsoleEls.find('.atrackt-error').append('DUPLICATE');
       }
       matchingConsoleEls.hover(function() {
-        $(this).addClass('highlight');
-        $el.addClass('highlight');
-        return $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
+        $(this).add($el).addClass('highlight');
+        return $('body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
       }, function() {
-        $(this).removeClass('highlight');
-        return $el.removeClass('highlight');
+        return $(this).add($el).removeClass('highlight');
       });
       return $el.hover(function() {
-        var elIndex, scrollTo, totalEls, viewportHeight;
-        $(this).addClass('highlight');
-        matchingConsoleEls.addClass('highlight');
-        viewportHeight = $('#atrackt-elements tbody').height();
+        var elIndex, scrollTo, totalEls, totalHeight;
+        $(this).add(matchingConsoleEls).addClass('highlight');
+        totalHeight = $('#atrackt-elements tbody').height();
         totalEls = $('#atrackt-elements .atrackt-element').length;
         elIndex = $('#atrackt-elements .atrackt-element').index(matchingConsoleEls);
-        scrollTo = (elIndex / totalEls) * viewportHeight;
+        scrollTo = (elIndex / totalEls) * totalHeight;
         return $('#atrackt-debug').scrollTop(scrollTo);
       }, function() {
-        $(this).removeClass('highlight');
-        return matchingConsoleEls.removeClass('highlight');
+        return $(this).add(matchingConsoleEls).removeClass('highlight');
       });
     },
     _debugElementId: function($el) {

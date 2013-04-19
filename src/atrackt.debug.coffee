@@ -88,28 +88,25 @@ $.extend window.Atrackt,
     # events
     # events for elements in the console log
     matchingConsoleEls.hover ->
-      $(@).addClass 'highlight'
-      $el.addClass 'highlight'
-      $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20)
+      $(@).add($el).addClass 'highlight'
+
+      $('body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20)
     , ->
-      $(@).removeClass 'highlight'
-      $el.removeClass 'highlight'
+      $(@).add($el).removeClass 'highlight'
 
     # events for elements on the page
     $el.hover ->
-      $(@).addClass 'highlight'
-      matchingConsoleEls.addClass 'highlight'
+      $(@).add(matchingConsoleEls).addClass 'highlight'
 
       # crazy stuff for scrolling in the overflow hidden element.
       # this is probably not as accurate as it could be, but it works.  goodnight.
-      viewportHeight = $('#atrackt-elements tbody').height()
+      totalHeight = $('#atrackt-elements tbody').height()
       totalEls = $('#atrackt-elements .atrackt-element').length
       elIndex = $('#atrackt-elements .atrackt-element').index matchingConsoleEls
-      scrollTo = ((elIndex / totalEls) * viewportHeight)
+      scrollTo = ((elIndex / totalEls) * totalHeight)
       $('#atrackt-debug').scrollTop(scrollTo)
     , ->
-      $(@).removeClass 'highlight'
-      matchingConsoleEls.removeClass 'highlight'
+      $(@).add(matchingConsoleEls).removeClass 'highlight'
 
   # Build a unique ID for each element
   _debugElementId: ($el) ->

@@ -1,7 +1,7 @@
-# atrackt
+# Atrackt
 ---
 
-A script for making tracking easier.
+A library for making complex tracking & analytics easier.
 
 ## Dependencies
 
@@ -49,8 +49,8 @@ When an element is tracked, there are several peices that are included.
 * Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.js) _(right-click & save as)_
 * Add the script to your page
   * `<script src="atrackt.js"></script>`
-* Add a plugin to your page _([or write your own!](#registering-plugins))_
-  * `<script src="atrackt.siteCatalyst.js"></script>`
+* Add a plugin to your page _([or write your own!](#registering-plugins))_ _AFTER_ `atrackt.js`
+  * `<script src="atrackt.plugin.js"></script>`
 
 That's it!  The settings from your plugin will register events to elements and start tracking!
 
@@ -109,14 +109,21 @@ Atrackt.plugins['testPlugin'].setOptions
 
 ## Debugging Console
 
-To better visualize what elements are being tracked, you can load the `js/atrackt.debug.js` script and add `?debugTracking=true` to the end of any URL to show the debugging console.
+To better visualize what elements you are tracking, you can load the debugging console.
+
+* Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.debug.js) _(right-click & save as)_
+* Add the script to your page _AFTER_ `atrackt.js`
+  * `<script src="atrackt.debug.js"></script>`
+
+Now simply add the url paramater `debugTracking=true` to the end of any URL to show the debugging console.  Like so `http://foo.com?debugTracking=true`
 
 It is a bit crude, but it gives you a visual overview of your elements.
 
-* The console shows all the elements currently being tracked, along with their various values.
-* If you hover over an element in your console, it will scroll to that element on your page and highlight it.
-* If you hover over an element on your page, it will show you the data object that is being passed to your plugin(s).
-* The debugger will also show you errors if you have any.  For example if you have multiple elements on your page that are tracking the exact same data, they will turn red and show the error in the error column.
+* The console lists all the elements currently being tracked along with their various values.
+* If you hover over an element in the console, it will scroll to that element on your page and highlight it.
+* If you hover over a trakced element on your page, it will scroll to that entry in your console and highlight it.
+* The debugger will also show you errors if you have any.
+  * If you have multiple elements tracking the same data, they will turn red and show the error in the error column. **NOTE** Since duplicate items will have the same ID
 
 ## Demo
 
@@ -130,9 +137,9 @@ Click the link or visit `demo/index.html?debugTracking=true` to view the debuggi
 
 * [CoffeeScript](http://coffeescript.org)
 
-Do **NOT** modify `atrackt.js` directly.  Modify `src/atrackt.coffee` and generate `atrackt.js`.
+Do **NOT** modify any `.js` files in the `js` directory!  Modify the files in the `src` directory and compile them with coffeescript into the js directory.
 
-The can be done by either running testem _(see the [Testing](#testing) section below)_, or by compiling with CoffeeScript directly.
+This will be done automatically if you are running the tests with testem _(see the [Testing](#testing) section below)_, or you can compile it with the CoffeeScript command line tool.
 
 `coffee -o js/ -c src/*.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee`
 
@@ -140,11 +147,16 @@ The can be done by either running testem _(see the [Testing](#testing) section b
 
 ### Dependencies
 
-* [Node.js](http://nodejs.org)
+* Node.js & NPM
+  * From [nodejs.org](http://nodejs.org)
+  * Using a [package manager](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
+    * HomeBrew: 'brew install node'
 * [Testem](https://github.com/airportyh/testem)
+  * `npm install testem -g`
 
 ### Optional
 
 * [PhantomJS](http://phantomjs.org)
+  * HomeBrew: `brew install phantomjs`
 
 Simply run `testem`
