@@ -10,9 +10,6 @@ Atrackt SiteCatalyst Plugin
 (function() {
 
   window.Atrackt.registerPlugin('siteCatalyst', {
-    events: {
-      click: ['a', 'button']
-    },
     send: function(obj) {
       var _ref;
       $.extend(obj, this.translatePropMap(obj));

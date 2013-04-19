@@ -5,8 +5,6 @@ Atrackt SiteCatalyst Plugin
 ###
 
 window.Atrackt.registerPlugin 'siteCatalyst',
-  events:
-    click: [ 'a', 'button' ]
   send: (obj) ->
     $.extend obj, @translatePropMap obj
     obj.categories = obj.categories?.join @options.delimiters.category

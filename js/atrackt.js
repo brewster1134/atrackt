@@ -17,17 +17,22 @@ Atrackt Tracking Library
 
   window.Atrackt = {
     plugins: {},
-    registerPlugin: function(name, options) {
+    registerPlugin: function(name, attrs) {
       var _this = this;
-      if (typeof options.send !== 'function') {
+      if (typeof attrs.send !== 'function') {
         return console.log("NO SEND METHOD DEFINED!");
       }
-      console.log('ATRACKT PLUGIN REGISTERED', name, options);
-      options.bindEvents = function(eventsObject) {
-        options.events = eventsObject;
+      console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
+      attrs.bindEvents = function(eventsObject) {
+        attrs.events = eventsObject;
         return _this._bindEvents(eventsObject);
       };
-      return this.plugins[name] = options;
+      attrs.setOptions = function(options) {
+        var pluginOptions;
+        pluginOptions = attrs.options || {};
+        return attrs.options = $.extend(pluginOptions, options);
+      };
+      return this.plugins[name] = attrs;
     },
     track: function(data, event) {
       var pluginData, pluginName, selectors, _ref, _results;
@@ -37,12 +42,16 @@ Atrackt Tracking Library
         pluginData = _ref[pluginName];
         if (data instanceof jQuery) {
           if (!(event != null) || (selectors = pluginData.events[event] && (data.is(selectors != null ? selectors.join(',') : void 0) != null))) {
-            _results.push(pluginData.send(this._getTrackObject(data)));
+            _results.push(pluginData.send(this._getTrackObject(data, {
+              plugin: pluginName
+            })));
           } else {
             _results.push(void 0);
           }
         } else if (data instanceof Object) {
-          _results.push(pluginData.send(this._getTrackObject(data)));
+          _results.push(pluginData.send(this._getTrackObject(data, {
+            plugin: pluginName
+          })));
         } else {
           _results.push(void 0);
         }
@@ -62,25 +71,21 @@ Atrackt Tracking Library
     _debug: function() {
       return this._urlParams('debugTracking') === 'true';
     },
-    _getTrackObject: function(data) {
-      var $el, _base;
-      if (data instanceof jQuery) {
-        $el = data;
-        if (typeof (_base = $el.data('track-function')) === "function") {
-          _base();
-        }
-        $el.data('track-object', {
-          location: this._getLocation(),
-          categories: this._getCategories($el),
-          value: this._getValue($el),
-          event: this._getEvent($el)
-        });
-        return $el.data('track-object');
-      } else if (data instanceof Object) {
-        $.extend(data, {
-          location: this._getLocation()
-        });
-        return data;
+    _getTrackObject: function(data, additionalData) {
+      var $el, trackObject, _base;
+      if (additionalData == null) {
+        additionalData = {};
+      }
+      trackObject = data instanceof jQuery ? ($el = data, typeof (_base = $el.data('track-function')) === "function" ? _base() : void 0, $el.data('track-object', {
+        location: this._getLocation(),
+        categories: this._getCategories($el),
+        value: this._getValue($el),
+        event: this._getEvent($el)
+      }), $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+        location: this._getLocation()
+      }), data) : void 0;
+      if (trackObject) {
+        return $.extend(trackObject, additionalData);
       } else {
         console.log('DATA IS NOT TRACKABLE', data);
         return false;

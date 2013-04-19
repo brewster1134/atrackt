@@ -60,6 +60,13 @@ Atrackt.plugins['testPlugin'].bindEvents
   hover: ['a', 'button' ]
 ```
 
+If you would like your plugin to accept custom objects, you can call the `setOptions` method.  If your plugin already has an options object, custom options well extend over them.
+
+```coffee
+Atrackt.plugins['testPlugin'].setOptions
+  foo: 'bar'
+```
+
 ## Debugging Console
 
 To better visualize what elements are being tracked, you can add `?debugTracking=true` to the end of any URL to show the debugging console.

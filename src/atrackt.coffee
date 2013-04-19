@@ -10,27 +10,33 @@ window.console = { log: -> } unless window.console?
 window.Atrackt =
   plugins: {}
 
-  registerPlugin: (name, options) ->
-    return console.log "NO SEND METHOD DEFINED!" unless typeof options.send is 'function'
+  registerPlugin: (name, attrs) ->
+    return console.log "NO SEND METHOD DEFINED!" unless typeof attrs.send is 'function'
 
-    console.log 'ATRACKT PLUGIN REGISTERED', name, options
+    console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
 
     # Create bindEvents method
-    options.bindEvents = (eventsObject) =>
-      options.events = eventsObject
+    attrs.bindEvents = (eventsObject) =>
+      attrs.events = eventsObject
       @_bindEvents eventsObject
 
+    attrs.setOptions = (options) ->
+      pluginOptions = attrs.options || {}
+      attrs.options = $.extend pluginOptions, options
+
     # set plugin to global plugins object
-    @plugins[name] = options
+    @plugins[name] = attrs
 
   track: (data, event) ->
     for pluginName, pluginData of @plugins
       if data instanceof jQuery
         # check that the click event is supported and the element matches the selectors for the plugin
         if !event? || ( selectors = pluginData.events[event] && data.is(selectors?.join(','))? )
-          pluginData.send @_getTrackObject data
+          pluginData.send @_getTrackObject data,
+            plugin: pluginName
       else if data instanceof Object
-        pluginData.send @_getTrackObject data
+        pluginData.send @_getTrackObject data,
+          plugin: pluginName
 
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
@@ -42,8 +48,8 @@ window.Atrackt =
     @_urlParams('debugTracking') == 'true'
 
   # builds the object to be passed to the custom send method
-  _getTrackObject: (data) ->
-    if data instanceof jQuery
+  _getTrackObject: (data, additionalData = {}) ->
+    trackObject = if data instanceof jQuery
       $el = data
 
       # run the custom function if its available
@@ -59,9 +65,13 @@ window.Atrackt =
       $.extend data,
         location: @_getLocation()
       data
+
+    if trackObject
+      $.extend trackObject, additionalData
     else
       console.log 'DATA IS NOT TRACKABLE', data
       false
+
 
   _getLocation: ->
     $('body').data('track-location') || $(document).attr('title') || document.URL

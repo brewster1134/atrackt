@@ -1,9 +1,6 @@
 describe 'Atrackt', ->
   el = null
 
-  before ->
-    $(document).trigger('ready')
-
   context 'before plugin registered', ->
     it 'should set the Atrackt object on window', ->
       expect(window.Atrackt).to.exist
@@ -38,11 +35,6 @@ describe 'Atrackt', ->
         fooSpy = sinon.spy fooPlugin, 'send'
         barSpy = sinon.spy barPlugin, 'send'
 
-        fooPlugin.bindEvents
-          click: [ 'a.foo' ]
-        barPlugin.bindEvents
-          hover: [ 'a.bar' ]
-
       afterEach ->
         fooSpy.reset()
         barSpy.reset()
@@ -54,25 +46,41 @@ describe 'Atrackt', ->
 
       it 'should add an object to plugins', ->
         expect(Atrackt.plugins['fooPlugin'].send).to.be.a 'function'
+        expect(Atrackt.plugins['barPlugin'].send).to.be.a 'function'
 
-      it 'should bind events', ->
-        expect(Object.keys($._data(elFoo[0]).events)).to.have.length 1
-        expect($._data(elFoo[0]).events.click).to.exist
+      describe '#bindEvents', ->
+        before ->
+          fooPlugin.bindEvents
+            click: [ 'a.foo' ]
+          barPlugin.bindEvents
+            hover: [ 'a.bar' ]
 
-        expect(Object.keys($._data(elBar[0]).events)).to.have.length 1
-        expect($._data(elBar[0]).events.hover).to.exist
+        it 'should bind events', ->
+          expect(Object.keys($._data(elFoo[0]).events)).to.have.length 1
+          expect($._data(elFoo[0]).events.click).to.exist
 
-      it 'should track only events from the foo plugin', ->
-        $('a').trigger 'click'
+          expect(Object.keys($._data(elBar[0]).events)).to.have.length 1
+          expect($._data(elBar[0]).events.hover).to.exist
 
-        expect(fooSpy).to.be.called.once
-        expect(barSpy).to.not.be.called
+        it 'should track only events from the foo plugin', ->
+          $('a').trigger 'click'
 
-      it 'should track only events from the bar plugin', ->
-        $('a').trigger 'hover'
+          expect(fooSpy).to.be.called.once
+          expect(barSpy).to.not.be.called
 
-        expect(fooSpy).to.not.be.called
-        expect(barSpy).to.be.called.once
+        it 'should track only events from the bar plugin', ->
+          $('a').trigger 'hover'
+
+          expect(fooSpy).to.not.be.called
+          expect(barSpy).to.be.called.once
+
+      describe '#setOptions', ->
+        before ->
+          fooPlugin.setOptions
+            foo: 'bar'
+
+        it 'should set custom options on the plugin', ->
+          expect(Atrackt.plugins['fooPlugin'].options.foo).to.equal 'bar'
 
   context 'after plugin registered', ->
     sendSpy = null
@@ -106,6 +114,9 @@ describe 'Atrackt', ->
         it 'should call send with the track object', ->
           expect(sendSpy).to.be.called.once
           expect(sendSpy.args[0][0]).to.be.a 'object'
+
+        it 'should set the plugin attr to the plugin name', ->
+          expect(el.data('track-object').plugin).to.equal 'testPlugin'
 
       context 'with an object', ->
         beforeEach ->
