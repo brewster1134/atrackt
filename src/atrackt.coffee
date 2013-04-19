@@ -18,7 +18,8 @@ window.Atrackt =
     # Create bindEvents method
     attrs.bindEvents = (eventsObject) =>
       attrs.events = eventsObject
-      @_bindEvents eventsObject
+      $ =>
+        @_bindEvents eventsObject
 
     attrs.setOptions = (options) ->
       pluginOptions = attrs.options || {}
@@ -29,14 +30,14 @@ window.Atrackt =
 
   track: (data, event) ->
     for pluginName, pluginData of @plugins
+      addnData =
+        plugin: pluginName
       if data instanceof jQuery
         # check that the click event is supported and the element matches the selectors for the plugin
         if !event? || ( selectors = pluginData.events[event] && data.is(selectors?.join(','))? )
-          pluginData.send @_getTrackObject data,
-            plugin: pluginName
+          pluginData.send @_getTrackObject data, addnData
       else if data instanceof Object
-        pluginData.send @_getTrackObject data,
-          plugin: pluginName
+        pluginData.send @_getTrackObject data, addnData
 
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
@@ -52,14 +53,15 @@ window.Atrackt =
     trackObject = if data instanceof jQuery
       $el = data
 
-      # run the custom function if its available
-      $el.data('track-function')?()
-
       $el.data 'track-object',
         location: @_getLocation()
         categories: @_getCategories $el
         value: @_getValue $el
         event: @_getEvent $el
+
+      # run the custom function if its available (and pass in current data)
+      $el.data('track-function')? $el.data 'track-object'
+
       $el.data 'track-object'
     else if data instanceof Object
       $.extend data,
@@ -92,7 +94,7 @@ window.Atrackt =
     $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class')
 
   _getEvent: ($el) ->
-    $el.data('track-event')# || @defaults.event
+    $el.data('track-event')
 
   # bind events based on custom events object
   _bindEvents: (eventsObject) ->

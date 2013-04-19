@@ -118,6 +118,16 @@ describe 'Atrackt', ->
         it 'should set the plugin attr to the plugin name', ->
           expect(el.data('track-object').plugin).to.equal 'testPlugin'
 
+        context 'with a custom function', ->
+          beforeEach ->
+            el = $('<a></a>')
+            el.data 'track-function', (data) ->
+              data.custom = true
+            Atrackt.track el
+
+          it 'should add custom attribute', ->
+            expect(el.data('track-object').custom).to.be.true
+
       context 'with an object', ->
         beforeEach ->
           Atrackt.track

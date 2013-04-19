@@ -25,7 +25,9 @@ Atrackt Tracking Library
       console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
       attrs.bindEvents = function(eventsObject) {
         attrs.events = eventsObject;
-        return _this._bindEvents(eventsObject);
+        return $(function() {
+          return _this._bindEvents(eventsObject);
+        });
       };
       attrs.setOptions = function(options) {
         var pluginOptions;
@@ -35,23 +37,22 @@ Atrackt Tracking Library
       return this.plugins[name] = attrs;
     },
     track: function(data, event) {
-      var pluginData, pluginName, selectors, _ref, _results;
+      var addnData, pluginData, pluginName, selectors, _ref, _results;
       _ref = this.plugins;
       _results = [];
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
+        addnData = {
+          plugin: pluginName
+        };
         if (data instanceof jQuery) {
           if (!(event != null) || (selectors = pluginData.events[event] && (data.is(selectors != null ? selectors.join(',') : void 0) != null))) {
-            _results.push(pluginData.send(this._getTrackObject(data, {
-              plugin: pluginName
-            })));
+            _results.push(pluginData.send(this._getTrackObject(data, addnData)));
           } else {
             _results.push(void 0);
           }
         } else if (data instanceof Object) {
-          _results.push(pluginData.send(this._getTrackObject(data, {
-            plugin: pluginName
-          })));
+          _results.push(pluginData.send(this._getTrackObject(data, addnData)));
         } else {
           _results.push(void 0);
         }
@@ -76,12 +77,12 @@ Atrackt Tracking Library
       if (additionalData == null) {
         additionalData = {};
       }
-      trackObject = data instanceof jQuery ? ($el = data, typeof (_base = $el.data('track-function')) === "function" ? _base() : void 0, $el.data('track-object', {
+      trackObject = data instanceof jQuery ? ($el = data, $el.data('track-object', {
         location: this._getLocation(),
         categories: this._getCategories($el),
         value: this._getValue($el),
         event: this._getEvent($el)
-      }), $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+      }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
         location: this._getLocation()
       }), data) : void 0;
       if (trackObject) {

@@ -12,6 +12,38 @@ A script for making tracking easier.
 * [Live Query](https://github.com/brandonaaron/livequery)
   * Allows tracking new elements added to the page after the initial load (via ajax, etc.)
 
+## Tracking An Element
+
+When an element is tracked, there are several peices that are included.
+
+* location: This represents the page that tracking event happened. It will track the first value it finds from the following:
+  * `$('body').data('track-location')` - A custom value attached to the `body` element's `data-track-location`
+  * `$(document).attr('title')` - The page's title value
+  * `document.URL` - The URL of the page
+
+* categories: This represents the elements location on the page.  It traverses the dom from the element the event fires on and collects all the `data-track-cat` values along the way (including the element itself).
+  * For example... In the exmaple below, if the `a` element is tracked, the categories value will be an array containing `[ 'one', 'two', 'three' ]`
+
+```html
+<div data-track-cat='one'>
+  <div data-track-cat='two'>
+    <a data-track-cat='three'></a>
+  </div>
+</div>
+```
+
+* value: This reperesents the value of the tracked element.  It will track the first value it finds from the following:
+  * `title` - The value of the title attribute
+  * `name` - The value of the name attribute
+  * `text` - The text value of the element. This contains only text and will not include any HTML.
+  * `val` - The value (if a form element)
+  * `id` - The value of the id attribute
+  * `class` - The value of the id attribute
+
+* event: This represents the type of event that fired the tracking call.
+
+* plugin: The name of the plugin responsible for tracking the element
+
 ## Usage
 
 * Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.js) _(right-click & save as)_
@@ -34,6 +66,14 @@ If you add new elements to your page (and are not using liveQuery) you can scan 
 
 ```coffee
 Atrackt.refresh()
+```
+
+You can also bind custom functions to a specific element using the `data-track-function` attribute.  The allows for any last minute custom attributes you want to include. For example, you could track things conditionally...
+
+```coffee
+$('a#foo').data 'track-function', (data) ->
+  if data.value == 'foo'
+    data.foo = true
 ```
 
 #### Registering Plugins
