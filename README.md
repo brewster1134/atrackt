@@ -71,9 +71,11 @@ Atrackt.refresh()
 You can also bind custom functions to a specific element using the `data-track-function` attribute.  The allows for any last minute custom attributes you want to include. For example, you could track things conditionally...
 
 ```coffee
-$('a#foo').data 'track-function', (data) ->
-  if data.value == 'foo'
-    data.foo = true
+# You can only bind to events that exist so load your scripts at the end of the page, or fire them after the dom is ready with jQuery's document.ready event.
+$ ->
+  $('a#foo').data 'track-function', (data) ->
+    if data.value == 'foo'
+      data.foo = true
 ```
 
 #### Registering Plugins
@@ -123,7 +125,7 @@ It is a bit crude, but it gives you a visual overview of your elements.
 * If you hover over an element in the console, it will scroll to that element on your page and highlight it.
 * If you hover over a trakced element on your page, it will scroll to that entry in your console and highlight it.
 * The debugger will also show you errors if you have any.
-  * If you have multiple elements tracking the same data, they will turn red and show the error in the error column. **NOTE** Since duplicate items will have the same ID
+  * If you have multiple elements tracking the same data, they will turn red and show the error in the error column. **NOTE** Since duplicate items will have the same ID, the console will not be able to scroll to BOTH duplicate elements.  You can identify the offending elements in the javascript console.
 
 ## Demo
 

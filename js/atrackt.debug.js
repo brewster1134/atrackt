@@ -62,14 +62,14 @@ Atrackt Debugging Console
       var matchingBodyEls, matchingConsoleEls, mathingEls, _elId;
       this._getTrackObject($el);
       _elId = this._debugElementId($el);
-      $el.attr('id', _elId);
-      $('<tr class="atrackt-element" id=' + _elId + '>\
+      $el.attr('data-atrackt-debug-id', _elId);
+      $('<tr class="atrackt-element" data-atrackt-debug-id="' + _elId + '">\
       <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>\
       <td class="atrackt-value">' + $el.data('track-object').value + '</td>\
       <td class="atrackt-event">' + $el.data('track-object').event + '</td>\
       <td class="atrackt-error"></td>\
       </tr>').appendTo('#atrackt-elements tbody');
-      mathingEls = $('body #' + _elId);
+      mathingEls = $('body [data-atrackt-debug-id=' + _elId + ']');
       matchingConsoleEls = mathingEls.filter('.atrackt-element');
       matchingBodyEls = mathingEls.not('.atrackt-element');
       if (matchingBodyEls.length > 1) {

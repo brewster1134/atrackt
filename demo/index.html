@@ -4,52 +4,64 @@
     <script src="../js/atrackt.js"></script>
     <script src="../js/atrackt.debug.js"></script>
     <script>
-      Atrackt.registerPlugin('testPlugin', {
+      // Register a new plugin called 'test' that just logs to the console.
+      Atrackt.registerPlugin('test', {
         send: function(obj) {
           console.log('TRACK', obj)
         }
       });
-      Atrackt.plugins['testPlugin'].bindEvents({
-        events: ['div.foo']
+
+      // Binding click events to all anchor elements with the class 'foo'
+      Atrackt.plugins['test'].bindEvents({
+        click: ['a.foo']
+      });
+
+      // Adding a custom function
+      $(function() {
+        $('#custom').data('track-function', function(data) {
+          data.foo = 'bar';
+          alert("Alert from custom function! Added 'foo' to be tracked.");
+        });
       });
     </script>
+    <style>
+      body {
+        text-align: center;
+      }
+      a.foo {
+        cursor: pointer;
+        display: block;
+        margin: 10px;
+        padding: 10px;
+      }
+    </style>
   </head>
   <body data-track-location="Atrackt Debug Console">
+    <h1>Check the javascript console for more details!</h1>
     <a href='?debugTracking=true'>Show Debugging Console</a>
-    <div data-track-cat='one'>
-      <div data-track-cat='two'>
-        <div class="foo">Foo0</div>
-        <div class="foo">Foo1</div>
-        <div class="foo">Foo2</div>
-        <div class="foo">Foo3</div>
-        <div class="foo">Foo4</div>
-        <div class="foo">Foo5</div>
-        <div class="foo">Foo6</div>
-        <div class="foo">Foo7</div>
-        <div class="foo">Foo8</div>
-        <div class="foo">Foo8</div>
-        <div class="foo">Foo9</div>
-        <div class="foo">Foo10</div>
-        <div class="foo">Foo11</div>
-        <div class="foo">Foo12</div>
-        <div class="foo">Foo13</div>
-        <div class="foo">Foo14</div>
-        <div class="foo">Foo15</div>
-        <div class="foo">Foo16</div>
-        <div class="foo">Foo17</div>
-        <div class="foo">Foo18</div>
-        <div class="foo">Foo19</div>
-        <div class="foo">Foo20</div>
-        <div class="foo">Foo21</div>
-        <div class="foo">Foo22</div>
-        <div class="foo">Foo23</div>
-        <div class="foo">Foo24</div>
-        <div class="foo">Foo25</div>
-        <div class="foo">Foo26</div>
-        <div class="foo">Foo27</div>
-        <div class="foo">Foo28</div>
-        <div class="foo">Foo29</div>
-        <div class="foo">Foo30</div>
+    <div data-track-cat='Main'>
+      <a class="foo" id="custom">Custom Function</a>
+      <div data-track-cat='1st Set'>
+        <a class="foo">Foo1</a>
+        <a class="foo">Foo2</a>
+        <a class="foo">Foo3</a>
+        <a class="foo">Foo4</a>
+        <a class="foo">Foo5</a>
+      </div>
+      <div data-track-cat='2nd Set'>
+        <a class="foo">Foo6</a>
+        <a class="foo">Foo7</a>
+        <a class="foo">Foo8</a>
+        <a class="foo">Foo8</a>
+        <a class="foo">Foo9</a>
+        <a class="foo">Foo10</a>
+      </div>
+      <div data-track-cat='3rd Set'>
+        <a class="foo">Foo11</a>
+        <a class="foo">Foo12</a>
+        <a class="foo">Foo13</a>
+        <a class="foo">Foo14</a>
+        <a class="foo">Foo15</a>
       </div>
     </div>
   </body>

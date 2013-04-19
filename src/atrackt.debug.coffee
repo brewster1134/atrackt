@@ -64,9 +64,9 @@ $.extend window.Atrackt,
     @_getTrackObject $el
 
     _elId = @_debugElementId $el
-    $el.attr 'id', _elId
+    $el.attr 'data-atrackt-debug-id', _elId
 
-    $('<tr class="atrackt-element" id=' + _elId + '>
+    $('<tr class="atrackt-element" data-atrackt-debug-id="' + _elId + '">
       <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>
       <td class="atrackt-value">' + $el.data('track-object').value + '</td>
       <td class="atrackt-event">' + $el.data('track-object').event + '</td>
@@ -76,7 +76,7 @@ $.extend window.Atrackt,
 
     # errors:
     # if element with the same tracking information exists...
-    mathingEls = $('body #' + _elId)
+    mathingEls = $('body [data-atrackt-debug-id=' + _elId + ']')
     matchingConsoleEls = mathingEls.filter('.atrackt-element')
     matchingBodyEls = mathingEls.not('.atrackt-element')
 
