@@ -35,11 +35,11 @@ Atrackt Debugging Console
           padding: 5px; }\
         #atrackt-elements {\
           width: 100%; }\
-        .atrackt-element.error{\
-          background-color: red;\
-          color: white; }\
         body.atrackt-debug .highlight {\
           background-color: green !important;\
+          color: white !important; }\
+        body.atrackt-debug .atrackt-element.error{\
+          background-color: red !important;\
           color: white !important; }\
         </style>').appendTo('head');
         return $('<div id="atrackt-debug">\
@@ -47,9 +47,9 @@ Atrackt Debugging Console
             <div id="atrackt-location">Location: ' + _this._getLocation() + '</div>\
             <table class="table" id="atrackt-elements">\
               <thead><tr>\
+                <th>Plugin : Event</th>\
                 <th>Categories</th>\
                 <th>Value</th>\
-                <th>Event</th>\
                 <th>Error</th>\
               </tr></thead>\
               <tbody></tbody>\
@@ -58,28 +58,36 @@ Atrackt Debugging Console
         </div>').prependTo('body');
       });
     },
-    _debugEl: function($el) {
-      var matchingBodyEls, matchingConsoleEls, mathingEls, _elId;
+    _debugPluginEvent: function(plugin, event) {
+      return '<div>' + plugin + ' : ' + event + '</div>';
+    },
+    _debugEl: function($el, plugin, event) {
+      var elId, matchingBodyEls, matchingConsoleEls, mathingEls;
       this._getTrackObject($el);
-      _elId = this._debugElementId($el);
-      $el.attr('data-atrackt-debug-id', _elId);
-      $('<tr class="atrackt-element" data-atrackt-debug-id="' + _elId + '">\
-      <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>\
-      <td class="atrackt-value">' + $el.data('track-object').value + '</td>\
-      <td class="atrackt-event">' + $el.data('track-object').event + '</td>\
-      <td class="atrackt-error"></td>\
-      </tr>').appendTo('#atrackt-elements tbody');
-      mathingEls = $('body [data-atrackt-debug-id=' + _elId + ']');
+      elId = this._debugElementId($el);
+      $el.attr('data-atrackt-debug-id', elId);
+      matchingConsoleEls = $('body .atrackt-element[data-atrackt-debug-id=' + elId + ']');
+      if (matchingConsoleEls.length === 0) {
+        $('<tr class="atrackt-element" data-atrackt-debug-id="' + elId + '">\
+        <td class="atrackt-plugin-event">' + this._debugPluginEvent(plugin, event) + '</td>\
+        <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>\
+        <td class="atrackt-value">' + $el.data('track-object').value + '</td>\
+        <td class="atrackt-error"></td>\
+        </tr>').appendTo('#atrackt-elements tbody');
+      } else {
+        matchingConsoleEls.find('.atrackt-plugin-event').append(this._debugPluginEvent(plugin, event));
+      }
+      mathingEls = $('body [data-atrackt-debug-id=' + elId + ']');
       matchingConsoleEls = mathingEls.filter('.atrackt-element');
       matchingBodyEls = mathingEls.not('.atrackt-element');
       if (matchingBodyEls.length > 1) {
-        console.log('THERE ARE DUPLICATE ELEMENTS!', matchingBodyEls);
+        console.log('DUPLICATE ELEMENTS FOUND', matchingBodyEls);
         matchingConsoleEls.addClass('error');
         matchingConsoleEls.find('.atrackt-error').append('DUPLICATE');
       }
       matchingConsoleEls.hover(function() {
         $(this).add($el).addClass('highlight');
-        return $('body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
+        return $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
       }, function() {
         return $(this).add($el).removeClass('highlight');
       });
@@ -96,19 +104,15 @@ Atrackt Debugging Console
       });
     },
     _debugElementId: function($el) {
-      var idArray, _categories, _ctaValue, _event;
+      var idArray, _categories, _ctaValue;
       _categories = $el.data('track-object').categories;
       _ctaValue = $el.data('track-object').value;
-      _event = $el.data('track-object').event;
       idArray = [];
       if (_categories) {
         idArray.push(_categories);
       }
       if (_ctaValue) {
         idArray.push(_ctaValue);
-      }
-      if (_event) {
-        idArray.push(_event);
       }
       return idArray.join().toLowerCase().replace(/[^\w]/g, '');
     }

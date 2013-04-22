@@ -1,5 +1,6 @@
 ###
 Atrackt SiteCatalyst Plugin
+https://github.com/brewster1134/atrackt
 @author Ryan Brewster
 @version 0.0.1
 ###
@@ -22,13 +23,11 @@ window.Atrackt.registerPlugin 'siteCatalyst',
       linkName: '/'
       category: '|'
     propMap:
+      plugin      : 'plugin'
       location    : 'prop1'
       categories  : 'prop2'
       value       : 'prop3'
       event       : 'prop4'
-      # globalData
-      model       : 'prop20'
-      trimline    : 'prop30'
 
   # siteCatalyst specific
   buildSObject: (obj) ->

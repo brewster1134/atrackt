@@ -32,11 +32,11 @@ $.extend window.Atrackt,
           padding: 5px; }
         #atrackt-elements {
           width: 100%; }
-        .atrackt-element.error{
-          background-color: red;
-          color: white; }
         body.atrackt-debug .highlight {
           background-color: green !important;
+          color: white !important; }
+        body.atrackt-debug .atrackt-element.error{
+          background-color: red !important;
           color: white !important; }
         </style>'
       ).appendTo('head')
@@ -47,9 +47,9 @@ $.extend window.Atrackt,
             <div id="atrackt-location">Location: ' + @_getLocation() + '</div>
             <table class="table" id="atrackt-elements">
               <thead><tr>
+                <th>Plugin : Event</th>
                 <th>Categories</th>
                 <th>Value</th>
-                <th>Event</th>
                 <th>Error</th>
               </tr></thead>
               <tbody></tbody>
@@ -58,30 +58,40 @@ $.extend window.Atrackt,
         </div>'
       ).prependTo('body')
 
+  _debugPluginEvent: (plugin, event) ->
+    '<div>' + plugin + ' : ' + event + '</div>'
+
   # Add each tracked element to the console
-  _debugEl: ($el) ->
+  _debugEl: ($el, plugin, event) ->
     # set track-object since we want to show the data before it gets tracked.
     @_getTrackObject $el
 
-    _elId = @_debugElementId $el
-    $el.attr 'data-atrackt-debug-id', _elId
+    elId = @_debugElementId $el
 
-    $('<tr class="atrackt-element" data-atrackt-debug-id="' + _elId + '">
-      <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>
-      <td class="atrackt-value">' + $el.data('track-object').value + '</td>
-      <td class="atrackt-event">' + $el.data('track-object').event + '</td>
-      <td class="atrackt-error"></td>
-      </tr>'
-    ).appendTo('#atrackt-elements tbody')
+    # set debug id on element
+    $el.attr 'data-atrackt-debug-id', elId
 
-    # errors:
-    # if element with the same tracking information exists...
-    mathingEls = $('body [data-atrackt-debug-id=' + _elId + ']')
+    # create or append the matching console element
+    matchingConsoleEls = $('body .atrackt-element[data-atrackt-debug-id=' + elId + ']')
+    if matchingConsoleEls.length == 0
+      $('<tr class="atrackt-element" data-atrackt-debug-id="' + elId + '">
+        <td class="atrackt-plugin-event">' + @_debugPluginEvent(plugin, event) + '</td>
+        <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>
+        <td class="atrackt-value">' + $el.data('track-object').value + '</td>
+        <td class="atrackt-error"></td>
+        </tr>'
+      ).appendTo('#atrackt-elements tbody')
+    else
+      matchingConsoleEls.find('.atrackt-plugin-event').append(@_debugPluginEvent plugin, event)
+
+    mathingEls = $('body [data-atrackt-debug-id=' + elId + ']')
     matchingConsoleEls = mathingEls.filter('.atrackt-element')
     matchingBodyEls = mathingEls.not('.atrackt-element')
 
+    # errors:
+    # if element with the same tracking information exists...
     if matchingBodyEls.length > 1
-      console.log 'THERE ARE DUPLICATE ELEMENTS!', matchingBodyEls
+      console.log 'DUPLICATE ELEMENTS FOUND', matchingBodyEls
       matchingConsoleEls.addClass 'error'
       matchingConsoleEls.find('.atrackt-error').append('DUPLICATE')
 
@@ -90,7 +100,7 @@ $.extend window.Atrackt,
     matchingConsoleEls.hover ->
       $(@).add($el).addClass 'highlight'
 
-      $('body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20)
+      $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20)
     , ->
       $(@).add($el).removeClass 'highlight'
 
@@ -112,12 +122,10 @@ $.extend window.Atrackt,
   _debugElementId: ($el) ->
     _categories = $el.data('track-object').categories
     _ctaValue = $el.data('track-object').value
-    _event = $el.data('track-object').event
 
     idArray = []
     idArray.push _categories if _categories
     idArray.push _ctaValue if _ctaValue
-    idArray.push _event if _event
 
     idArray.join().toLowerCase().replace(/[^\w]/g, '')
 

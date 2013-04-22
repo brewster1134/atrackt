@@ -1,5 +1,6 @@
 ###
 Atrackt Tracking Library
+https://github.com/brewster1134/atrackt
 @version 0.4.0
 @author Ryan Brewster
 ###
@@ -11,41 +12,48 @@ window.Atrackt =
   plugins: {}
 
   registerPlugin: (name, attrs) ->
-    return console.log "NO SEND METHOD DEFINED!" unless typeof attrs.send is 'function'
+    return console.log "NO SEND METHOD DEFINED" unless typeof attrs.send is 'function'
     console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
 
     # Create bindEvents method
     attrs.bindEvents = (eventsObject) =>
       attrs.events = eventsObject
       $ =>
-        @_bindEvents eventsObject
+        @_bindEvents name, eventsObject
 
     attrs.setOptions = (options) ->
       pluginOptions = attrs.options || {}
-      attrs.options = $.extend pluginOptions, options
+      attrs.options = $.extend true, pluginOptions, options
 
     # set plugin to global plugins object
     @plugins[name] = attrs
 
   track: (data, event) ->
     for pluginName, pluginData of @plugins
-      trackObject = @_getTrackObject data,
-        plugin: pluginName
 
       if data instanceof jQuery
-        # check that the click event is supported and the element matches the selectors for the plugin
-        if !event? || ( selectors = pluginData.events[event] && data.is(selectors?.join(','))? )
-          pluginData.send trackObject
+        # check the event is in the plugin's event namespace
+        if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
+          pluginData.send @_getTrackObject data,
+            event:  event?.type
+            plugin: pluginName
 
       else if data instanceof Object
-        pluginData.send trackObject
+        pluginData.send @_getTrackObject data,
+          plugin: pluginName
     true
 
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
   refresh: ->
+    # unbind all atrackt events form all elements
+    $('*').off '.atrackt'
+
+    $('#atrackt-elements tbody').empty() if @_debug?()
+
     for pluginName, pluginData of @plugins
-      @_bindEvents pluginData.events
+      @_bindEvents pluginName, pluginData.events
+
     true
 
   # builds the object to be passed to the custom send method
@@ -57,19 +65,19 @@ window.Atrackt =
         location: @_getLocation()
         categories: @_getCategories $el
         value: @_getValue $el
-        event: @_getEvent $el
+
+      $.extend $el.data('track-object'), additionalData
 
       # run the custom function if its available (and pass in current data)
       $el.data('track-function')? $el.data 'track-object'
 
       $el.data 'track-object'
+
     else if data instanceof Object
       $.extend data,
         location: @_getLocation()
       data
 
-    if trackObject
-      $.extend trackObject, additionalData
     else
       console.log 'DATA IS NOT TRACKABLE', data
       false
@@ -92,32 +100,26 @@ window.Atrackt =
   _getValue: ($el) ->
     $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class')
 
-  _getEvent: ($el) ->
-    $el.data('track-event')
-
   # bind events based on custom events object
-  _bindEvents: (eventsObject) ->
+  _bindEvents: (plugin, eventsObject) ->
     return false unless eventsObject
 
-    for eventType, selectorArray of eventsObject
+    for event, selectorArray of eventsObject
       selectors = $(selectorArray.join(','))
-
-      selectors.each (index, selector) ->
-        $(selector).data 'track-event', eventType
 
       if $(document).livequery?
         selectors.livequery ->
-          Atrackt._initEl $(@)
+          Atrackt._initEl $(@), plugin, event
       else
         selectors.each ->
-          Atrackt._initEl $(@)
+          Atrackt._initEl $(@), plugin, event
 
   # bind an individual element
-  _initEl: ($el) ->
-    $el.on @_getEvent($el), (e) ->
-      Atrackt.track $el, e.type
+  _initEl: ($el, plugin, event) ->
+    $el.on "#{event}.atrackt.#{plugin}", (e) ->
+      Atrackt.track $el, e
 
-    @_debugEl $el if @_debug?()
+    @_debugEl $el, plugin, event if @_debug?()
 
   # build an object of url paramaters.
   # @param pass an optional key to just return that value
@@ -131,5 +133,3 @@ window.Atrackt =
       params[key]
     else
       params
-
-Atrackt.refresh()

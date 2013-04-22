@@ -5,21 +5,18 @@ describe 'Atrackt', ->
     expect(window.Atrackt).to.exist
 
   describe '#registerPlugin', ->
-    elFoo = null
+    fooEl = null
     fooPlugin = null
     fooSpy = null
 
-    elBar = null
+    barEl = null
     barPlugin = null
     barSpy = null
 
     before ->
-      $('body').append(
-        '<a class="foo"></a>'
-        '<a class="bar"></a>'
-      )
-      elFoo = $('a.foo')
-      elBar = $('a.bar')
+      fooEl = $('<a class="foo"></a>')
+      barEl = $('<a class="bar"></a>')
+      $('body').append(fooEl, barEl)
 
       Atrackt.plugins = {}
       Atrackt.registerPlugin 'fooPlugin',
@@ -39,7 +36,6 @@ describe 'Atrackt', ->
     after ->
       fooSpy.restore()
       barSpy.restore()
-      $('a').off 'click'
 
     it 'should add an object to plugins', ->
       expect(Atrackt.plugins['fooPlugin'].send).to.be.a 'function'
@@ -53,11 +49,11 @@ describe 'Atrackt', ->
           hover: [ 'a.bar' ]
 
       it 'should bind events', ->
-        expect(Object.keys($._data(elFoo[0]).events)).to.have.length 1
-        expect($._data(elFoo[0]).events.click).to.exist
+        expect(Object.keys($._data(fooEl[0]).events)).to.have.length 1
+        expect($._data(fooEl[0]).events.click).to.exist
 
-        expect(Object.keys($._data(elBar[0]).events)).to.have.length 1
-        expect($._data(elBar[0]).events.hover).to.exist
+        expect(Object.keys($._data(barEl[0]).events)).to.have.length 1
+        expect($._data(barEl[0]).events.hover).to.exist
 
       it 'should track only events from the foo plugin', ->
         $('a').trigger 'click'
@@ -166,18 +162,10 @@ describe 'Atrackt', ->
       it 'should return a value', ->
         expect(Atrackt._getValue(el)).to.equal 'foo'
 
-    describe '#_getEvent', ->
-      before ->
-        el = $('<a data-track-event="fooEvent"></a>')
-
-      it 'should return a value', ->
-        expect(Atrackt._getEvent(el)).to.equal 'fooEvent'
-
     describe '#_initEl', ->
       before ->
         el = $('<a></a>')
-        el.data 'track-event', 'foo'
-        Atrackt._initEl el
+        Atrackt._initEl el, 'testPlugin', 'foo'
 
       it 'should bind default event to element', ->
         expect($._data(el[0], 'events').foo).to.exist

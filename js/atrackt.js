@@ -2,6 +2,7 @@
 
 /*
 Atrackt Tracking Library
+https://github.com/brewster1134/atrackt
 @version 0.4.0
 @author Ryan Brewster
 */
@@ -20,46 +21,52 @@ Atrackt Tracking Library
     registerPlugin: function(name, attrs) {
       var _this = this;
       if (typeof attrs.send !== 'function') {
-        return console.log("NO SEND METHOD DEFINED!");
+        return console.log("NO SEND METHOD DEFINED");
       }
       console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
       attrs.bindEvents = function(eventsObject) {
         attrs.events = eventsObject;
         return $(function() {
-          return _this._bindEvents(eventsObject);
+          return _this._bindEvents(name, eventsObject);
         });
       };
       attrs.setOptions = function(options) {
         var pluginOptions;
         pluginOptions = attrs.options || {};
-        return attrs.options = $.extend(pluginOptions, options);
+        return attrs.options = $.extend(true, pluginOptions, options);
       };
       return this.plugins[name] = attrs;
     },
     track: function(data, event) {
-      var pluginData, pluginName, selectors, trackObject, _ref;
+      var pluginData, pluginName, _ref;
       _ref = this.plugins;
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        trackObject = this._getTrackObject(data, {
-          plugin: pluginName
-        });
         if (data instanceof jQuery) {
-          if (!(event != null) || (selectors = pluginData.events[event] && (data.is(selectors != null ? selectors.join(',') : void 0) != null))) {
-            pluginData.send(trackObject);
+          if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
+            pluginData.send(this._getTrackObject(data, {
+              event: event != null ? event.type : void 0,
+              plugin: pluginName
+            }));
           }
         } else if (data instanceof Object) {
-          pluginData.send(trackObject);
+          pluginData.send(this._getTrackObject(data, {
+            plugin: pluginName
+          }));
         }
       }
       return true;
     },
     refresh: function() {
       var pluginData, pluginName, _ref;
+      $('*').off('.atrackt');
+      if (typeof this._debug === "function" ? this._debug() : void 0) {
+        $('#atrackt-elements tbody').empty();
+      }
       _ref = this.plugins;
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        this._bindEvents(pluginData.events);
+        this._bindEvents(pluginName, pluginData.events);
       }
       return true;
     },
@@ -68,20 +75,13 @@ Atrackt Tracking Library
       if (additionalData == null) {
         additionalData = {};
       }
-      trackObject = data instanceof jQuery ? ($el = data, $el.data('track-object', {
+      return trackObject = data instanceof jQuery ? ($el = data, $el.data('track-object', {
         location: this._getLocation(),
         categories: this._getCategories($el),
-        value: this._getValue($el),
-        event: this._getEvent($el)
-      }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+        value: this._getValue($el)
+      }), $.extend($el.data('track-object'), additionalData), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
         location: this._getLocation()
-      }), data) : void 0;
-      if (trackObject) {
-        return $.extend(trackObject, additionalData);
-      } else {
-        console.log('DATA IS NOT TRACKABLE', data);
-        return false;
-      }
+      }), data) : (console.log('DATA IS NOT TRACKABLE', data), false);
     },
     _getLocation: function() {
       return $('body').data('track-location') || $(document).attr('title') || document.URL;
@@ -100,39 +100,33 @@ Atrackt Tracking Library
     _getValue: function($el) {
       return $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class');
     },
-    _getEvent: function($el) {
-      return $el.data('track-event');
-    },
-    _bindEvents: function(eventsObject) {
-      var eventType, selectorArray, selectors, _results;
+    _bindEvents: function(plugin, eventsObject) {
+      var event, selectorArray, selectors, _results;
       if (!eventsObject) {
         return false;
       }
       _results = [];
-      for (eventType in eventsObject) {
-        selectorArray = eventsObject[eventType];
+      for (event in eventsObject) {
+        selectorArray = eventsObject[event];
         selectors = $(selectorArray.join(','));
-        selectors.each(function(index, selector) {
-          return $(selector).data('track-event', eventType);
-        });
         if ($(document).livequery != null) {
           _results.push(selectors.livequery(function() {
-            return Atrackt._initEl($(this));
+            return Atrackt._initEl($(this), plugin, event);
           }));
         } else {
           _results.push(selectors.each(function() {
-            return Atrackt._initEl($(this));
+            return Atrackt._initEl($(this), plugin, event);
           }));
         }
       }
       return _results;
     },
-    _initEl: function($el) {
-      $el.on(this._getEvent($el), function(e) {
-        return Atrackt.track($el, e.type);
+    _initEl: function($el, plugin, event) {
+      $el.on("" + event + ".atrackt." + plugin, function(e) {
+        return Atrackt.track($el, e);
       });
       if (typeof this._debug === "function" ? this._debug() : void 0) {
-        return this._debugEl($el);
+        return this._debugEl($el, plugin, event);
       }
     },
     _urlParams: function(key) {
@@ -154,7 +148,5 @@ Atrackt Tracking Library
       }
     }
   };
-
-  Atrackt.refresh();
 
 }).call(this);

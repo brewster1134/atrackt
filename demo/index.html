@@ -5,15 +5,23 @@
     <script src="../js/atrackt.debug.js"></script>
     <script>
       // Register a new plugin called 'test' that just logs to the console.
-      Atrackt.registerPlugin('test', {
+      Atrackt.registerPlugin('fooPlugin', {
         send: function(obj) {
-          console.log('TRACK', obj)
+          console.log('TRACK FOO', obj)
+        }
+      });
+      Atrackt.registerPlugin('barPlugin', {
+        send: function(obj) {
+          console.log('TRACK BAR', obj)
         }
       });
 
       // Binding click events to all anchor elements with the class 'foo'
-      Atrackt.plugins['test'].bindEvents({
+      Atrackt.plugins['fooPlugin'].bindEvents({
         click: ['a.foo']
+      });
+      Atrackt.plugins['barPlugin'].bindEvents({
+        click: ['a.bar']
       });
 
       // Adding a custom function
@@ -28,7 +36,7 @@
       body {
         text-align: center;
       }
-      a.foo {
+      a {
         cursor: pointer;
         display: block;
         margin: 10px;
@@ -45,23 +53,23 @@
         <a class="foo">Foo1</a>
         <a class="foo">Foo2</a>
         <a class="foo">Foo3</a>
+        <a class="foo">Foo3</a>
         <a class="foo">Foo4</a>
         <a class="foo">Foo5</a>
       </div>
       <div data-track-cat='2nd Set'>
-        <a class="foo">Foo6</a>
-        <a class="foo">Foo7</a>
-        <a class="foo">Foo8</a>
-        <a class="foo">Foo8</a>
-        <a class="foo">Foo9</a>
-        <a class="foo">Foo10</a>
+        <a class="bar">Bar1</a>
+        <a class="bar">Bar2</a>
+        <a class="bar">Bar3</a>
+        <a class="bar">Bar4</a>
+        <a class="bar">Bar5</a>
       </div>
       <div data-track-cat='3rd Set'>
-        <a class="foo">Foo11</a>
-        <a class="foo">Foo12</a>
-        <a class="foo">Foo13</a>
-        <a class="foo">Foo14</a>
-        <a class="foo">Foo15</a>
+        <a class="foo bar">FooBar1</a>
+        <a class="foo bar">FooBar2</a>
+        <a class="foo bar">FooBar3</a>
+        <a class="foo bar">FooBar4</a>
+        <a class="foo bar">FooBar5</a>
       </div>
     </div>
   </body>

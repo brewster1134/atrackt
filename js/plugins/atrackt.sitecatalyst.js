@@ -2,6 +2,7 @@
 
 /*
 Atrackt SiteCatalyst Plugin
+https://github.com/brewster1134/atrackt
 @author Ryan Brewster
 @version 0.0.1
 */
@@ -29,12 +30,11 @@ Atrackt SiteCatalyst Plugin
         category: '|'
       },
       propMap: {
+        plugin: 'plugin',
         location: 'prop1',
         categories: 'prop2',
         value: 'prop3',
-        event: 'prop4',
-        model: 'prop20',
-        trimline: 'prop30'
+        event: 'prop4'
       }
     },
     buildSObject: function(obj) {
