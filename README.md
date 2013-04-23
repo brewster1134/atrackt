@@ -118,9 +118,14 @@ Atrackt.plugins['testPlugin'].unbind
   hover: ['a', 'button' ]
 ```
 
-If you would like your plugin to accept custom objects, you can call the `setOptions` method.  If your plugin already has an options object, custom options well simply extend over them.
+If you need your plugin to accept custom options, you can call the `setOptions` method.  This will be available in your plugin under the key `options`.  If your plugin already has default options, the custom options well simply extend over them.
 
 ```coffee
+Atrackt.registerPlugin 'testPlugin',
+  send: ->
+  options:
+    foo: 'foo'
+
 Atrackt.plugins['testPlugin'].setOptions
   foo: 'bar'
 ```
