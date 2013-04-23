@@ -109,11 +109,11 @@ Atrackt.plugins['testPlugin'].bind
 The same options are available to `unbind` elements.
 
 ```coffee
-Atrackt.plugins['testPlugin'].unbind
+Atrackt.unbind
   click: ['a']
   hover: ['a', 'button' ]
 
-Atrackt.unbind
+Atrackt.plugins['testPlugin'].unbind
   click: ['a']
   hover: ['a', 'button' ]
 ```
