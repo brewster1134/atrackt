@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.4.0
+@version 0.0.5
 @author Ryan Brewster
 */
 
@@ -20,7 +20,7 @@ https://github.com/brewster1134/atrackt
     plugins: {},
     registerPlugin: function(name, attrs) {
       var _this = this;
-      if (typeof attrs.send !== 'function') {
+      if (typeof (attrs != null ? attrs.send : void 0) !== 'function') {
         return console.log("NO SEND METHOD DEFINED");
       }
       console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
@@ -30,12 +30,51 @@ https://github.com/brewster1134/atrackt
           return _this._bindEvents(name, eventsObject);
         });
       };
+      attrs.unbindEvents = function(eventsObject) {
+        return $(function() {
+          return _this._unbindEvents(name, eventsObject);
+        });
+      };
       attrs.setOptions = function(options) {
         var pluginOptions;
         pluginOptions = attrs.options || {};
         return attrs.options = $.extend(true, pluginOptions, options);
       };
       return this.plugins[name] = attrs;
+    },
+    bindEvents: function(eventsObject) {
+      var pluginData, pluginName, _ref, _results;
+      _ref = this.plugins;
+      _results = [];
+      for (pluginName in _ref) {
+        pluginData = _ref[pluginName];
+        _results.push(pluginData.bindEvents(eventsObject));
+      }
+      return _results;
+    },
+    unbindEvents: function(plugin, eventsObject) {
+      var event, eventName, selectorArray, selectors, _results;
+      eventName = '.atrackt';
+      selectors = $('*');
+      if (plugin != null) {
+        if (typeof plugin === 'object') {
+          eventsObject = plugin;
+        } else {
+          eventName = eventName.concat("." + plugin);
+        }
+      }
+      if (eventsObject != null) {
+        _results = [];
+        for (event in eventsObject) {
+          selectorArray = eventsObject[event];
+          selectors = $(selectorArray.join(','));
+          eventName = event.concat(eventName);
+          _results.push(this._unbindEvents(selectors, eventName));
+        }
+        return _results;
+      } else {
+        return this._unbindEvents(selectors, eventName);
+      }
     },
     track: function(data, event) {
       var pluginData, pluginName, _ref;
@@ -59,10 +98,10 @@ https://github.com/brewster1134/atrackt
     },
     refresh: function() {
       var pluginData, pluginName, _ref;
-      $('*').off('.atrackt');
       if (typeof this._debug === "function" ? this._debug() : void 0) {
         $('#atrackt-elements tbody').empty();
       }
+      $('*').off('.atrackt');
       _ref = this.plugins;
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
@@ -120,6 +159,12 @@ https://github.com/brewster1134/atrackt
         }
       }
       return _results;
+    },
+    _unbindEvents: function(selectors, eventName) {
+      selectors.off(eventName);
+      if ($(document).livequery != null) {
+        return selectors.livequery.expire(eventName);
+      }
     },
     _initEl: function($el, plugin, event) {
       $el.on("" + event + ".atrackt." + plugin, function(e) {

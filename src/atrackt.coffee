@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.4.0
+@version 0.0.5
 @author Ryan Brewster
 ###
 
@@ -12,7 +12,7 @@ window.Atrackt =
   plugins: {}
 
   registerPlugin: (name, attrs) ->
-    return console.log "NO SEND METHOD DEFINED" unless typeof attrs.send is 'function'
+    return console.log "NO SEND METHOD DEFINED" unless typeof attrs?.send is 'function'
     console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
 
     # Create bindEvents method
@@ -21,12 +21,49 @@ window.Atrackt =
       $ =>
         @_bindEvents name, eventsObject
 
+    attrs.unbindEvents = (eventsObject) =>
+      $ =>
+        @_unbindEvents name, eventsObject
+
     attrs.setOptions = (options) ->
       pluginOptions = attrs.options || {}
       attrs.options = $.extend true, pluginOptions, options
 
     # set plugin to global plugins object
     @plugins[name] = attrs
+
+  bindEvents: (eventsObject) ->
+    for pluginName, pluginData of @plugins
+      pluginData.bindEvents eventsObject
+
+  # Used to unbind any combination of events/jquery selectors and plugins.
+  # You can pass a plugin name, an events object, or both.
+  # If both are used, pass the plugin name in first.
+  # If no arguments are passed, ALL selectors for ALL plugins are unbound
+  #
+  # @param plugin [String] name of plugin *optional
+  # @param eventsObject [Object] *optional
+  #
+  unbindEvents: (plugin, eventsObject) ->
+    eventName = '.atrackt'
+    selectors = $('*')
+
+    # if plugin param is an object, set it as the events object, otherwise set the event name to include the plugin namespace
+    if plugin?
+      if typeof plugin is 'object'
+        eventsObject = plugin
+      else
+        eventName = eventName.concat ".#{plugin}"
+
+    # if eventsObject is set, loop through and unbind all those events with the eventName
+    if eventsObject?
+      for event, selectorArray of eventsObject
+        selectors = $(selectorArray.join(','))
+        eventName = event.concat eventName
+
+        @_unbindEvents selectors, eventName
+    else
+      @_unbindEvents selectors, eventName
 
   track: (data, event) ->
     for pluginName, pluginData of @plugins
@@ -46,11 +83,13 @@ window.Atrackt =
   # looks through the dom and re-binds any trackable elements.
   # this is helpful if you are not using livequery and add new elements to the dom via ajax
   refresh: ->
+    # clear the debugging console if debugging is enabled
+    $('#atrackt-elements tbody').empty() if @_debug?()
+
     # unbind all atrackt events form all elements
     $('*').off '.atrackt'
 
-    $('#atrackt-elements tbody').empty() if @_debug?()
-
+    # loop through the plugins and re-bind the registered events/elements
     for pluginName, pluginData of @plugins
       @_bindEvents pluginName, pluginData.events
 
@@ -113,6 +152,13 @@ window.Atrackt =
       else
         selectors.each ->
           Atrackt._initEl $(@), plugin, event
+
+  # unbind events based on custom events object
+  _unbindEvents: (selectors, eventName) ->
+    selectors.off eventName
+
+    if $(document).livequery?
+      selectors.livequery.expire eventName
 
   # bind an individual element
   _initEl: ($el, plugin, event) ->
