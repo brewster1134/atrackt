@@ -13,11 +13,11 @@ describe 'Atrackt', ->
     it 'should add the plugin object to global plugins', ->
       expect(Atrackt.plugins['plugin']).to.exist
 
-    it 'should create a bindEvents function', ->
-      expect(Atrackt.plugins['plugin'].bindEvents).to.be.a 'function'
+    it 'should create a bind function', ->
+      expect(Atrackt.plugins['plugin'].bind).to.be.a 'function'
 
-    it 'should create a unbindEvents function', ->
-      expect(Atrackt.plugins['plugin'].unbindEvents).to.be.a 'function'
+    it 'should create a unbind function', ->
+      expect(Atrackt.plugins['plugin'].unbind).to.be.a 'function'
 
     it 'should create a setOptions function', ->
       expect(Atrackt.plugins['plugin'].setOptions).to.be.a 'function'
@@ -37,12 +37,12 @@ describe 'Atrackt', ->
     fooEl = null
     fooPlugin = null
     fooSendSpy = null
-    fooBindEventsSpy = null
+    fooBindSpy = null
 
     barEl = null
     barPlugin = null
     barSendSpy = null
-    barBindEventsSpy = null
+    barBindSpy = null
 
     before ->
       Atrackt.registerPlugin 'fooPlugin',
@@ -56,33 +56,33 @@ describe 'Atrackt', ->
       barPlugin = Atrackt.plugins['barPlugin']
       fooSendSpy = sinon.spy fooPlugin, 'send'
       barSendSpy = sinon.spy barPlugin, 'send'
-      fooBindEventsSpy = sinon.spy fooPlugin, 'bindEvents'
-      barBindEventsSpy = sinon.spy barPlugin, 'bindEvents'
+      fooBindSpy = sinon.spy fooPlugin, 'bind'
+      barBindSpy = sinon.spy barPlugin, 'bind'
 
       $('body').append(fooEl, barEl)
 
     afterEach ->
       fooSendSpy.reset()
       barSendSpy.reset()
-      fooBindEventsSpy.reset()
-      barBindEventsSpy.reset()
+      fooBindSpy.reset()
+      barBindSpy.reset()
 
     after ->
       Atrackt.plugins = {}
       fooSendSpy.restore()
       barSendSpy.restore()
-      fooBindEventsSpy.restore()
-      barBindEventsSpy.restore()
+      fooBindSpy.restore()
+      barBindSpy.restore()
 
-    describe '#bindEvents', ->
+    describe '#bind', ->
       before ->
-        Atrackt.bindEvents
+        Atrackt.bind
           click: [ 'a.test' ]
           hover: [ 'a.test' ]
 
       it 'should call bind events on all plugins', ->
-        expect(fooBindEventsSpy).to.be.called.once
-        expect(barBindEventsSpy).to.be.called.once
+        expect(fooBindSpy).to.be.called.once
+        expect(barBindSpy).to.be.called.once
 
       it 'should bind events on all plugins', ->
         expect($._data(fooEl[0]).events.click).to.have.length 2
@@ -94,9 +94,9 @@ describe 'Atrackt', ->
         before ->
           $('*').off '.atrackt'
 
-          fooPlugin.bindEvents
+          fooPlugin.bind
             click: [ 'a.foo' ]
-          barPlugin.bindEvents
+          barPlugin.bind
             hover: [ 'a.bar' ]
 
         it 'should bind events', ->
@@ -115,34 +115,34 @@ describe 'Atrackt', ->
           expect(fooSendSpy).to.not.be.called
           expect(barSendSpy).to.be.called.once
 
-    describe '#unbindEvents', ->
+    describe '#unbind', ->
       beforeEach ->
         $('a.test').off '.atrackt'
 
-        Atrackt.bindEvents
+        Atrackt.bind
           click: [ 'a.foo' ]
           hover: [ 'a.foo' ]
 
       it 'should unbind all events from all plugins', ->
-        Atrackt.unbindEvents()
+        Atrackt.unbind()
 
         expect($._data(fooEl[0]).events).to.not.exist
 
       it 'should unbind all events from a specific plugin', ->
-        Atrackt.unbindEvents 'fooPlugin'
+        Atrackt.plugins['fooPlugin'].unbind()
 
         expect($._data(fooEl[0]).events.click).to.have.length 1
         expect($._data(fooEl[0]).events.hover).to.have.length 1
 
       it 'should unbind specific events from all plugins', ->
-        Atrackt.unbindEvents
+        Atrackt.unbind
           click: [ 'a.test' ]
 
         expect($._data(fooEl[0]).events?.click).to.not.exist
         expect($._data(fooEl[0]).events.hover).to.have.length 2
 
       it 'should unbind specific events from a specific plugin', ->
-        Atrackt.unbindEvents 'fooPlugin'
+        Atrackt.plugins['fooPlugin'].unbind
           click: [ 'a.test' ]
 
         expect($._data(fooEl[0]).events.click).to.have.length 1
@@ -197,12 +197,12 @@ describe 'Atrackt', ->
       before ->
         el = $('<a class="refresh"></a>')
         $(document.body).append(el)
-        Atrackt.bindEvents
+        Atrackt.bind
           click: [ 'a.refresh' ]
         Atrackt.refresh()
 
       after ->
-        Atrackt.unbindEvents
+        Atrackt.unbind
           click: [ 'a.refresh' ]
 
       it 'should bind default event to default elements on the dom', ->
