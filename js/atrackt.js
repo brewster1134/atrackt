@@ -18,22 +18,23 @@ https://github.com/brewster1134/atrackt
 
   window.Atrackt = {
     plugins: {},
-    registerPlugin: function(name, attrs) {
+    registerPlugin: function(pluginName, attrs) {
       var _this = this;
       if (typeof (attrs != null ? attrs.send : void 0) !== 'function') {
         return console.log("NO SEND METHOD DEFINED");
       }
-      console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
-      attrs.events || (attrs.events = {});
+      console.log('ATRACKT PLUGIN REGISTERED', pluginName, attrs);
+      attrs.include || (attrs.include = {});
+      attrs.exclude || (attrs.exclude = {});
       attrs.bind = function(eventsObject) {
         var currentSelectors, event, selectors;
         for (event in eventsObject) {
           selectors = eventsObject[event];
-          currentSelectors = attrs.events[event] || [];
-          attrs.events[event] = _.union(currentSelectors, selectors);
+          currentSelectors = attrs.include[event] || [];
+          attrs.include[event] = _.union(currentSelectors, selectors);
         }
         return $(function() {
-          return _this._bind(name, eventsObject);
+          return _this._bind(pluginName);
         });
       };
       attrs.unbind = function(eventsObject) {
@@ -41,25 +42,26 @@ https://github.com/brewster1134/atrackt
         if (eventsObject != null) {
           for (event in eventsObject) {
             selectors = eventsObject[event];
-            currentSelectors = attrs.events[event] || [];
-            attrs.events[event] = _.difference(currentSelectors, selectors);
-            if (attrs.events[event].length === 0) {
-              delete attrs.events[event];
-            }
+            currentSelectors = attrs.exclude[event] || [];
+            attrs.exclude[event] = _.union(currentSelectors, selectors);
           }
+          return $(function() {
+            return _this._unbind(pluginName, attrs.exclude);
+          });
         } else {
-          attrs.events = {};
+          attrs.include = {};
+          attrs.exclude = {};
+          return $(function() {
+            return _this._unbind(pluginName);
+          });
         }
-        return $(function() {
-          return _this._unbind(name, eventsObject);
-        });
       };
       attrs.setOptions = function(options) {
         var pluginOptions;
         pluginOptions = attrs.options || {};
         return attrs.options = $.extend(true, pluginOptions, options);
       };
-      return this.plugins[name] = attrs;
+      return this.plugins[pluginName] = attrs;
     },
     bind: function(eventsObject) {
       var pluginData, pluginName, _ref, _results;
@@ -90,7 +92,7 @@ https://github.com/brewster1134/atrackt
       _ref = this.plugins;
       for (pluginName in _ref) {
         pluginData = _ref[pluginName];
-        this._bind(pluginName, pluginData.events);
+        this._bind(pluginName, pluginData.include);
       }
       return true;
     },
@@ -114,15 +116,16 @@ https://github.com/brewster1134/atrackt
       }
       return true;
     },
-    _bind: function(plugin, eventsObject) {
-      var event, selectorArray, selectors, _results;
-      if (!eventsObject) {
-        return false;
-      }
+    _bind: function(plugin) {
+      var event, excludeObject, excludeSelectors, includeObject, selectorArray, selectors, _results;
+      this._unbind(plugin);
+      includeObject = this.plugins[plugin].include;
+      excludeObject = this.plugins[plugin].exclude;
       _results = [];
-      for (event in eventsObject) {
-        selectorArray = eventsObject[event];
-        selectors = $(selectorArray.join(','));
+      for (event in includeObject) {
+        selectorArray = includeObject[event];
+        excludeSelectors = (excludeObject[event] || []).join(',');
+        selectors = $(selectorArray.join(',')).not(excludeSelectors);
         if ($(document).livequery != null) {
           _results.push(selectors.livequery(function() {
             return Atrackt._initEl($(this), plugin, event);
@@ -146,7 +149,7 @@ https://github.com/brewster1134/atrackt
     _unbind: function(plugin, eventsObject) {
       var event, eventName, selectorArray, selectors, _results;
       eventName = ".atrackt." + plugin;
-      selectors = $('*');
+      selectors = $('*', 'body');
       if (eventsObject != null) {
         _results = [];
         for (event in eventsObject) {
@@ -163,7 +166,6 @@ https://github.com/brewster1134/atrackt
     _uninitEls: function(selectors, event) {
       $(selectors).off(event);
       if ($(document).livequery != null) {
-        console.log(selectors);
         $(selectors).expire(event);
       }
       if (typeof this._debug === "function" ? this._debug() : void 0) {

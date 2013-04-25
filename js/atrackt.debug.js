@@ -104,16 +104,20 @@ Atrackt Debugging Console
       });
     },
     _debugRemoveEls: function(selectors) {
-      var _this = this;
+      var debug;
+      debug = this;
       return $(selectors).each(function() {
         var elId;
-        elId = _this._debugElementId($(_this));
+        elId = debug._debugElementId($(this));
         $('body #atrackt-debug [data-atrackt-debug-id=' + elId + ']').remove;
         return $('body [data-atrackt-debug-id=' + elId + ']').removeAttr('data-atrackt-debug-id');
       });
     },
     _debugElementId: function($el) {
       var idArray, _categories, _ctaValue;
+      if ($el.data('track-object') == null) {
+        return false;
+      }
       _categories = $el.data('track-object').categories;
       _ctaValue = $el.data('track-object').value;
       idArray = [];

@@ -14,36 +14,39 @@ window.Atrackt =
   # PUBLIC METHODS
   #
 
-  registerPlugin: (name, attrs) ->
+  registerPlugin: (pluginName, attrs) ->
     return console.log "NO SEND METHOD DEFINED" unless typeof attrs?.send is 'function'
-    console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
-    attrs.events ||= {}
+    console.log 'ATRACKT PLUGIN REGISTERED', pluginName, attrs
+    attrs.include ||= {}
+    attrs.exclude ||= {}
 
     # Create bind method
     attrs.bind = (eventsObject) =>
       for event, selectors of eventsObject
-        currentSelectors = attrs.events[event] || []
-        attrs.events[event] = _.union currentSelectors, selectors
+        currentSelectors = attrs.include[event] || []
+        attrs.include[event] = _.union currentSelectors, selectors
       $ =>
-        @_bind name, eventsObject
+        @_bind pluginName
 
     attrs.unbind = (eventsObject) =>
       if eventsObject?
         for event, selectors of eventsObject
-          currentSelectors = attrs.events[event] || []
-          attrs.events[event] = _.difference currentSelectors, selectors
-          delete attrs.events[event] if attrs.events[event].length == 0
+          currentSelectors = attrs.exclude[event] || []
+          attrs.exclude[event] = _.union currentSelectors, selectors
+        $ =>
+          @_unbind pluginName, attrs.exclude
       else
-        attrs.events = {}
-      $ =>
-        @_unbind name, eventsObject
+        attrs.include = {}
+        attrs.exclude = {}
+        $ =>
+          @_unbind pluginName
 
     attrs.setOptions = (options) ->
       pluginOptions = attrs.options || {}
       attrs.options = $.extend true, pluginOptions, options
 
     # set plugin to global plugins object
-    @plugins[name] = attrs
+    @plugins[pluginName] = attrs
 
   bind: (eventsObject) ->
     for pluginName, pluginData of @plugins
@@ -64,7 +67,7 @@ window.Atrackt =
 
     # loop through the plugins and re-bind the registered events/elements
     for pluginName, pluginData of @plugins
-      @_bind pluginName, pluginData.events
+      @_bind pluginName, pluginData.include
 
     true
 
@@ -86,12 +89,18 @@ window.Atrackt =
   # PRIVATE METHODS
   #
 
-  # bind events based on custom events object
-  _bind: (plugin, eventsObject) ->
-    return false unless eventsObject
+  # Bind events to elements based on custom events object
+  _bind: (plugin) ->
+    # clear all existing event bindings so events don't fire twice if it has already been bound
+    @_unbind plugin
 
-    for event, selectorArray of eventsObject
-      selectors = $(selectorArray.join(','))
+    includeObject = @plugins[plugin].include
+    excludeObject = @plugins[plugin].exclude
+
+    for event, selectorArray of includeObject
+      # match all the include selectors and remove the excluded ones
+      excludeSelectors = (excludeObject[event] || []).join(',')
+      selectors = $(selectorArray.join(',')).not(excludeSelectors)
 
       if $(document).livequery?
         selectors.livequery ->
@@ -107,7 +116,7 @@ window.Atrackt =
 
     @_debugEl $el, plugin, event if @_debug?()
 
-  # Used to unbind any combination of events/jquery selectors and plugins.
+  # Unbind any combination of events/jquery selectors and plugins.
   # You can pass a plugin name, an events object, or both.
   # If both are used, pass the plugin name in first.
   # If no arguments are passed, ALL selectors for ALL plugins are unbound
@@ -117,7 +126,7 @@ window.Atrackt =
   #
   _unbind: (plugin, eventsObject) ->
     eventName = ".atrackt.#{plugin}"
-    selectors = $('*')
+    selectors = $('*', 'body')
 
     # if eventsObject is set, loop through and unbind all those events with the event
     if eventsObject?
@@ -134,7 +143,6 @@ window.Atrackt =
     $(selectors).off event
 
     if $(document).livequery?
-      console.log selectors
       $(selectors).expire event
 
     @_debugRemoveEls selectors if @_debug?()

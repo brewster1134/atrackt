@@ -81,28 +81,33 @@ describe 'Atrackt', ->
       before ->
         Atrackt.bind
           click: [ 'a.test' ]
-          hover: [ 'a.test' ]
 
       it 'should call bind events on all plugins', ->
         expect(fooBindSpy).to.be.called.once
         expect(barBindSpy).to.be.called.once
 
+      it 'should set event on include property', ->
+        expect(fooPlugin.include.click).to.exist
+        expect(barPlugin.include.click).to.exist
+
       it 'should bind events on all plugins', ->
         expect($._data(fooEl[0]).events.click).to.have.length 2
-        expect($._data(fooEl[0]).events.hover).to.have.length 2
         expect($._data(barEl[0]).events.click).to.have.length 2
-        expect($._data(barEl[0]).events.hover).to.have.length 2
 
       context 'when called on the plugin', ->
         before ->
-          fooPlugin.events = {}
-          barPlugin.events = {}
+          fooPlugin.include = {}
+          barPlugin.include = {}
           $('*').off '.atrackt'
 
           fooPlugin.bind
             click: [ 'a.foo' ]
           barPlugin.bind
             hover: [ 'a.bar' ]
+
+        it 'should set event on include property', ->
+          expect(fooPlugin.include.click).to.exist
+          expect(barPlugin.include.hover).to.exist
 
         it 'should bind events', ->
           expect($._data(fooEl[0]).events.click).to.have.length 1
@@ -126,13 +131,15 @@ describe 'Atrackt', ->
               click: [ 'button' ]
 
           it 'should retain previous events', ->
-            expect(fooPlugin.events.click).to.include 'a.foo'
-            expect(fooPlugin.events.click).to.include 'button'
+            expect(fooPlugin.include.click).to.include 'a.foo'
+            expect(fooPlugin.include.click).to.include 'button'
 
     describe '#unbind', ->
       beforeEach ->
-        fooPlugin.events = {}
-        barPlugin.events = {}
+        fooPlugin.include = {}
+        barPlugin.include = {}
+        fooPlugin.exclude = {}
+        barPlugin.exclude = {}
         $('*').off '.atrackt'
 
         Atrackt.plugins['fooPlugin'].bind
@@ -142,57 +149,66 @@ describe 'Atrackt', ->
           click: [ 'a.bar' ]
           hover: [ 'a.bar' ]
 
-      it 'should unbind all events from all plugins', ->
-        Atrackt.unbind()
+      context 'for all plugins', ->
+        beforeEach ->
+          Atrackt.unbind()
 
-        expect(fooPlugin.events.click).to.not.exist
-        expect(fooPlugin.events.hover).to.not.exist
-        expect(barPlugin.events.click).to.not.exist
-        expect(barPlugin.events.hover).to.not.exist
+        it 'should clear the include property', ->
+          expect(fooPlugin.include.click).to.not.exist
+          expect(fooPlugin.include.hover).to.not.exist
+          expect(barPlugin.include.click).to.not.exist
+          expect(barPlugin.include.hover).to.not.exist
 
-        expect($._data(fooEl[0]).events).to.not.exist
-        expect($._data(barEl[0]).events).to.not.exist
+        it 'should unbind all events', ->
+          expect($._data(fooEl[0]).events).to.not.exist
+          expect($._data(barEl[0]).events).to.not.exist
 
-      it 'should unbind all events from a specific plugin', ->
-        Atrackt.plugins['fooPlugin'].unbind()
+      context 'for all plugins with event object', ->
+        beforeEach ->
+          Atrackt.unbind
+            click: [ 'a.test' ]
 
-        expect(fooPlugin.events.click).to.not.exist
-        expect(fooPlugin.events.hover).to.not.exist
-        expect(barPlugin.events.click).to.exist
-        expect(barPlugin.events.hover).to.exist
+        it 'should set the exclude property', ->
+          expect(fooPlugin.exclude.click).to.exist
+          expect(barPlugin.exclude.click).to.exist
 
-        expect($._data(fooEl[0]).events).to.not.exist
-        expect($._data(barEl[0]).events.click).to.have.length 1
-        expect($._data(barEl[0]).events.hover).to.have.length 1
+        it 'should unbind specific events', ->
+          expect($._data(fooEl[0]).events.click).to.not.exist
+          expect($._data(fooEl[0]).events.hover).to.have.length 1
+          expect($._data(barEl[0]).events.click).to.not.exist
+          expect($._data(barEl[0]).events.hover).to.have.length 1
 
-      it 'should unbind specific events from all plugins', ->
-        console.log 'should unbind specific events from all plugins'
-        Atrackt.unbind
-          click: [ 'a.foo', 'a.bar' ]
+      context 'on a specific plugin with no event object', ->
+        beforeEach ->
+          Atrackt.plugins['fooPlugin'].unbind()
 
-        expect(fooPlugin.events.click).to.not.exist
-        expect(fooPlugin.events.hover).to.exist
-        expect(barPlugin.events.click).to.not.exist
-        expect(barPlugin.events.hover).to.exist
+        it 'should clear the include property', ->
+          expect(fooPlugin.include.click).to.not.exist
+          expect(fooPlugin.include.hover).to.not.exist
+          expect(barPlugin.include.click).to.exist
+          expect(barPlugin.include.hover).to.exist
 
-        expect($._data(fooEl[0]).events.click).to.not.exist
-        expect($._data(fooEl[0]).events.hover).to.have.length 1
-        expect($._data(barEl[0]).events.click).to.not.exist
-        expect($._data(barEl[0]).events.hover).to.have.length 1
+        it 'should unbind all events', ->
+          expect($._data(fooEl[0]).events).to.not.exist
+          expect($._data(barEl[0]).events.click).to.have.length 1
+          expect($._data(barEl[0]).events.hover).to.have.length 1
 
-      it 'should unbind specific events from a specific plugin', ->
-        Atrackt.plugins['fooPlugin'].unbind
-          click: [ 'a.foo' ]
+      context 'on a specific plugin with event object', ->
+        beforeEach ->
+          Atrackt.plugins['fooPlugin'].unbind
+            click: [ 'a.test' ]
 
-        expect(fooPlugin.events.click).to.not.exist
-        expect(fooPlugin.events.hover).to.exist
-        expect(barPlugin.events.click).to.exist
-        expect(barPlugin.events.hover).to.exist
+        it 'should set the exclude property', ->
+          expect(fooPlugin.exclude.click).to.exist
+          expect(fooPlugin.exclude.hover).to.not.exist
+          expect(barPlugin.exclude.click).to.not.exist
+          expect(barPlugin.exclude.hover).to.not.exist
 
-        expect($._data(fooEl[0]).events.click).to.not.exist
-        expect($._data(fooEl[0]).events.hover).to.have.length 1
-        expect($._data(barEl[0]).events.click).to.have.length 1
-        expect($._data(barEl[0]).events.hover).to.have.length 1
+        it 'should unbind specific events', ->
+          expect($._data(fooEl[0]).events.click).to.not.exist
+          expect($._data(fooEl[0]).events.hover).to.have.length 1
+          expect($._data(barEl[0]).events.click).to.have.length 1
+          expect($._data(barEl[0]).events.hover).to.have.length 1
 
     describe '#setOptions', ->
       before ->
@@ -282,3 +298,9 @@ describe 'Atrackt', ->
 
       it 'should bind default event to element', ->
         expect($._data(el[0], 'events').foo).to.exist
+
+# describe 'Atrackt Debugger', ->
+#   before ->
+#     window.location = '?debugTracking=true'
+
+#   it 'should go to url', ->
