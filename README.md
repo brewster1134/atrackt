@@ -6,6 +6,7 @@ A library for making complex tracking & analytics easier.
 ## Dependencies
 
 * [jQuery](http://jquery.com)
+* [Underscore.js](http://underscorejs.org)
 
 ### Optional (But Recommended)
 

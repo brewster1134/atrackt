@@ -118,6 +118,12 @@ $.extend window.Atrackt,
     , ->
       $(@).add(matchingConsoleEls).removeClass 'highlight'
 
+  _debugRemoveEls: (selectors) ->
+    $(selectors).each =>
+      elId = @_debugElementId $(@)
+      $('body #atrackt-debug [data-atrackt-debug-id=' + elId + ']').remove
+      $('body [data-atrackt-debug-id=' + elId + ']').removeAttr('data-atrackt-debug-id')
+
   # Build a unique ID for each element
   _debugElementId: ($el) ->
     _categories = $el.data('track-object').categories

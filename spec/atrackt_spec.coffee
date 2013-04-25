@@ -45,6 +45,9 @@ describe 'Atrackt', ->
     barBindSpy = null
 
     before ->
+      Atrackt.plugins = {}
+      $('*').off 'atrackt'
+
       Atrackt.registerPlugin 'fooPlugin',
         send: ->
       Atrackt.registerPlugin 'barPlugin',
@@ -92,6 +95,8 @@ describe 'Atrackt', ->
 
       context 'when called on the plugin', ->
         before ->
+          fooPlugin.events = {}
+          barPlugin.events = {}
           $('*').off '.atrackt'
 
           fooPlugin.bind
@@ -115,38 +120,79 @@ describe 'Atrackt', ->
           expect(fooSendSpy).to.not.be.called
           expect(barSendSpy).to.be.called.once
 
+        context 'when binding additional elements', ->
+          before ->
+            fooPlugin.bind
+              click: [ 'button' ]
+
+          it 'should retain previous events', ->
+            expect(fooPlugin.events.click).to.include 'a.foo'
+            expect(fooPlugin.events.click).to.include 'button'
+
     describe '#unbind', ->
       beforeEach ->
-        $('a.test').off '.atrackt'
+        fooPlugin.events = {}
+        barPlugin.events = {}
+        $('*').off '.atrackt'
 
-        Atrackt.bind
+        Atrackt.plugins['fooPlugin'].bind
           click: [ 'a.foo' ]
           hover: [ 'a.foo' ]
+        Atrackt.plugins['barPlugin'].bind
+          click: [ 'a.bar' ]
+          hover: [ 'a.bar' ]
 
       it 'should unbind all events from all plugins', ->
         Atrackt.unbind()
 
+        expect(fooPlugin.events.click).to.not.exist
+        expect(fooPlugin.events.hover).to.not.exist
+        expect(barPlugin.events.click).to.not.exist
+        expect(barPlugin.events.hover).to.not.exist
+
         expect($._data(fooEl[0]).events).to.not.exist
+        expect($._data(barEl[0]).events).to.not.exist
 
       it 'should unbind all events from a specific plugin', ->
         Atrackt.plugins['fooPlugin'].unbind()
 
-        expect($._data(fooEl[0]).events.click).to.have.length 1
-        expect($._data(fooEl[0]).events.hover).to.have.length 1
+        expect(fooPlugin.events.click).to.not.exist
+        expect(fooPlugin.events.hover).to.not.exist
+        expect(barPlugin.events.click).to.exist
+        expect(barPlugin.events.hover).to.exist
+
+        expect($._data(fooEl[0]).events).to.not.exist
+        expect($._data(barEl[0]).events.click).to.have.length 1
+        expect($._data(barEl[0]).events.hover).to.have.length 1
 
       it 'should unbind specific events from all plugins', ->
+        console.log 'should unbind specific events from all plugins'
         Atrackt.unbind
-          click: [ 'a.test' ]
+          click: [ 'a.foo', 'a.bar' ]
 
-        expect($._data(fooEl[0]).events?.click).to.not.exist
-        expect($._data(fooEl[0]).events.hover).to.have.length 2
+        expect(fooPlugin.events.click).to.not.exist
+        expect(fooPlugin.events.hover).to.exist
+        expect(barPlugin.events.click).to.not.exist
+        expect(barPlugin.events.hover).to.exist
+
+        expect($._data(fooEl[0]).events.click).to.not.exist
+        expect($._data(fooEl[0]).events.hover).to.have.length 1
+        expect($._data(barEl[0]).events.click).to.not.exist
+        expect($._data(barEl[0]).events.hover).to.have.length 1
 
       it 'should unbind specific events from a specific plugin', ->
         Atrackt.plugins['fooPlugin'].unbind
-          click: [ 'a.test' ]
+          click: [ 'a.foo' ]
 
-        expect($._data(fooEl[0]).events.click).to.have.length 1
-        expect($._data(fooEl[0]).events.hover).to.have.length 2
+        expect(fooPlugin.events.click).to.not.exist
+        expect(fooPlugin.events.hover).to.exist
+        expect(barPlugin.events.click).to.exist
+        expect(barPlugin.events.hover).to.exist
+
+        expect($._data(fooEl[0]).events.click).to.not.exist
+        expect($._data(fooEl[0]).events.hover).to.have.length 1
+        expect($._data(barEl[0]).events.click).to.have.length 1
+        expect($._data(barEl[0]).events.hover).to.have.length 1
 
     describe '#setOptions', ->
       before ->
@@ -155,7 +201,6 @@ describe 'Atrackt', ->
 
       it 'should set custom options on the plugin', ->
         expect(Atrackt.plugins['fooPlugin'].options.foo).to.equal 'bar'
-
 
     describe '#track', ->
       context 'with an element', ->

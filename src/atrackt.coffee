@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.5
+@version 0.0.6
 @author Ryan Brewster
 ###
 
@@ -17,14 +17,24 @@ window.Atrackt =
   registerPlugin: (name, attrs) ->
     return console.log "NO SEND METHOD DEFINED" unless typeof attrs?.send is 'function'
     console.log 'ATRACKT PLUGIN REGISTERED', name, attrs
+    attrs.events ||= {}
 
     # Create bind method
     attrs.bind = (eventsObject) =>
-      attrs.events = eventsObject
+      for event, selectors of eventsObject
+        currentSelectors = attrs.events[event] || []
+        attrs.events[event] = _.union currentSelectors, selectors
       $ =>
         @_bind name, eventsObject
 
     attrs.unbind = (eventsObject) =>
+      if eventsObject?
+        for event, selectors of eventsObject
+          currentSelectors = attrs.events[event] || []
+          attrs.events[event] = _.difference currentSelectors, selectors
+          delete attrs.events[event] if attrs.events[event].length == 0
+      else
+        attrs.events = {}
       $ =>
         @_unbind name, eventsObject
 
@@ -112,7 +122,7 @@ window.Atrackt =
     # if eventsObject is set, loop through and unbind all those events with the event
     if eventsObject?
       for event, selectorArray of eventsObject
-        selectors = $(selectorArray.join(','))
+        selectors = selectorArray.join(',')
         eventName = event.concat eventName
 
         @_uninitEls selectors, eventName
@@ -121,10 +131,13 @@ window.Atrackt =
 
   # un-initialize multiple elements via a jquery selector
   _uninitEls: (selectors, event) ->
-    selectors.off event
+    $(selectors).off event
 
     if $(document).livequery?
-      selectors.livequery.expire event
+      console.log selectors
+      $(selectors).expire event
+
+    @_debugRemoveEls selectors if @_debug?()
 
   # builds the object to be passed to the custom send method
   _getTrackObject: (data, additionalData = {}) ->

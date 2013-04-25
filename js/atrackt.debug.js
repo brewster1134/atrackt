@@ -103,6 +103,15 @@ Atrackt Debugging Console
         return $(this).add(matchingConsoleEls).removeClass('highlight');
       });
     },
+    _debugRemoveEls: function(selectors) {
+      var _this = this;
+      return $(selectors).each(function() {
+        var elId;
+        elId = _this._debugElementId($(_this));
+        $('body #atrackt-debug [data-atrackt-debug-id=' + elId + ']').remove;
+        return $('body [data-atrackt-debug-id=' + elId + ']').removeAttr('data-atrackt-debug-id');
+      });
+    },
     _debugElementId: function($el) {
       var idArray, _categories, _ctaValue;
       _categories = $el.data('track-object').categories;

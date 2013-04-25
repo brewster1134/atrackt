@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.5
+@version 0.0.6
 @author Ryan Brewster
 */
 
@@ -24,13 +24,32 @@ https://github.com/brewster1134/atrackt
         return console.log("NO SEND METHOD DEFINED");
       }
       console.log('ATRACKT PLUGIN REGISTERED', name, attrs);
+      attrs.events || (attrs.events = {});
       attrs.bind = function(eventsObject) {
-        attrs.events = eventsObject;
+        var currentSelectors, event, selectors;
+        for (event in eventsObject) {
+          selectors = eventsObject[event];
+          currentSelectors = attrs.events[event] || [];
+          attrs.events[event] = _.union(currentSelectors, selectors);
+        }
         return $(function() {
           return _this._bind(name, eventsObject);
         });
       };
       attrs.unbind = function(eventsObject) {
+        var currentSelectors, event, selectors;
+        if (eventsObject != null) {
+          for (event in eventsObject) {
+            selectors = eventsObject[event];
+            currentSelectors = attrs.events[event] || [];
+            attrs.events[event] = _.difference(currentSelectors, selectors);
+            if (attrs.events[event].length === 0) {
+              delete attrs.events[event];
+            }
+          }
+        } else {
+          attrs.events = {};
+        }
         return $(function() {
           return _this._unbind(name, eventsObject);
         });
@@ -132,7 +151,7 @@ https://github.com/brewster1134/atrackt
         _results = [];
         for (event in eventsObject) {
           selectorArray = eventsObject[event];
-          selectors = $(selectorArray.join(','));
+          selectors = selectorArray.join(',');
           eventName = event.concat(eventName);
           _results.push(this._uninitEls(selectors, eventName));
         }
@@ -142,9 +161,13 @@ https://github.com/brewster1134/atrackt
       }
     },
     _uninitEls: function(selectors, event) {
-      selectors.off(event);
+      $(selectors).off(event);
       if ($(document).livequery != null) {
-        return selectors.livequery.expire(event);
+        console.log(selectors);
+        $(selectors).expire(event);
+      }
+      if (typeof this._debug === "function" ? this._debug() : void 0) {
+        return this._debugRemoveEls(selectors);
       }
     },
     _getTrackObject: function(data, additionalData) {
