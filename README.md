@@ -107,11 +107,19 @@ The same options are available to `unbind` elements.
 ```coffee
 Atrackt.unbind
   click: ['a']
-  hover: ['a', 'button' ]
 
 Atrackt.plugins['testPlugin'].unbind
   click: ['a']
-  hover: ['a', 'button' ]
+```
+
+You can also bind/unbind a specific element instead of a selector.  This is helpful if you generate new elements dynamically and need to track them as they are created.
+
+```coffee
+Atrackt.bind
+  click: $('div#foo')
+
+Atrackt.plugins['testPlugin'].bind
+  click: $('div#foo')
 ```
 
 If you need your plugin to accept custom options, you can call the `setOptions` method.  This will be available in your plugin under the key `options`.  If your plugin already has default options, the custom options well simply extend over them.

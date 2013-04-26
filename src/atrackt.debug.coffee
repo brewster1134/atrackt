@@ -1,7 +1,7 @@
 ###
 Atrackt Debugging Console
 @author Ryan Brewster
-@version 0.0.2
+@version 0.0.3
 ###
 
 $.extend window.Atrackt,
@@ -68,7 +68,7 @@ $.extend window.Atrackt,
       ).prependTo('body')
 
   _debugPluginEvent: (plugin, event) ->
-    '<div>' + plugin + ' : ' + event + '</div>'
+    "<div class='#{plugin} #{event}'>#{plugin} : #{event}</div>"
 
   # Add each tracked element to the console
   _debugEl: ($el, plugin, event) ->
@@ -84,16 +84,21 @@ $.extend window.Atrackt,
 
     # create or append the matching console element
     matchingConsoleEls = $('body .atrackt-element[data-atrackt-debug-id=' + elId + ']')
+    pluginEventDiv = @_debugPluginEvent(plugin, event)
     if matchingConsoleEls.length == 0
       $('<tr class="atrackt-element" data-atrackt-debug-id="' + elId + '">
-        <td class="atrackt-plugin-event">' + @_debugPluginEvent(plugin, event) + '</td>
+        <td class="atrackt-plugin-event">' + pluginEventDiv + '</td>
         <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>
         <td class="atrackt-value">' + $el.data('track-object').value + '</td>
         <td class="atrackt-error"></td>
         </tr>'
       ).appendTo('#atrackt-elements tbody')
     else
-      matchingConsoleEls.find('.atrackt-plugin-event').append(@_debugPluginEvent plugin, event)
+      pluginEventMainDiv = matchingConsoleEls.find('.atrackt-plugin-event')
+
+      # if the plugin-events div doesnt already have an entry for this plugin/event combo, add one
+      unless $(pluginEventMainDiv).has(".#{plugin}.#{event}").length > 0
+        pluginEventMainDiv.append(pluginEventDiv)
 
     mathingEls = $('body [data-atrackt-debug-id=' + elId + ']')
     matchingConsoleEls = mathingEls.filter('.atrackt-element')

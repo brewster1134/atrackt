@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.7
+@version 0.0.8
 @author Ryan Brewster
 */
 
@@ -21,45 +21,56 @@ https://github.com/brewster1134/atrackt
       registerPlugin: function(pluginName, attrs) {
         var _this = this;
         if (typeof (attrs != null ? attrs.send : void 0) !== 'function') {
-          return console.log("NO SEND METHOD DEFINED");
+          return console.log('NO SEND METHOD DEFINED');
         }
         console.log('ATRACKT PLUGIN REGISTERED', pluginName, attrs);
-        attrs.include || (attrs.include = {});
-        attrs.exclude || (attrs.exclude = {});
+        attrs.elements || (attrs.elements = {});
+        attrs.includeSelectors || (attrs.includeSelectors = {});
+        attrs.includeElements || (attrs.includeElements = {});
+        attrs.excludeSelectors || (attrs.excludeSelectors = {});
+        attrs.excludeElements || (attrs.excludeElements = {});
         attrs.bind = function(eventsObject) {
-          var currentSelectors, event, selectors;
-          if (eventsObject != null) {
-            for (event in eventsObject) {
-              selectors = eventsObject[event];
-              currentSelectors = attrs.include[event] || [];
-              attrs.include[event] = _.union(currentSelectors, selectors);
-            }
-            return $(function() {
-              return _this._bind(pluginName, eventsObject);
-            });
-          } else {
-            return $(function() {
-              return _this._bind(pluginName);
-            });
+          var currentElements, currentSelectors, data, eventType, _results;
+          if (eventsObject == null) {
+            return console.log('NOTHING TO BIND. YOU MUST PASS AN EVENT OBJECT CALLING BIND');
           }
+          _results = [];
+          for (eventType in eventsObject) {
+            data = eventsObject[eventType];
+            if (data instanceof Array) {
+              currentSelectors = attrs.includeSelectors[eventType] || [];
+              attrs.includeSelectors[eventType] = _.union(currentSelectors, data);
+            } else if (data instanceof jQuery) {
+              currentElements = attrs.includeElements[eventType] || [];
+              attrs.includeElements[eventType] = _.union(currentElements, data);
+            }
+            _results.push(_this._bind(pluginName, eventType));
+          }
+          return _results;
         };
         attrs.unbind = function(eventsObject) {
-          var currentSelectors, event, selectors;
+          var currentElements, currentSelectors, data, eventType, _results;
           if (eventsObject != null) {
-            for (event in eventsObject) {
-              selectors = eventsObject[event];
-              currentSelectors = attrs.exclude[event] || [];
-              attrs.exclude[event] = _.union(currentSelectors, selectors);
+            _results = [];
+            for (eventType in eventsObject) {
+              data = eventsObject[eventType];
+              if (data instanceof Array) {
+                currentSelectors = attrs.excludeSelectors[eventType] || [];
+                attrs.excludeSelectors[eventType] = _.union(currentSelectors, data);
+              } else if (data instanceof jQuery) {
+                currentElements = attrs.excludeElements[eventType] || [];
+                attrs.excludeElements[eventType] = _.union(currentElements, data);
+              }
+              _results.push(_this._unbind(pluginName, eventType));
             }
-            return $(function() {
-              return _this._unbind(pluginName, eventsObject);
-            });
+            return _results;
           } else {
-            attrs.include = {};
-            attrs.exclude = {};
-            return $(function() {
-              return _this._unbind(pluginName);
-            });
+            attrs.elements = {};
+            attrs.includeSelectors = {};
+            attrs.includeElements = {};
+            attrs.excludeSelectors = {};
+            attrs.excludeElements = {};
+            return _this._unbind(pluginName);
           }
         };
         attrs.setOptions = function(options) {
@@ -90,12 +101,16 @@ https://github.com/brewster1134/atrackt
         return _results;
       },
       refresh: function() {
-        var pluginData, pluginName, _ref;
+        var eventType, pluginData, pluginName, selectors, _ref, _ref1;
         this._debugConsoleReset();
         _ref = this.plugins;
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
-          this._bind(pluginName);
+          _ref1 = pluginData.elements;
+          for (eventType in _ref1) {
+            selectors = _ref1[eventType];
+            this._bind(pluginName, eventType);
+          }
         }
         return true;
       },
@@ -119,46 +134,56 @@ https://github.com/brewster1134/atrackt
         }
         return true;
       },
-      _bind: function(plugin, eventsObject) {
-        var event, excludeObject, excludeSelectors, includeSelectors, selectorArray, selectors, _results;
-        excludeObject = this.plugins[plugin].exclude;
-        if (eventsObject != null) {
-          this._unbind(plugin, eventsObject);
-        } else {
-          this._unbind(plugin);
-          eventsObject = this.plugins[plugin].include;
-        }
-        _results = [];
-        for (event in eventsObject) {
-          selectorArray = eventsObject[event];
-          includeSelectors = selectorArray.join(',');
-          excludeSelectors = (excludeObject[event] || []).join(',');
-          selectors = $(includeSelectors).not(excludeSelectors);
-          selectors.on("" + event + ".atrackt." + plugin, function(e) {
+      _cleanup: function() {},
+      _collectElements: function(pluginName, eventType) {
+        var allElements, excludeElements, excludeSelectors, includeElements, includeSelectors, plugin, _ref, _ref1;
+        this._cleanup(pluginName, eventType);
+        plugin = this.plugins[pluginName];
+        includeSelectors = $((_ref = plugin.includeSelectors[eventType]) != null ? _ref.join(',') : void 0);
+        includeElements = includeSelectors || [];
+        _.each(plugin.includeElements[eventType], function(el) {
+          return includeElements = includeElements.add(el);
+        });
+        excludeSelectors = $((_ref1 = plugin.excludeSelectors[eventType]) != null ? _ref1.join(',') : void 0);
+        excludeElements = excludeSelectors || [];
+        _.each(plugin.excludeElements[eventType], function(el) {
+          return excludeElements = excludeElements.add(el);
+        });
+        allElements = includeElements.not(excludeElements);
+        this.plugins[pluginName].elements[eventType] = allElements;
+        return allElements;
+      },
+      _bind: function(pluginName, eventType) {
+        var _this = this;
+        return $(function() {
+          var selectors;
+          _this._collectElements(pluginName, eventType);
+          _this._unbind(pluginName, eventType);
+          selectors = $(_this.plugins[pluginName].elements[eventType]);
+          selectors.on("" + eventType + ".atrackt." + pluginName, function(e) {
             return Atrackt.track($(this), e);
           });
-          _results.push(selectors.each(function() {
-            return Atrackt._debugEl($(this), plugin, event);
-          }));
-        }
-        return _results;
+          selectors.each(function() {
+            return Atrackt._debugEl($(this), pluginName, eventType);
+          });
+          return selectors;
+        });
       },
-      _unbind: function(plugin, eventsObject) {
-        var event, eventName, selectorArray, selectors, _results;
-        eventName = ".atrackt." + plugin;
+      _unbind: function(pluginName, eventType) {
+        var eventName, selectors;
+        eventName = '.atrackt';
         selectors = $('*', 'body');
-        if (eventsObject != null) {
-          _results = [];
-          for (event in eventsObject) {
-            selectorArray = eventsObject[event];
-            selectors = $(selectorArray.join(','));
-            eventName = event.concat(eventName);
-            _results.push(selectors.off(eventName));
-          }
-          return _results;
-        } else {
-          return selectors.off(eventName);
+        if (eventType != null) {
+          eventName = eventType.concat(eventName);
         }
+        if (pluginName != null) {
+          eventName = eventName.concat("." + pluginName);
+        }
+        if ((pluginName != null) && (eventType != null)) {
+          selectors = $(this.plugins[pluginName].elements[eventType]);
+        }
+        selectors.off(eventName);
+        return selectors;
       },
       _getTrackObject: function(data, additionalData) {
         var $el, trackObject, _base;

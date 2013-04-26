@@ -3,7 +3,7 @@
 /*
 Atrackt Debugging Console
 @author Ryan Brewster
-@version 0.0.2
+@version 0.0.3
 */
 
 
@@ -68,10 +68,10 @@ Atrackt Debugging Console
       });
     },
     _debugPluginEvent: function(plugin, event) {
-      return '<div>' + plugin + ' : ' + event + '</div>';
+      return "<div class='" + plugin + " " + event + "'>" + plugin + " : " + event + "</div>";
     },
     _debugEl: function($el, plugin, event) {
-      var elId, matchingBodyEls, matchingConsoleEls, mathingEls;
+      var elId, matchingBodyEls, matchingConsoleEls, mathingEls, pluginEventDiv, pluginEventMainDiv;
       if (!this._debug()) {
         return false;
       }
@@ -79,15 +79,19 @@ Atrackt Debugging Console
       elId = this._debugElementId($el);
       $el.attr('data-atrackt-debug-id', elId);
       matchingConsoleEls = $('body .atrackt-element[data-atrackt-debug-id=' + elId + ']');
+      pluginEventDiv = this._debugPluginEvent(plugin, event);
       if (matchingConsoleEls.length === 0) {
         $('<tr class="atrackt-element" data-atrackt-debug-id="' + elId + '">\
-        <td class="atrackt-plugin-event">' + this._debugPluginEvent(plugin, event) + '</td>\
+        <td class="atrackt-plugin-event">' + pluginEventDiv + '</td>\
         <td class="atrackt-categories">' + $el.data('track-object').categories + '</td>\
         <td class="atrackt-value">' + $el.data('track-object').value + '</td>\
         <td class="atrackt-error"></td>\
         </tr>').appendTo('#atrackt-elements tbody');
       } else {
-        matchingConsoleEls.find('.atrackt-plugin-event').append(this._debugPluginEvent(plugin, event));
+        pluginEventMainDiv = matchingConsoleEls.find('.atrackt-plugin-event');
+        if (!($(pluginEventMainDiv).has("." + plugin + "." + event).length > 0)) {
+          pluginEventMainDiv.append(pluginEventDiv);
+        }
       }
       mathingEls = $('body [data-atrackt-debug-id=' + elId + ']');
       matchingConsoleEls = mathingEls.filter('.atrackt-element');

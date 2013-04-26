@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.7
+@version 0.0.8
 @author Ryan Brewster
 ###
 
@@ -17,35 +17,55 @@ https://github.com/brewster1134/atrackt
     #
 
     registerPlugin: (pluginName, attrs) ->
-      return console.log "NO SEND METHOD DEFINED" unless typeof attrs?.send is 'function'
+      return console.log 'NO SEND METHOD DEFINED' unless typeof attrs?.send is 'function'
       console.log 'ATRACKT PLUGIN REGISTERED', pluginName, attrs
-      attrs.include ||= {}
-      attrs.exclude ||= {}
+
+      attrs.elements ||= {}
+      attrs.includeSelectors ||= {}
+      attrs.includeElements ||= {}
+      attrs.excludeSelectors ||= {}
+      attrs.excludeElements ||= {}
 
       # Create bind method
       attrs.bind = (eventsObject) =>
-        if eventsObject?
-          for event, selectors of eventsObject
-            currentSelectors = attrs.include[event] || []
-            attrs.include[event] = _.union currentSelectors, selectors
-          $ =>
-            @_bind pluginName, eventsObject
-        else
-          $ =>
-            @_bind pluginName
+        return console.log 'NOTHING TO BIND. YOU MUST PASS AN EVENT OBJECT CALLING BIND' unless eventsObject?
+
+        for eventType, data of eventsObject
+
+          # set selectors and elements on the plugin
+          if data instanceof Array
+            currentSelectors = attrs.includeSelectors[eventType] || []
+            attrs.includeSelectors[eventType] = _.union currentSelectors, data
+
+          else if data instanceof jQuery
+            currentElements = attrs.includeElements[eventType] || []
+            attrs.includeElements[eventType] = _.union currentElements, data
+
+          @_bind pluginName, eventType
 
       attrs.unbind = (eventsObject) =>
         if eventsObject?
-          for event, selectors of eventsObject
-            currentSelectors = attrs.exclude[event] || []
-            attrs.exclude[event] = _.union currentSelectors, selectors
-          $ =>
-            @_unbind pluginName, eventsObject
+          for eventType, data of eventsObject
+
+            # set selectors and elements on the plugin
+            if data instanceof Array
+              currentSelectors = attrs.excludeSelectors[eventType] || []
+              attrs.excludeSelectors[eventType] = _.union currentSelectors, data
+
+            else if data instanceof jQuery
+              currentElements = attrs.excludeElements[eventType] || []
+              attrs.excludeElements[eventType] = _.union currentElements, data
+
+            @_unbind pluginName, eventType
         else
-          attrs.include = {}
-          attrs.exclude = {}
-          $ =>
-            @_unbind pluginName
+          # if we are unbinding everything, we can assume that no elements or selectors should be registered
+          attrs.elements = {}
+          attrs.includeSelectors = {}
+          attrs.includeElements = {}
+          attrs.excludeSelectors = {}
+          attrs.excludeElements = {}
+
+          @_unbind pluginName
 
       attrs.setOptions = (options) ->
         pluginOptions = attrs.options || {}
@@ -66,9 +86,10 @@ https://github.com/brewster1134/atrackt
     refresh: ->
       @_debugConsoleReset()
 
-      # loop through the plugins and re-bind the registered events/elements
+      # loop through all plugins and all the elements and re-bind the registered events
       for pluginName, pluginData of @plugins
-        @_bind pluginName
+        for eventType, selectors of pluginData.elements
+          @_bind pluginName, eventType
 
       true
 
@@ -90,49 +111,91 @@ https://github.com/brewster1134/atrackt
     # PRIVATE METHODS
     #
 
-    # Bind events to elements based on custom events object
-    _bind: (plugin, eventsObject) ->
-      excludeObject = @plugins[plugin].exclude
+    # compare elements with selectors and remove unneccessary elements
+    _cleanup: ->
 
-      if eventsObject?
-        @_unbind plugin, eventsObject
-      else
-        @_unbind plugin
-        eventsObject = @plugins[plugin].include
+    # _collectElements
+    # combines elements that match the selectors with the explicitly bound elements
+    #
+    # @expect Atrackt.plugins[pluginName].elements[eventType] to be set
+    #
+    # @param [String] plugin name
+    # @param [String] event type
+    #
+    # @return [jQuery Object] of all matching elements
+    #
+    _collectElements: (pluginName, eventType) ->
+      @_cleanup pluginName, eventType
 
-      for event, selectorArray of eventsObject
-        # match all the include selectors and remove the excluded ones
-        includeSelectors = selectorArray.join(',')
-        excludeSelectors = (excludeObject[event] || []).join(',')
-        selectors = $(includeSelectors).not(excludeSelectors)
+      plugin = @plugins[pluginName]
 
-        selectors.on "#{event}.atrackt.#{plugin}", (e) ->
+      includeSelectors = $(plugin.includeSelectors[eventType]?.join(','))
+      includeElements = includeSelectors || []
+      _.each plugin.includeElements[eventType], (el) ->
+        includeElements = includeElements.add el
+
+      excludeSelectors = $(plugin.excludeSelectors[eventType]?.join(','))
+      excludeElements = excludeSelectors || []
+      _.each plugin.excludeElements[eventType], (el) ->
+        excludeElements = excludeElements.add el
+
+      # remove excluded elements
+      allElements = includeElements.not excludeElements
+
+      @plugins[pluginName].elements[eventType] = allElements
+
+      allElements
+
+    # _bind
+    # Bind elements to events
+    #
+    # @param [String] plugin name
+    # @param [String] event type
+    #
+    # @return [jQuery Object] all elements that were bound
+    #
+    _bind: (pluginName, eventType) ->
+      $ =>
+        @_collectElements pluginName, eventType
+
+        # unbind all events so we can re-bind them and ensure no duplicate bindings
+        @_unbind pluginName, eventType
+
+        selectors = $(@plugins[pluginName].elements[eventType])
+
+        selectors.on "#{eventType}.atrackt.#{pluginName}", (e) ->
           Atrackt.track $(@), e
 
         selectors.each ->
-          Atrackt._debugEl $(@), plugin, event
+          Atrackt._debugEl $(@), pluginName, eventType
+
+        selectors
 
     # Unbind any combination of events/jquery selectors and plugins.
     # You can pass a plugin name, an events object, or both.
-    # If both are used, pass the plugin name in first.
     # If no arguments are passed, ALL selectors for ALL plugins are unbound
+    # If both are used, pass the plugin name in first.
     #
-    # @param plugin [String] name of plugin *optional
-    # @param eventsObject [Object] *optional
+    # @param [String] (optional) plugin name
+    # @param [String] (optional) event type
     #
-    _unbind: (plugin, eventsObject) ->
-      eventName = ".atrackt.#{plugin}"
+    # @return [jQuery Object] all elements that were unbound
+    #
+    _unbind: (pluginName, eventType) ->
+      eventName = '.atrackt'
       selectors = $('*', 'body')
 
-      # if eventsObject is set, loop through and unbind all those events with the event
-      if eventsObject?
-        for event, selectorArray of eventsObject
-          selectors = $(selectorArray.join(','))
-          eventName = event.concat eventName
+      # set namespaced event
+      eventName = eventType.concat(eventName) if eventType?
+      eventName = eventName.concat(".#{pluginName}") if pluginName?
 
-          selectors.off eventName
-      else
-        selectors.off eventName
+      # set targeted selectors
+      if pluginName? && eventType?
+        selectors = $(@plugins[pluginName].elements[eventType])
+
+      selectors.off eventName
+
+      selectors
 
     # builds the object to be passed to the custom send method
     _getTrackObject: (data, additionalData = {}) ->
