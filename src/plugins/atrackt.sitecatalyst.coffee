@@ -2,19 +2,21 @@
 Atrackt SiteCatalyst Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.1
+@version 0.0.2
 ###
 
 window.Atrackt.registerPlugin 'siteCatalyst',
   send: (obj) ->
-    $.extend obj, @translatePropMap obj
     obj.categories = obj.categories?.join @options.delimiters.category
+    obj = @translatePropMap obj
 
     if s? and s.tl
       @buildSObject obj
       s.tl true, 'o', @buildLinkName obj
     else
       console.log 'SITE CATALYST SCRIPT NOT LOADED!', obj
+
+    obj
 
   options:
     propLimit: 100

@@ -4,7 +4,7 @@
 Atrackt SiteCatalyst Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.1
+@version 0.0.2
 */
 
 
@@ -13,14 +13,15 @@ https://github.com/brewster1134/atrackt
   window.Atrackt.registerPlugin('siteCatalyst', {
     send: function(obj) {
       var _ref;
-      $.extend(obj, this.translatePropMap(obj));
       obj.categories = (_ref = obj.categories) != null ? _ref.join(this.options.delimiters.category) : void 0;
+      obj = this.translatePropMap(obj);
       if ((typeof s !== "undefined" && s !== null) && s.tl) {
         this.buildSObject(obj);
-        return s.tl(true, 'o', this.buildLinkName(obj));
+        s.tl(true, 'o', this.buildLinkName(obj));
       } else {
-        return console.log('SITE CATALYST SCRIPT NOT LOADED!', obj);
+        console.log('SITE CATALYST SCRIPT NOT LOADED!', obj);
       }
+      return obj;
     },
     options: {
       propLimit: 100,

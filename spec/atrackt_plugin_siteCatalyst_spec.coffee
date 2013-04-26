@@ -25,6 +25,24 @@ describe 'Plugin: SiteCatalyst', ->
       expect(s.linkTrackVars).to.equal 'products,events,prop1,eVar1'
       expect(s.linkTrackEvents).to.equal 'event1'
 
+  describe '#send', ->
+    obj = null
+
+    before ->
+      plugin.options.propMap =
+        foo: 'prop1'
+
+      obj = plugin.send
+        foo: 'foo'
+        bar: 'bar'
+
+    it 'should not have the original key if it exists in the propMap', ->
+      expect(obj.foo).to.not.exist
+      expect(obj.prop1).to.exist
+
+    it 'should keep the original key if it exists in the propMap', ->
+      expect(obj.bar).to.exist
+
   describe '#keyLookup', ->
     before ->
       plugin.options.propMap =
