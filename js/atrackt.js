@@ -44,7 +44,7 @@ https://github.com/brewster1134/atrackt
               currentElements = attrs.includeElements[eventType] || [];
               attrs.includeElements[eventType] = _.union(currentElements, data);
             }
-            _results.push(_this._bind(pluginName, eventType));
+            _results.push(_this._bind(pluginName, eventType, data));
           }
           return _results;
         };
@@ -153,23 +153,30 @@ https://github.com/brewster1134/atrackt
         this.plugins[pluginName].elements[eventType] = allElements;
         return allElements;
       },
-      _bind: function(pluginName, eventType) {
+      _bind: function(pluginName, eventType, data) {
         var _this = this;
         return $(function() {
           var selectors;
           _this._collectElements(pluginName, eventType);
-          _this._unbind(pluginName, eventType);
+          _this._unbind(pluginName, eventType, data);
           selectors = $(_this.plugins[pluginName].elements[eventType]);
+          if (data instanceof Array) {
+            selectors = selectors.filter(data.join(','));
+          } else if (data instanceof jQuery) {
+            selectors = data;
+          }
           selectors.on("" + eventType + ".atrackt." + pluginName, function(e) {
             return Atrackt.track($(this), e);
           });
-          selectors.each(function() {
-            return Atrackt._debugEl($(this), pluginName, eventType);
-          });
+          if (_this._debug()) {
+            selectors.each(function() {
+              return Atrackt._debugEl($(this), pluginName, eventType);
+            });
+          }
           return selectors;
         });
       },
-      _unbind: function(pluginName, eventType) {
+      _unbind: function(pluginName, eventType, data) {
         var eventName, selectors;
         eventName = '.atrackt';
         selectors = $('*', 'body');
@@ -181,6 +188,11 @@ https://github.com/brewster1134/atrackt
         }
         if ((pluginName != null) && (eventType != null)) {
           selectors = $(this.plugins[pluginName].elements[eventType]);
+        }
+        if (data instanceof Array) {
+          selectors = selectors.filter(data.join(','));
+        } else if (data instanceof jQuery) {
+          selectors = data;
         }
         selectors.off(eventName);
         return selectors;

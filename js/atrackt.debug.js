@@ -73,9 +73,11 @@ Atrackt Debugging Console
       return "<div class='" + plugin + " " + event + "'>" + plugin + " : " + event + "</div>";
     },
     _debugElRefresh: function(elId) {
-      var $bodyEl, $consoleEl;
-      $consoleEl = $('body [data-atrackt-debug-id=' + elId + ']').filter('.atrackt-element');
-      $bodyEl = $('body [data-atrackt-debug-id=' + elId + ']').not('.atrackt-element');
+      var $bodyEl, $consoleEl, $els;
+      $els = $('body [data-atrackt-debug-id=' + elId + ']');
+      $consoleEl = $els.filter('.atrackt-element');
+      $bodyEl = $els.not('.atrackt-element');
+      this._getTrackObject($bodyEl);
       return $consoleEl.find('.atrackt-categories').text($bodyEl.data('track-object').categories);
     },
     _debugEl: function($el, plugin, event) {
@@ -102,6 +104,7 @@ Atrackt Debugging Console
         }
       }
       mathingEls = $('body [data-atrackt-debug-id=' + elId + ']');
+      mathingEls.off('.atrackt-debug');
       matchingConsoleEls = mathingEls.filter('.atrackt-element');
       matchingBodyEls = mathingEls.not('.atrackt-element');
       if (matchingBodyEls.length > 1) {

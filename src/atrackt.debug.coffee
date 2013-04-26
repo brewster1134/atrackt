@@ -75,8 +75,13 @@ $.extend window.Atrackt,
 
   # refresh an element in case the data is stale
   _debugElRefresh: (elId) ->
-    $consoleEl = $('body [data-atrackt-debug-id=' + elId + ']').filter('.atrackt-element')
-    $bodyEl = $('body [data-atrackt-debug-id=' + elId + ']').not('.atrackt-element')
+    # collect the elements
+    $els = $('body [data-atrackt-debug-id=' + elId + ']')
+    $consoleEl = $els.filter('.atrackt-element')
+    $bodyEl = $els.not('.atrackt-element')
+
+    # get the latest data from that element
+    @_getTrackObject $bodyEl
 
     # reset the categories value.  this is typically the only data that is stale since it depends on it's parents for the value. If an element was added to the console before it was added to the dom, this value would be incorrectly blank.
     $consoleEl.find('.atrackt-categories').text $bodyEl.data('track-object').categories
@@ -112,6 +117,8 @@ $.extend window.Atrackt,
         pluginEventMainDiv.append(pluginEventDiv)
 
     mathingEls = $('body [data-atrackt-debug-id=' + elId + ']')
+    mathingEls.off '.atrackt-debug'
+
     matchingConsoleEls = mathingEls.filter('.atrackt-element')
     matchingBodyEls = mathingEls.not('.atrackt-element')
 

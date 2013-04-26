@@ -155,6 +155,17 @@ describe 'Atrackt', ->
         it 'should bind the element', ->
           expect($._data(el[0]).events.click).to.have.length 2
 
+      context 'when calling bind both types', ->
+        before ->
+          Atrackt.bind
+            click: [ 'a.foo' ]
+
+          Atrackt.bind
+            click: $('<a class="test bar"></a>')
+
+        it 'should not unbind other elements from the plugin', ->
+          expect($._data(fooEl[0]).events.click).to.have.length 2
+
     describe '#unbind', ->
       beforeEach ->
         fooPlugin.includeSelectors = {}

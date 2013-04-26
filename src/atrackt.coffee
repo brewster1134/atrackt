@@ -41,7 +41,7 @@ https://github.com/brewster1134/atrackt
             currentElements = attrs.includeElements[eventType] || []
             attrs.includeElements[eventType] = _.union currentElements, data
 
-          @_bind pluginName, eventType
+          @_bind pluginName, eventType, data
 
       attrs.unbind = (eventsObject) =>
         if eventsObject?
@@ -151,23 +151,32 @@ https://github.com/brewster1134/atrackt
     #
     # @param [String] plugin name
     # @param [String] event type
+    # @param [Array or jQuery Object] (optional) specific selectors or jquery object to target
     #
     # @return [jQuery Object] all elements that were bound
     #
-    _bind: (pluginName, eventType) ->
+    _bind: (pluginName, eventType, data) ->
       $ =>
         @_collectElements pluginName, eventType
 
         # unbind all events so we can re-bind them and ensure no duplicate bindings
-        @_unbind pluginName, eventType
+        @_unbind pluginName, eventType, data
 
         selectors = $(@plugins[pluginName].elements[eventType])
+
+        # further filter the data if data is passed
+        if data instanceof Array
+          selectors = selectors.filter(data.join(','))
+        else if data instanceof jQuery
+          selectors = data
 
         selectors.on "#{eventType}.atrackt.#{pluginName}", (e) ->
           Atrackt.track $(@), e
 
-        selectors.each ->
-          Atrackt._debugEl $(@), pluginName, eventType
+        # add elements to the debug console
+        if @_debug()
+          selectors.each ->
+            Atrackt._debugEl $(@), pluginName, eventType
 
         selectors
 
@@ -178,10 +187,11 @@ https://github.com/brewster1134/atrackt
     #
     # @param [String] (optional) plugin name
     # @param [String] (optional) event type
+    # @param [Array or jQuery Object] (optional) specific selectors or jquery object to target
     #
     # @return [jQuery Object] all elements that were unbound
     #
-    _unbind: (pluginName, eventType) ->
+    _unbind: (pluginName, eventType, data) ->
       eventName = '.atrackt'
       selectors = $('*', 'body')
 
@@ -192,6 +202,11 @@ https://github.com/brewster1134/atrackt
       # set targeted selectors
       if pluginName? && eventType?
         selectors = $(@plugins[pluginName].elements[eventType])
+
+      if data instanceof Array
+        selectors = selectors.filter(data.join(','))
+      else if data instanceof jQuery
+        selectors = data
 
       selectors.off eventName
 
