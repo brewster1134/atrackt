@@ -44,6 +44,8 @@ Atrackt Debugging Console
           padding: 5px; }\
         #atrackt-elements {\
           width: 100%; }\
+        .atrackt-element {\
+          cursor: pointer; }\
         body.atrackt-debug .highlight {\
           background-color: green !important;\
           color: white !important; }\
@@ -69,6 +71,12 @@ Atrackt Debugging Console
     },
     _debugPluginEvent: function(plugin, event) {
       return "<div class='" + plugin + " " + event + "'>" + plugin + " : " + event + "</div>";
+    },
+    _debugElRefresh: function(elId) {
+      var $bodyEl, $consoleEl;
+      $consoleEl = $('body [data-atrackt-debug-id=' + elId + ']').filter('.atrackt-element');
+      $bodyEl = $('body [data-atrackt-debug-id=' + elId + ']').not('.atrackt-element');
+      return $consoleEl.find('.atrackt-categories').text($bodyEl.data('track-object').categories);
     },
     _debugEl: function($el, plugin, event) {
       var elId, matchingBodyEls, matchingConsoleEls, mathingEls, pluginEventDiv, pluginEventMainDiv;
@@ -101,14 +109,20 @@ Atrackt Debugging Console
         matchingConsoleEls.addClass('error');
         matchingConsoleEls.find('.atrackt-error').append('DUPLICATE');
       }
-      matchingConsoleEls.add($el).off('mouseenter mouseleave');
-      matchingConsoleEls.hover(function() {
+      matchingConsoleEls.on('click.atrackt-debug', function() {
+        return Atrackt._debugElRefresh($(this).data('atrackt-debug-id'));
+      });
+      matchingConsoleEls.on('mouseenter.atrackt-debug', function() {
         $(this).add($el).addClass('highlight');
         return $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
-      }, function() {
+      });
+      matchingConsoleEls.on('mouseleave.atrackt-debug', function() {
         return $(this).add($el).removeClass('highlight');
       });
-      return $el.hover(function() {
+      $el.on('click.atrackt-debug', function() {
+        return Atrackt._debugElRefresh($(this).data('atrackt-debug-id'));
+      });
+      $el.on('mouseenter.atrackt-debug', function() {
         var elIndex, scrollTo, totalEls, totalHeight;
         $(this).add(matchingConsoleEls).addClass('highlight');
         totalHeight = $('#atrackt-elements tbody').height();
@@ -116,7 +130,8 @@ Atrackt Debugging Console
         elIndex = $('#atrackt-elements .atrackt-element').index(matchingConsoleEls);
         scrollTo = (elIndex / totalEls) * totalHeight;
         return $('#atrackt-debug').scrollTop(scrollTo);
-      }, function() {
+      });
+      return $el.on('mouseleave.atrackt-debug', function() {
         return $(this).add(matchingConsoleEls).removeClass('highlight');
       });
     },
@@ -139,7 +154,9 @@ Atrackt Debugging Console
     _debugConsoleDestroy: function() {
       $('#atrackt-debug').remove();
       $('body').removeClass('atrackt-debug');
-      return $('body [data-atrackt-debug-id]').removeAttr('data-atrackt-debug-id');
+      $('body [data-atrackt-debug-id]').removeAttr('data-atrackt-debug-id');
+      $('*', 'body').off('.atrackt-debug');
+      return true;
     }
   });
 

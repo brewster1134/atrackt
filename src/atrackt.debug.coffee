@@ -9,9 +9,9 @@ $.extend window.Atrackt,
   _debug: ->
     @_urlParams('debugTracking') == 'true'
 
+  # Reset the console by clearing all traces of previous elements
   _debugConsoleReset: ->
     if @_debug()
-      # clear existing console if it exists
       $('#atrackt-elements tbody').empty()
 
   # Add the debugging console template to the dom
@@ -41,6 +41,8 @@ $.extend window.Atrackt,
           padding: 5px; }
         #atrackt-elements {
           width: 100%; }
+        .atrackt-element {
+          cursor: pointer; }
         body.atrackt-debug .highlight {
           background-color: green !important;
           color: white !important; }
@@ -67,8 +69,17 @@ $.extend window.Atrackt,
         </div>'
       ).prependTo('body')
 
+  # Create the plugin/event div
   _debugPluginEvent: (plugin, event) ->
     "<div class='#{plugin} #{event}'>#{plugin} : #{event}</div>"
+
+  # refresh an element in case the data is stale
+  _debugElRefresh: (elId) ->
+    $consoleEl = $('body [data-atrackt-debug-id=' + elId + ']').filter('.atrackt-element')
+    $bodyEl = $('body [data-atrackt-debug-id=' + elId + ']').not('.atrackt-element')
+
+    # reset the categories value.  this is typically the only data that is stale since it depends on it's parents for the value. If an element was added to the console before it was added to the dom, this value would be incorrectly blank.
+    $consoleEl.find('.atrackt-categories').text $bodyEl.data('track-object').categories
 
   # Add each tracked element to the console
   _debugEl: ($el, plugin, event) ->
@@ -111,19 +122,22 @@ $.extend window.Atrackt,
       matchingConsoleEls.addClass 'error'
       matchingConsoleEls.find('.atrackt-error').append('DUPLICATE')
 
-    # events
     # events for elements in the console log
-    matchingConsoleEls.add($el).off 'mouseenter mouseleave'
+    matchingConsoleEls.on 'click.atrackt-debug', ->
+      Atrackt._debugElRefresh $(@).data('atrackt-debug-id')
 
-    matchingConsoleEls.hover ->
+    matchingConsoleEls.on 'mouseenter.atrackt-debug', ->
       $(@).add($el).addClass 'highlight'
-
       $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20)
-    , ->
+
+    matchingConsoleEls.on 'mouseleave.atrackt-debug', ->
       $(@).add($el).removeClass 'highlight'
 
     # events for elements on the page
-    $el.hover ->
+    $el.on 'click.atrackt-debug', ->
+      Atrackt._debugElRefresh $(@).data('atrackt-debug-id')
+
+    $el.on 'mouseenter.atrackt-debug', ->
       $(@).add(matchingConsoleEls).addClass 'highlight'
 
       # crazy stuff for scrolling in the overflow hidden element.
@@ -133,7 +147,8 @@ $.extend window.Atrackt,
       elIndex = $('#atrackt-elements .atrackt-element').index matchingConsoleEls
       scrollTo = ((elIndex / totalEls) * totalHeight)
       $('#atrackt-debug').scrollTop(scrollTo)
-    , ->
+
+    $el.on 'mouseleave.atrackt-debug', ->
       $(@).add(matchingConsoleEls).removeClass 'highlight'
 
   # Build a unique ID for each element
@@ -153,5 +168,7 @@ $.extend window.Atrackt,
     $('#atrackt-debug').remove()
     $('body').removeClass('atrackt-debug')
     $('body [data-atrackt-debug-id]').removeAttr('data-atrackt-debug-id')
+    $('*', 'body').off '.atrackt-debug'
+    true
 
 Atrackt._debugConsole()
