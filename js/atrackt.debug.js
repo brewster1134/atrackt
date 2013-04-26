@@ -3,7 +3,7 @@
 /*
 Atrackt Debugging Console
 @author Ryan Brewster
-@version 0.0.1
+@version 0.0.2
 */
 
 
@@ -13,8 +13,16 @@ Atrackt Debugging Console
     _debug: function() {
       return this._urlParams('debugTracking') === 'true';
     },
+    _debugConsoleReset: function() {
+      if (this._debug()) {
+        return $('#atrackt-elements tbody').empty();
+      }
+    },
     _debugConsole: function() {
       var _this = this;
+      if (!Atrackt._debug()) {
+        return false;
+      }
       return $(function() {
         $('body').addClass('atrackt-debug');
         $('<style>\
@@ -29,6 +37,7 @@ Atrackt Debugging Console
           position: fixed;\
           top: 0;\
           left: 0;\
+          z-index: 1;\
           border-bottom: 2px solid black; }\
         #atrackt-location {\
           border-bottom: 1px solid black;\
@@ -63,6 +72,9 @@ Atrackt Debugging Console
     },
     _debugEl: function($el, plugin, event) {
       var elId, matchingBodyEls, matchingConsoleEls, mathingEls;
+      if (!this._debug()) {
+        return false;
+      }
       this._getTrackObject($el);
       elId = this._debugElementId($el);
       $el.attr('data-atrackt-debug-id', elId);
@@ -85,6 +97,7 @@ Atrackt Debugging Console
         matchingConsoleEls.addClass('error');
         matchingConsoleEls.find('.atrackt-error').append('DUPLICATE');
       }
+      matchingConsoleEls.add($el).off('mouseenter mouseleave');
       matchingConsoleEls.hover(function() {
         $(this).add($el).addClass('highlight');
         return $('html, body').scrollTop($el.offset().top - $('#atrackt-debug').height() - 20);
@@ -103,19 +116,9 @@ Atrackt Debugging Console
         return $(this).add(matchingConsoleEls).removeClass('highlight');
       });
     },
-    _debugRemoveEls: function(selectors) {
-      var debug;
-      debug = this;
-      return $(selectors).each(function() {
-        var elId;
-        elId = debug._debugElementId($(this));
-        $('body #atrackt-debug [data-atrackt-debug-id=' + elId + ']').remove;
-        return $('body [data-atrackt-debug-id=' + elId + ']').removeAttr('data-atrackt-debug-id');
-      });
-    },
     _debugElementId: function($el) {
       var idArray, _categories, _ctaValue;
-      if ($el.data('track-object') == null) {
+      if (!$el.data('track-object')) {
         return false;
       }
       _categories = $el.data('track-object').categories;
@@ -131,8 +134,6 @@ Atrackt Debugging Console
     }
   });
 
-  if (Atrackt._debug()) {
-    Atrackt._debugConsole();
-  }
+  Atrackt._debugConsole();
 
 }).call(this);

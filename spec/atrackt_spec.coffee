@@ -160,8 +160,10 @@ describe 'Atrackt', ->
           expect(barPlugin.include.hover).to.not.exist
 
         it 'should unbind all events', ->
-          expect($._data(fooEl[0]).events).to.not.exist
-          expect($._data(barEl[0]).events).to.not.exist
+          expect($._data(fooEl[0]).events?.click).to.not.exist
+          expect($._data(fooEl[0]).events?.hover).to.not.exist
+          expect($._data(barEl[0]).events?.click).to.not.exist
+          expect($._data(barEl[0]).events?.hover).to.not.exist
 
       context 'for all plugins with event object', ->
         beforeEach ->
@@ -189,7 +191,8 @@ describe 'Atrackt', ->
           expect(barPlugin.include.hover).to.exist
 
         it 'should unbind all events', ->
-          expect($._data(fooEl[0]).events).to.not.exist
+          expect($._data(fooEl[0]).events?.click).to.not.exist
+          expect($._data(fooEl[0]).events?.hover).to.not.exist
           expect($._data(barEl[0]).events.click).to.have.length 1
           expect($._data(barEl[0]).events.hover).to.have.length 1
 
@@ -291,16 +294,26 @@ describe 'Atrackt', ->
       it 'should return a value', ->
         expect(Atrackt._getValue(el)).to.equal 'foo'
 
-    describe '#_initEl', ->
-      before ->
-        el = $('<a></a>')
-        Atrackt._initEl el, 'testPlugin', 'foo'
+describe 'Debugging Console', ->
+  debugConsole = null
 
-      it 'should bind default event to element', ->
-        expect($._data(el[0], 'events').foo).to.exist
+  before ->
+    Atrackt._debug = -> true
+    Atrackt._debugConsole()
+    debugConsole = $('#atrackt-debug')
 
-# describe 'Atrackt Debugger', ->
-#   before ->
-#     window.location = '?debugTracking=true'
+    Atrackt.registerPlugin 'console',
+      send: ->
 
-#   it 'should go to url', ->
+    Atrackt.bind
+      click: [ 'a.refresh' ]
+
+  after ->
+    debugConsole.remove()
+
+  it 'should add the console', ->
+    expect(debugConsole).to.exist
+
+  it 'should add the element to the console', ->
+    expect(debugConsole.find('.atrackt-plugin-event').html()).to.contain('console : click')
+    expect(debugConsole.find('.atrackt-value').html()).to.contain('refresh')

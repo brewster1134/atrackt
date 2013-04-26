@@ -1,15 +1,23 @@
 ###
 Atrackt Debugging Console
 @author Ryan Brewster
-@version 0.0.1
+@version 0.0.2
 ###
 
 $.extend window.Atrackt,
+  # check if debugging is enabled
   _debug: ->
     @_urlParams('debugTracking') == 'true'
 
+  _debugConsoleReset: ->
+    if @_debug()
+      # clear existing console if it exists
+      $('#atrackt-elements tbody').empty()
+
   # Add the debugging console template to the dom
   _debugConsole: ->
+    return false unless Atrackt._debug()
+
     $ =>
       $('body').addClass('atrackt-debug')
 
@@ -26,6 +34,7 @@ $.extend window.Atrackt,
           position: fixed;
           top: 0;
           left: 0;
+          z-index: 1;
           border-bottom: 2px solid black; }
         #atrackt-location {
           border-bottom: 1px solid black;
@@ -63,6 +72,8 @@ $.extend window.Atrackt,
 
   # Add each tracked element to the console
   _debugEl: ($el, plugin, event) ->
+    return false unless @_debug()
+
     # set track-object since we want to show the data before it gets tracked.
     @_getTrackObject $el
 
@@ -97,6 +108,8 @@ $.extend window.Atrackt,
 
     # events
     # events for elements in the console log
+    matchingConsoleEls.add($el).off 'mouseenter mouseleave'
+
     matchingConsoleEls.hover ->
       $(@).add($el).addClass 'highlight'
 
@@ -118,16 +131,9 @@ $.extend window.Atrackt,
     , ->
       $(@).add(matchingConsoleEls).removeClass 'highlight'
 
-  _debugRemoveEls: (selectors) ->
-    debug = @
-    $(selectors).each ->
-      elId = debug._debugElementId $(@)
-      $('body #atrackt-debug [data-atrackt-debug-id=' + elId + ']').remove
-      $('body [data-atrackt-debug-id=' + elId + ']').removeAttr('data-atrackt-debug-id')
-
   # Build a unique ID for each element
   _debugElementId: ($el) ->
-    return false unless $el.data('track-object')?
+    return false unless $el.data('track-object')
     _categories = $el.data('track-object').categories
     _ctaValue = $el.data('track-object').value
 
@@ -137,4 +143,4 @@ $.extend window.Atrackt,
 
     idArray.join().toLowerCase().replace(/[^\w]/g, '')
 
-Atrackt._debugConsole() if Atrackt._debug()
+Atrackt._debugConsole()

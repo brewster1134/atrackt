@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
     <script src="../js/atrackt.js"></script>
     <script src="../js/atrackt.debug.js"></script>
     <script>
@@ -17,10 +18,10 @@
       });
 
       // Binding click events to all anchor elements with the class 'foo'
-      Atrackt.plugins['fooPlugin'].bindEvents({
+      Atrackt.plugins['fooPlugin'].bind({
         click: ['a.foo']
       });
-      Atrackt.plugins['barPlugin'].bindEvents({
+      Atrackt.plugins['barPlugin'].bind({
         click: ['a.bar']
       });
 

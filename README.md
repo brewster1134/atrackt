@@ -8,11 +8,6 @@ A library for making complex tracking & analytics easier.
 * [jQuery](http://jquery.com)
 * [Underscore.js](http://underscorejs.org)
 
-### Optional (But Recommended)
-
-* [Live Query](https://github.com/brandonaaron/livequery)
-  * Allows tracking new elements added to the page after the initial load (via ajax, etc.)
-
 ## Tracking An Element
 
 When an element is tracked, there are several peices that are included.
@@ -63,7 +58,7 @@ To manually track any JS object, just pass it as an argument to the track method
 Atrackt.track({ foo: 'bar' })
 ```
 
-If you add new elements to your page (and are not using liveQuery) you may need to re-scan the dom to re-bind those elements.
+Call `refresh` If you add new elements to your page you may need to re-scan the dom to re-bind those elements.
 
 ```coffee
 Atrackt.refresh()
