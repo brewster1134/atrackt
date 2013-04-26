@@ -143,4 +143,10 @@ $.extend window.Atrackt,
 
     idArray.join().toLowerCase().replace(/[^\w]/g, '')
 
+  # remove any trace of the debug console.
+  _debugConsoleDestroy: ->
+    $('#atrackt-debug').remove()
+    $('body').removeClass('atrackt-debug')
+    $('body [data-atrackt-debug-id]').removeAttr('data-atrackt-debug-id')
+
 Atrackt._debugConsole()

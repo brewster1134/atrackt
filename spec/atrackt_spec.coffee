@@ -309,7 +309,7 @@ describe 'Debugging Console', ->
       click: [ 'a.refresh' ]
 
   after ->
-    debugConsole.remove()
+    Atrackt._debugConsoleDestroy()
 
   it 'should add the console', ->
     expect(debugConsole).to.exist

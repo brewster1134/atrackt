@@ -24,11 +24,15 @@ https://github.com/brewster1134/atrackt
 
       # Create bind method
       attrs.bind = (eventsObject) =>
-        for event, selectors of eventsObject
-          currentSelectors = attrs.include[event] || []
-          attrs.include[event] = _.union currentSelectors, selectors
-        $ =>
-          @_bind pluginName
+        if eventsObject?
+          for event, selectors of eventsObject
+            currentSelectors = attrs.include[event] || []
+            attrs.include[event] = _.union currentSelectors, selectors
+          $ =>
+            @_bind pluginName, eventsObject
+        else
+          $ =>
+            @_bind pluginName
 
       attrs.unbind = (eventsObject) =>
         if eventsObject?
@@ -36,7 +40,7 @@ https://github.com/brewster1134/atrackt
             currentSelectors = attrs.exclude[event] || []
             attrs.exclude[event] = _.union currentSelectors, selectors
           $ =>
-            @_unbind pluginName, attrs.exclude
+            @_unbind pluginName, eventsObject
         else
           attrs.include = {}
           attrs.exclude = {}
@@ -87,14 +91,16 @@ https://github.com/brewster1134/atrackt
     #
 
     # Bind events to elements based on custom events object
-    _bind: (plugin) ->
-      # clear all existing event bindings so events don't fire twice if it has already been bound
-      @_unbind plugin
-
-      includeObject = @plugins[plugin].include
+    _bind: (plugin, eventsObject) ->
       excludeObject = @plugins[plugin].exclude
 
-      for event, selectorArray of includeObject
+      if eventsObject?
+        @_unbind plugin, eventsObject
+      else
+        @_unbind plugin
+        eventsObject = @plugins[plugin].include
+
+      for event, selectorArray of eventsObject
         # match all the include selectors and remove the excluded ones
         includeSelectors = selectorArray.join(',')
         excludeSelectors = (excludeObject[event] || []).join(',')

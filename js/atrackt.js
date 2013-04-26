@@ -28,14 +28,20 @@ https://github.com/brewster1134/atrackt
         attrs.exclude || (attrs.exclude = {});
         attrs.bind = function(eventsObject) {
           var currentSelectors, event, selectors;
-          for (event in eventsObject) {
-            selectors = eventsObject[event];
-            currentSelectors = attrs.include[event] || [];
-            attrs.include[event] = _.union(currentSelectors, selectors);
+          if (eventsObject != null) {
+            for (event in eventsObject) {
+              selectors = eventsObject[event];
+              currentSelectors = attrs.include[event] || [];
+              attrs.include[event] = _.union(currentSelectors, selectors);
+            }
+            return $(function() {
+              return _this._bind(pluginName, eventsObject);
+            });
+          } else {
+            return $(function() {
+              return _this._bind(pluginName);
+            });
           }
-          return $(function() {
-            return _this._bind(pluginName);
-          });
         };
         attrs.unbind = function(eventsObject) {
           var currentSelectors, event, selectors;
@@ -46,7 +52,7 @@ https://github.com/brewster1134/atrackt
               attrs.exclude[event] = _.union(currentSelectors, selectors);
             }
             return $(function() {
-              return _this._unbind(pluginName, attrs.exclude);
+              return _this._unbind(pluginName, eventsObject);
             });
           } else {
             attrs.include = {};
@@ -113,14 +119,18 @@ https://github.com/brewster1134/atrackt
         }
         return true;
       },
-      _bind: function(plugin) {
-        var event, excludeObject, excludeSelectors, includeObject, includeSelectors, selectorArray, selectors, _results;
-        this._unbind(plugin);
-        includeObject = this.plugins[plugin].include;
+      _bind: function(plugin, eventsObject) {
+        var event, excludeObject, excludeSelectors, includeSelectors, selectorArray, selectors, _results;
         excludeObject = this.plugins[plugin].exclude;
+        if (eventsObject != null) {
+          this._unbind(plugin, eventsObject);
+        } else {
+          this._unbind(plugin);
+          eventsObject = this.plugins[plugin].include;
+        }
         _results = [];
-        for (event in includeObject) {
-          selectorArray = includeObject[event];
+        for (event in eventsObject) {
+          selectorArray = eventsObject[event];
           includeSelectors = selectorArray.join(',');
           excludeSelectors = (excludeObject[event] || []).join(',');
           selectors = $(includeSelectors).not(excludeSelectors);

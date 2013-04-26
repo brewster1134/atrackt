@@ -131,6 +131,11 @@ Atrackt Debugging Console
         idArray.push(_ctaValue);
       }
       return idArray.join().toLowerCase().replace(/[^\w]/g, '');
+    },
+    _debugConsoleDestroy: function() {
+      $('#atrackt-debug').remove();
+      $('body').removeClass('atrackt-debug');
+      return $('body [data-atrackt-debug-id]').removeAttr('data-atrackt-debug-id');
     }
   });
 
