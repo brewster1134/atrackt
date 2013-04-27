@@ -158,6 +158,7 @@ It is a bit crude, but it gives you a visual overview of your elements.
 * The console lists all the elements currently being tracked along with their various values.
 * If you hover over an element in the console, it will scroll to that element on your page and highlight it.
 * If you hover over a tracked element on your page, it will scroll to that entry in your console and highlight it.
+* Clicking on a row in the console will refresh any stale data on the element.  This can happen if an element is tracked before it gets added to the dom.  Since it doesn't have any parent elements yet, the categories column will be empty.
 * The debugger will also show you errors if you have any.
   * If you have multiple elements tracking the same data, they will be highlighted and show the error in the error column. **NOTE** Since duplicate items will have the same ID, the debugging console UI will not be able to scroll to BOTH duplicate elements.  Check your javascript console to see the  offending elements.
 
