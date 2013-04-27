@@ -134,7 +134,6 @@ https://github.com/brewster1134/atrackt
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
           trackingData = $.extend(true, {}, pluginData.globalData, this._getTrackObject(data));
-          console.log(trackingData);
           if (data instanceof jQuery) {
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
               pluginData.send($.extend(trackingData, {

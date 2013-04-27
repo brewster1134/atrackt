@@ -10,15 +10,15 @@ A library for making complex tracking & analytics easier.
 
 ## Tracking An Element
 
-When an element is tracked, there are several peices that are included.
+When an element is tracked, there are several basic values that are included.
 
-* location: This represents the page that tracking event happened. It will track the first value it finds from the following:
+* *location*: This represents the page that tracking events come from. It will track the first value it finds from the following:
   * `$('body').data('track-location')` - The custom value attached to the body element's `data-track-location` attribute.
   * `$(document).attr('title')` - The page title
   * `document.URL` - The page URL
 
-* categories: This represents the elements location on the page.  It traverses the dom from the element the event fires on and collects all the `data-track-cat` values along the way (including the element itself).
-  * In the exmaple below, if the `a` element is tracked, the value for the categories attribute will be an array of `[ 'one', 'two', 'three' ]`
+* *categories*: This represents the elements location on the page.  It traverses the dom from the element and collects data along the way.  Specifically any parent element with the `data-track-cat` value set (including the element itself).
+  * In the exmaple below, if the `a` element is tracked, the value for categories would be an array of `[ 'one', 'two', 'three' ]`
 
 ```html
 <div data-track-cat='one'>
@@ -28,7 +28,7 @@ When an element is tracked, there are several peices that are included.
 </div>
 ```
 
-* value: This reperesents the value of the tracked element.  It will track the first value it finds from the following:
+* *value*: This reperesents the value of the tracked element.  It will track the first value it finds from the following:
   * `title` - The value of the title attribute
   * `name` - The value of the name attribute
   * `text` - The text value of the element. This contains only text and will not include any HTML.
@@ -36,9 +36,9 @@ When an element is tracked, there are several peices that are included.
   * `id` - The value of the id attribute
   * `class` - The value of the id attribute
 
-* event: This represents the type of event that fired the tracking call.
+* *event*: This represents the type of event that fired the tracking call.
 
-* plugin: The name of the plugin responsible for tracking the element
+* *plugin*: The name of the plugin responsible for tracking the element
 
 ## Usage
 
@@ -52,29 +52,28 @@ That's it!  The settings from your plugin will bind events to elements and you c
 
 ### Advanced Usage
 
-To manually track any JS object, just pass it as an argument to the track method.
+Call `track` to manually track any JS object. Simply pass the data as an argument.  It will automatically add additional the data and pass it to each registered plugin.
 
 ```coffee
-Atrackt.track({ foo: 'bar' })
+Atrackt.track
+  foo: 'bar'
 ```
 
-Call `refresh` If you add new elements to your page you may need to re-scan the dom to re-bind those elements.
+Call `refresh` if you need to re-scan the dom and re-bind elements based on the `bind` and `unbind` data.
 
 ```coffee
 Atrackt.refresh()
 ```
 
-You can also bind custom functions to a specific element using the `data-track-function` attribute.  This function will be run before the send method is called.  It allows for any custom manipulatons to the tracking object on a per-element basis. For example, you could track things conditionally...
+Bind custom functions to a specific element using the `data-track-function` attribute.  This function will be run before the send method is called.  It allows for any custom manipulatons to the tracking object on a per-element basis. For example, you could track things conditionally...
 
 ```coffee
-# You can only bind to events that exist so load your scripts at the end of the page, or fire them after the dom is ready with jQuery's document.ready event.
-$ ->
-  $('a#foo').data 'track-function', (data) ->
-    if data.value == 'foo'
-      data.foo = true
+$('a#foo').data 'track-function', (data) ->
+  if data.value == 'foo'
+    data.foo = true
 ```
 
-In additional, a global tracking object will be swept into _every_ tracking call.  Simply set data with `Atrack.setGlobalData` to include it in your tracking data.  This will NOT overwrite the rudimentary data provided by Atrackt (location, categories, value, event).
+Call `setGlobalData` to add attributes that will be tracked with _every_ tracking call.  Global data will _NOT_ overwrite the main balues provided by Atrackt (location, categories, value, event).
 
 ```coffee
 Atrackt.setGlobalData
@@ -101,12 +100,12 @@ Typically just creating a send method to manually track objects is not enough.  
 You can accomplish this by calling the `bind` method. The method accepts an object with the event type as the key, and an array of jquery selectors as the values.  Any matching selectors will be automatically bound and tracked with the given event.
 
 ```coffee
-# unbind from ALL registered plugins
+# bind on ALL registered plugins
 Atrackt.bind
   click: ['a']
   hover: ['a', 'button' ]
 
-# unbind from a specific plugin
+# bind on a specific plugin
 Atrackt.plugins['testPlugin'].bind
   click: ['a']
   hover: ['a', 'button' ]
@@ -132,7 +131,7 @@ Atrackt.plugins['testPlugin'].bind
   click: $('div#foo')
 ```
 
-If you need your plugin to accept custom options, you can call the `setOptions` method.  This will be available in your plugin under the key `options`.  If your plugin already has default options, the custom options well simply extend over them.
+Call `setOptions` if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
 
 ```coffee
 Atrackt.registerPlugin 'testPlugin',
@@ -152,15 +151,15 @@ To better visualize what elements you are tracking, you can load the debugging c
 * Add the script to your page _AFTER_ `atrackt.js`
   * `<script src="atrackt.debug.js"></script>`
 
-Now simply add the url paramater `debugTracking=true` to the end of any URL to show the debugging console.  Like so `http://foo.com?debugTracking=true`
+Simply add the url paramater `debugTracking=true` to the end of any URL to show the debugging console.  For example `http://foo.com?debugTracking=true`
 
 It is a bit crude, but it gives you a visual overview of your elements.
 
 * The console lists all the elements currently being tracked along with their various values.
 * If you hover over an element in the console, it will scroll to that element on your page and highlight it.
-* If you hover over a trakced element on your page, it will scroll to that entry in your console and highlight it.
+* If you hover over a tracked element on your page, it will scroll to that entry in your console and highlight it.
 * The debugger will also show you errors if you have any.
-  * If you have multiple elements tracking the same data, they will turn red and show the error in the error column. **NOTE** Since duplicate items will have the same ID, the console will not be able to scroll to BOTH duplicate elements.  You can identify the offending elements in the javascript console.
+  * If you have multiple elements tracking the same data, they will be highlighted and show the error in the error column. **NOTE** Since duplicate items will have the same ID, the debugging console UI will not be able to scroll to BOTH duplicate elements.  Check your javascript console to see the  offending elements.
 
 ## Demo
 

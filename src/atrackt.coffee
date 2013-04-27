@@ -78,6 +78,7 @@ https://github.com/brewster1134/atrackt
       # set plugin to global plugins object
       @plugins[pluginName] = attrs
 
+    # Global helper methods
     setGlobalData: (object) ->
       for pluginName, pluginData of @plugins
         pluginData.setGlobalData object
@@ -105,7 +106,6 @@ https://github.com/brewster1134/atrackt
       for pluginName, pluginData of @plugins
         trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data
 
-        console.log trackingData
         if data instanceof jQuery
           # check the event is in the plugin's event namespace
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
