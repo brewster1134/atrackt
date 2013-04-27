@@ -233,7 +233,7 @@ https://github.com/brewster1134/atrackt
           value: @_getValue $el
 
         # run the custom function if its available (and pass in current data)
-        $el.data('track-function')? $el.data 'track-object'
+        $el.data('track-function')? $el.data('track-object'), $el
 
         $el.data 'track-object'
 

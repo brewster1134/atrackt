@@ -52,7 +52,7 @@ That's it!  The settings from your plugin will bind events to elements and you c
 
 ### Advanced Usage
 
-Call `track` to manually track any JS object. Simply pass the data as an argument.  It will automatically add additional the data and pass it to each registered plugin.
+Call `track` to manually track any JS object. Simply pass the data as an argument.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
 
 ```coffee
 Atrackt.track
@@ -65,29 +65,37 @@ Call `refresh` if you need to re-scan the dom and re-bind elements based on the 
 Atrackt.refresh()
 ```
 
-Bind custom functions to a specific element using the `data-track-function` attribute.  This function will be run before the send method is called.  It allows for any custom manipulatons to the tracking object on a per-element basis. For example, you could track things conditionally...
+Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  The method is passed optional arguments.  The data object to be tracked, and the jquery object being tracked.  You can then modify the data or do any number of things before the data is tracked. For example, you could track things conditionally...
 
 ```coffee
-$('a#foo').data 'track-function', (data) ->
-  if data.value == 'foo'
+$('a#foo').data 'track-function', (data, el) ->
+  if data.value == 'foo' || el.data('foo') == true
     data.foo = true
+  else
+    data.foo = false
 ```
 
-Call `setGlobalData` to add attributes that will be tracked with _every_ tracking call.  Global data will _NOT_ overwrite the main balues provided by Atrackt (location, categories, value, event).
+Call `setGlobalData` to add attributes that will be tracked with every tracking call.  Global data will _NOT_ overwrite the main values provided by Atrackt (location, categories, value, event).
 
 ```coffee
+# set globalData for all plugins
 Atrackt.setGlobalData
   foo: 'bar'
 
+# set globalData for a specific plugin
 Atrackt.plugins['testPlugin'].setGlobalData
   foo: 'bar'
 ```
 
 #### Registering Plugins
 
-Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking you can quickly create a new plugin with the `registerPlugin` method.
+Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page.
 
-The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object as an argument.  You can do additional processing on the object and send it off however you need.
+*OR*
+
+Call `registerPlugin` to quickly register a custom plugin.
+
+The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object as an argument.  You can do additional processing on the object and pass it wherever you need to track it.
 
 ```coffee
 Atrackt.registerPlugin 'testPlugin',
@@ -95,9 +103,25 @@ Atrackt.registerPlugin 'testPlugin',
     # do stuff to the object and send it somewhere
 ```
 
+Call `setOptions` on a specific plugin if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
+
+_setOptions is not available to set options on all plugins at once.  options should be specific to a plugin_
+
+```coffee
+Atrackt.registerPlugin 'testPlugin',
+  send: ->
+  options:
+    foo: 'foo'
+
+Atrackt.plugins['testPlugin'].setOptions
+  foo: 'bar'
+```
+
 Typically just creating a send method to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
 
-You can accomplish this by calling the `bind` method. The method accepts an object with the event type as the key, and an array of jquery selectors as the values.  Any matching selectors will be automatically bound and tracked with the given event.
+Call 'bind' and 'unbind' to register jquery selectors or jquery objects to automatically fire tracking events.  These methods accept a special events object.
+
+The format is an event type as the key, and an array of jquery selectors, or a jquery object as the value.  Any matching selectors or objects will be automatically bound and tracked with the given event.
 
 ```coffee
 # bind on ALL registered plugins
@@ -129,18 +153,6 @@ Atrackt.bind
 
 Atrackt.plugins['testPlugin'].bind
   click: $('div#foo')
-```
-
-Call `setOptions` if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
-
-```coffee
-Atrackt.registerPlugin 'testPlugin',
-  send: ->
-  options:
-    foo: 'foo'
-
-Atrackt.plugins['testPlugin'].setOptions
-  foo: 'bar'
 ```
 
 ## Debugging Console

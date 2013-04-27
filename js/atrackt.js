@@ -218,7 +218,7 @@ https://github.com/brewster1134/atrackt
           location: this._getLocation(),
           categories: this._getCategories($el),
           value: this._getValue($el)
-        }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+        }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object'), $el) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
           location: this._getLocation()
         }), data) : (console.log('DATA IS NOT TRACKABLE', data), false);
       },
