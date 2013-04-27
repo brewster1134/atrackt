@@ -156,12 +156,12 @@ https://github.com/brewster1134/atrackt
         plugin = this.plugins[pluginName];
         includeSelectors = $((_ref = plugin.includeSelectors[eventType]) != null ? _ref.join(',') : void 0);
         includeElements = includeSelectors || [];
-        _.each(plugin.includeElements[eventType], function(el) {
+        _.each(plugin.includeElements[eventType] || [], function(el) {
           return includeElements = includeElements.add(el);
         });
         excludeSelectors = $((_ref1 = plugin.excludeSelectors[eventType]) != null ? _ref1.join(',') : void 0);
         excludeElements = excludeSelectors || [];
-        _.each(plugin.excludeElements[eventType], function(el) {
+        _.each(plugin.excludeElements[eventType] || [], function(el) {
           return excludeElements = excludeElements.add(el);
         });
         allElements = includeElements.not(excludeElements);

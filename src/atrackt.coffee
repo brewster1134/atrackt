@@ -141,12 +141,12 @@ https://github.com/brewster1134/atrackt
 
       includeSelectors = $(plugin.includeSelectors[eventType]?.join(','))
       includeElements = includeSelectors || []
-      _.each plugin.includeElements[eventType], (el) ->
+      _.each plugin.includeElements[eventType] || [], (el) ->
         includeElements = includeElements.add el
 
       excludeSelectors = $(plugin.excludeSelectors[eventType]?.join(','))
       excludeElements = excludeSelectors || []
-      _.each plugin.excludeElements[eventType], (el) ->
+      _.each plugin.excludeElements[eventType] || [], (el) ->
         excludeElements = excludeElements.add el
 
       # remove excluded elements
