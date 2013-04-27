@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.8
+@version 0.0.9
 @author Ryan Brewster
 */
 
@@ -78,7 +78,21 @@ https://github.com/brewster1134/atrackt
           pluginOptions = attrs.options || {};
           return attrs.options = $.extend(true, pluginOptions, options);
         };
+        attrs.setGlobalData = function(object) {
+          attrs.globalData || (attrs.globalData = {});
+          return $.extend(true, attrs.globalData, object);
+        };
         return this.plugins[pluginName] = attrs;
+      },
+      setGlobalData: function(object) {
+        var pluginData, pluginName, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (pluginName in _ref) {
+          pluginData = _ref[pluginName];
+          _results.push(pluginData.setGlobalData(object));
+        }
+        return _results;
       },
       bind: function(eventsObject) {
         var pluginData, pluginName, _ref, _results;
@@ -115,19 +129,21 @@ https://github.com/brewster1134/atrackt
         return true;
       },
       track: function(data, event) {
-        var pluginData, pluginName, _ref;
+        var pluginData, pluginName, trackingData, _ref;
         _ref = this.plugins;
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
+          trackingData = $.extend(true, {}, pluginData.globalData, this._getTrackObject(data));
+          console.log(trackingData);
           if (data instanceof jQuery) {
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
-              pluginData.send(this._getTrackObject(data, {
+              pluginData.send($.extend(trackingData, {
                 event: event != null ? event.type : void 0,
                 plugin: pluginName
               }));
             }
           } else if (data instanceof Object) {
-            pluginData.send(this._getTrackObject(data, {
+            pluginData.send($.extend(trackingData, {
               plugin: pluginName
             }));
           }
@@ -197,16 +213,13 @@ https://github.com/brewster1134/atrackt
         selectors.off(eventName);
         return selectors;
       },
-      _getTrackObject: function(data, additionalData) {
+      _getTrackObject: function(data) {
         var $el, trackObject, _base;
-        if (additionalData == null) {
-          additionalData = {};
-        }
         return trackObject = data instanceof jQuery ? ($el = data, $el.data('track-object', {
           location: this._getLocation(),
           categories: this._getCategories($el),
           value: this._getValue($el)
-        }), $.extend($el.data('track-object'), additionalData), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+        }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object')) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
           location: this._getLocation()
         }), data) : (console.log('DATA IS NOT TRACKABLE', data), false);
       },

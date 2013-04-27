@@ -74,6 +74,16 @@ $ ->
       data.foo = true
 ```
 
+In additional, a global tracking object will be swept into _every_ tracking call.  Simply set data with `Atrack.setGlobalData` to include it in your tracking data.  This will NOT overwrite the rudimentary data provided by Atrackt (location, categories, value, event).
+
+```coffee
+Atrackt.setGlobalData
+  foo: 'bar'
+
+Atrackt.plugins['testPlugin'].setGlobalData
+  foo: 'bar'
+```
+
 #### Registering Plugins
 
 Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page, but if you would like custom tracking you can quickly create a new plugin with the `registerPlugin` method.

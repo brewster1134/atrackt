@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.8
+@version 0.0.9
 @author Ryan Brewster
 ###
 
@@ -71,8 +71,16 @@ https://github.com/brewster1134/atrackt
         pluginOptions = attrs.options || {}
         attrs.options = $.extend true, pluginOptions, options
 
+      attrs.setGlobalData = (object) ->
+        attrs.globalData ||= {}
+        $.extend true, attrs.globalData, object
+
       # set plugin to global plugins object
       @plugins[pluginName] = attrs
+
+    setGlobalData: (object) ->
+      for pluginName, pluginData of @plugins
+        pluginData.setGlobalData object
 
     bind: (eventsObject) ->
       for pluginName, pluginData of @plugins
@@ -95,16 +103,18 @@ https://github.com/brewster1134/atrackt
 
     track: (data, event) ->
       for pluginName, pluginData of @plugins
+        trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data
 
+        console.log trackingData
         if data instanceof jQuery
           # check the event is in the plugin's event namespace
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
-            pluginData.send @_getTrackObject data,
+            pluginData.send $.extend trackingData,
               event:  event?.type
               plugin: pluginName
 
         else if data instanceof Object
-          pluginData.send @_getTrackObject data,
+          pluginData.send $.extend trackingData,
             plugin: pluginName
       true
 
@@ -213,7 +223,7 @@ https://github.com/brewster1134/atrackt
       selectors
 
     # builds the object to be passed to the custom send method
-    _getTrackObject: (data, additionalData = {}) ->
+    _getTrackObject: (data) ->
       trackObject = if data instanceof jQuery
         $el = data
 
@@ -221,8 +231,6 @@ https://github.com/brewster1134/atrackt
           location: @_getLocation()
           categories: @_getCategories $el
           value: @_getValue $el
-
-        $.extend $el.data('track-object'), additionalData
 
         # run the custom function if its available (and pass in current data)
         $el.data('track-function')? $el.data 'track-object'

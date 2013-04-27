@@ -253,9 +253,46 @@ describe 'Atrackt', ->
       it 'should set custom options on the plugin', ->
         expect(Atrackt.plugins['fooPlugin'].options.foo).to.equal 'bar'
 
+    describe '#globalData', ->
+      before ->
+        Atrackt.setGlobalData
+          globalFoo: 'foo'
+
+      it 'should track add global data to the plugins', ->
+        expect(fooPlugin.globalData.globalFoo).to.equal 'foo'
+
+      context 'when adding additional globalData', ->
+        before ->
+          Atrackt.setGlobalData
+            globalBar: 'bar'
+
+        it 'should retain the previous data', ->
+          expect(fooPlugin.globalData.globalFoo).to.equal 'foo'
+          expect(fooPlugin.globalData.globalBar).to.equal 'bar'
+
+      context 'when adding existing globalData', ->
+        before ->
+          Atrackt.setGlobalData
+            globalFoo: 'bar'
+          Atrackt.track $('<a></a>')
+
+        it 'should extend existing data', ->
+          expect(fooPlugin.globalData.globalFoo).to.equal 'bar'
+          expect(fooPlugin.globalData.globalBar).to.equal 'bar'
+
     describe '#track', ->
+      context 'wtih globalData', ->
+        before ->
+          Atrackt.setGlobalData
+            globalFoo: 'foo'
+          Atrackt.track $('a.foo')
+
+        it 'should include the global data', ->
+          expect(fooSendSpy.args[0][0].globalFoo).to.equal 'foo'
+
       context 'with an element', ->
         beforeEach ->
+          console.log "SPEC"
           el = $('<a></a>')
           Atrackt.track el
 
