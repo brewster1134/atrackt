@@ -34,7 +34,6 @@ $.extend window.Atrackt,
           position: fixed;
           top: 0;
           left: 0;
-          z-index: 1;
           border-bottom: 2px solid black; }
         #atrackt-location {
           border-bottom: 1px solid black;
