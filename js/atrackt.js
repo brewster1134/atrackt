@@ -10,6 +10,12 @@ https://github.com/brewster1134/atrackt
 
 (function() {
 
+  if (!String.prototype.trim) {
+    String.prototype.trim = function() {
+      return this.replace(/^\s+|\s+$/g, '');
+    };
+  }
+
   (function($, window, document) {
     if (window.console == null) {
       window.console = {
@@ -237,7 +243,7 @@ https://github.com/brewster1134/atrackt
         return catArray;
       },
       _getValue: function($el) {
-        return $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class');
+        return $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class');
       },
       _urlParams: function(key) {
         var paramString, params;

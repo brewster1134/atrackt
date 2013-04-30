@@ -5,6 +5,10 @@ https://github.com/brewster1134/atrackt
 @author Ryan Brewster
 ###
 
+unless String::trim
+  String::trim = ->
+    @replace /^\s+|\s+$/g,''
+
 (($, window, document) ->
 
   # IE Console support
@@ -262,7 +266,7 @@ https://github.com/brewster1134/atrackt
       catArray
 
     _getValue: ($el) ->
-      $el.attr('title') || $el.attr('name') || $el.text() || $el.val() || $el.attr('id') || $el.attr('class')
+      $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class')
 
     # build an object of url paramaters.
     # @param pass an optional key to just return that value
