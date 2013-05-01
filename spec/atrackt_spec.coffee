@@ -292,7 +292,6 @@ describe 'Atrackt', ->
 
       context 'with an element', ->
         beforeEach ->
-          console.log "SPEC"
           el = $('<a></a>')
           Atrackt.track el
 

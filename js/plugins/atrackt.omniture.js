@@ -11,15 +11,21 @@ https://github.com/brewster1134/atrackt
 (function() {
 
   window.Atrackt.registerPlugin('omniture', {
-    send: function(obj) {
+    send: function(obj, options) {
       var _ref;
+      if (options == null) {
+        options = {};
+      }
       obj.categories = (_ref = obj.categories) != null ? _ref.join(this.options.delimiters.category) : void 0;
       obj = this.translatePropMap(obj);
-      if ((typeof s !== "undefined" && s !== null) && s.tl) {
-        this.buildSObject(obj);
+      if (typeof s === "undefined" || s === null) {
+        return console.log('SITE CATALYST SCRIPT NOT LOADED!', obj);
+      }
+      this.buildSObject(obj);
+      if (options.page && (s.t != null)) {
+        s.t();
+      } else if (s.tl != null) {
         s.tl(true, 'o', this.buildLinkName(obj));
-      } else {
-        console.log('SITE CATALYST SCRIPT NOT LOADED!', obj);
       }
       return obj;
     },

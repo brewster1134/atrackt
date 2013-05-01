@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.9
+@version 0.0.10
 @author Ryan Brewster
 */
 
@@ -134,7 +134,7 @@ https://github.com/brewster1134/atrackt
         }
         return true;
       },
-      track: function(data, event) {
+      track: function(data, event, options) {
         var pluginData, pluginName, trackingData, _ref;
         _ref = this.plugins;
         for (pluginName in _ref) {
@@ -145,12 +145,15 @@ https://github.com/brewster1134/atrackt
               pluginData.send($.extend(trackingData, {
                 event: event != null ? event.type : void 0,
                 plugin: pluginName
-              }));
+              }, options));
             }
           } else if (data instanceof Object) {
+            if (event != null) {
+              options = event;
+            }
             pluginData.send($.extend(trackingData, {
               plugin: pluginName
-            }));
+            }, options));
           }
         }
         return true;

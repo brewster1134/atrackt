@@ -95,11 +95,11 @@ Common plugins can be found in `js/plugins` and will self-register themselves by
 
 Call `registerPlugin` to quickly register a custom plugin.
 
-The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object as an argument.  You can do additional processing on the object and pass it wherever you need to track it.
+The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object, and any additional options as an argument.  You can do additional processing on the object and pass it wherever you need to track it.
 
 ```coffee
 Atrackt.registerPlugin 'testPlugin',
-  send: (obj) ->
+  send: (obj, options) ->
     # do stuff to the object and send it somewhere
 ```
 
