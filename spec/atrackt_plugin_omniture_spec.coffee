@@ -1,10 +1,10 @@
-describe 'Plugin: SiteCatalyst', ->
+describe 'Plugin: omniture', ->
   plugin = null
 
   before ->
     Atrackt.plugins = {}
-    loadJs 'js/plugins/atrackt.siteCatalyst'
-    plugin = Atrackt.plugins['siteCatalyst']
+    loadJs 'js/plugins/atrackt.omniture'
+    plugin = Atrackt.plugins['omniture']
 
   after ->
     for event, selectorArray of plugin.events
@@ -14,16 +14,14 @@ describe 'Plugin: SiteCatalyst', ->
     before ->
       window.s = {}
       plugin.options.version = 14
-      plugin.options.propLimit = 1
       plugin.buildSObject
         foo: 'bar'
 
     it 'should add to the s object', ->
       expect(s.foo).to_exist
 
-    it 'shoule create empty props/eVars/events', ->
-      expect(s.linkTrackVars).to.equal 'products,events,prop1,eVar1'
-      expect(s.linkTrackEvents).to.equal 'event1'
+    it 'shoule set linkTrackVars', ->
+      expect(s.linkTrackVars).to.equal 'products,events,foo'
 
   describe '#send', ->
     obj = null
@@ -40,7 +38,7 @@ describe 'Plugin: SiteCatalyst', ->
       expect(obj.foo).to.not.exist
       expect(obj.prop1).to.exist
 
-    it 'should keep the original key if it exists in the propMap', ->
+    it 'should keep the original key if it does not exist in the propMap', ->
       expect(obj.bar).to.exist
 
   describe '#keyLookup', ->
@@ -50,3 +48,22 @@ describe 'Plugin: SiteCatalyst', ->
 
     it 'should lookup from propMap', ->
       expect(plugin.keyLookup('foo')).to.equal 'bar'
+
+  describe '#buildLinkName', ->
+    linkName = null
+
+    before ->
+      plugin.options.delimiters =
+        linkName: '|'
+      plugin.options.propMap =
+        value: 'prop1'
+        location: 'prop2'
+        categories: 'prop3'
+
+      linkName = plugin.buildLinkName
+        prop1: 'baz'
+        prop2: 'foo'
+        prop3: 'bar'
+
+    it 'should build a link name', ->
+      expect(linkName).to.equal 'foo|bar|baz'

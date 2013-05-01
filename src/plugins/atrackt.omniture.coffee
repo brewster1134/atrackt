@@ -1,11 +1,11 @@
 ###
-Atrackt SiteCatalyst Plugin
+Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.2
+@version 0.0.3
 ###
 
-window.Atrackt.registerPlugin 'siteCatalyst',
+window.Atrackt.registerPlugin 'omniture',
   send: (obj) ->
     obj.categories = obj.categories?.join @options.delimiters.category
     obj = @translatePropMap obj
@@ -15,11 +15,9 @@ window.Atrackt.registerPlugin 'siteCatalyst',
       s.tl true, 'o', @buildLinkName obj
     else
       console.log 'SITE CATALYST SCRIPT NOT LOADED!', obj
-
     obj
 
   options:
-    propLimit: 100
     version: 14
     delimiters:
       linkName: '/'
@@ -31,18 +29,14 @@ window.Atrackt.registerPlugin 'siteCatalyst',
       value       : 'prop3'
       event       : 'prop4'
 
-  # siteCatalyst specific
+  # omniture specific
   buildSObject: (obj) ->
     switch @options.version
       when 14
-        varsArray = ['products', 'events']
-        eventsArray = []
-        for i in Array(@options.propLimit)
-          varsArray.push('prop' + (_i + 1))
-          varsArray.push('eVar' + (_i + 1))
-          eventsArray.push('event' + (_i + 1))
-        s.linkTrackVars = varsArray.join(',')
-        s.linkTrackEvents = eventsArray.join(',')
+        linkTrackVars = ['products', 'events']
+        for key, value of obj
+          linkTrackVars.push key
+        s.linkTrackVars = linkTrackVars.join(',')
 
         $.extend s, obj
       when 15
@@ -50,21 +44,11 @@ window.Atrackt.registerPlugin 'siteCatalyst',
     s
 
   buildLinkName: (obj) ->
-    linkName = []
-
-    switch @options.version
-      when 14
-        linkName = [
-          obj.prop1,
-          obj.prop2,
-          obj.prop3,
-        ]
-      when 15
-        linkName = [
-          obj.location,
-          obj.categories,
-          obj.value,
-        ]
+    linkName = [
+      obj[@options.propMap.location]
+      obj[@options.propMap.categories]
+      obj[@options.propMap.value]
+    ]
 
     linkName.join(@options.delimiters.linkName)
 
