@@ -134,26 +134,23 @@ https://github.com/brewster1134/atrackt
         }
         return true;
       },
-      track: function(data, event, options) {
+      track: function(data, options, event) {
         var pluginData, pluginName, trackingData, _ref;
         _ref = this.plugins;
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
-          trackingData = $.extend(true, {}, pluginData.globalData, this._getTrackObject(data));
+          trackingData = $.extend(true, {}, pluginData.globalData, this._getTrackObject(data, event));
           if (data instanceof jQuery) {
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
               pluginData.send($.extend(trackingData, {
                 event: event != null ? event.type : void 0,
                 plugin: pluginName
-              }, options));
+              }), options);
             }
           } else if (data instanceof Object) {
-            if (event != null) {
-              options = event;
-            }
             pluginData.send($.extend(trackingData, {
               plugin: pluginName
-            }, options));
+            }), options);
           }
         }
         return true;
@@ -190,7 +187,7 @@ https://github.com/brewster1134/atrackt
             selectors = data;
           }
           selectors.on("" + eventType + ".atrackt." + pluginName, function(e) {
-            return Atrackt.track($(this), e);
+            return Atrackt.track($(this), {}, e);
           });
           if (_this._debug()) {
             selectors.each(function() {
@@ -221,13 +218,13 @@ https://github.com/brewster1134/atrackt
         selectors.off(eventName);
         return selectors;
       },
-      _getTrackObject: function(data) {
+      _getTrackObject: function(data, event) {
         var $el, trackObject, _base;
         return trackObject = data instanceof jQuery ? ($el = data, $el.data('track-object', {
           location: this._getLocation(),
           categories: this._getCategories($el),
           value: this._getValue($el)
-        }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object'), $el) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
+        }), typeof (_base = $el.data('track-function')) === "function" ? _base($el.data('track-object'), $el, event) : void 0, $el.data('track-object')) : data instanceof Object ? ($.extend(data, {
           location: this._getLocation()
         }), data) : (console.log('DATA IS NOT TRACKABLE', data), false);
       },

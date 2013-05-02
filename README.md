@@ -52,7 +52,13 @@ That's it!  The settings from your plugin will bind events to elements and you c
 
 ### Advanced Usage
 
-Call `track` to manually track any JS object. Simply pass the data as an argument.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
+Call `track` to manually track any JS object.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
+
+It accepts 3 arguments.
+
+* [Object]  The data you want to track
+* [Object]  Any options you want to send the plugin to customize tracking
+* [Event]   An event.  If an event is passed, it will be check that the event namespace matches each plugin.
 
 ```coffee
 Atrackt.track
@@ -65,7 +71,15 @@ Call `refresh` if you need to re-scan the dom and re-bind elements based on the 
 Atrackt.refresh()
 ```
 
-Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  The method is passed optional arguments.  The data object to be tracked, and the jquery object being tracked.  You can then modify the data or do any number of things before the data is tracked. For example, you could track things conditionally...
+Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
+
+It accepts 3 arguments
+
+* [Object]  The generated data being tracked
+* [jQuery Object] The element being tracked
+* [Event] The event that triggered the tracking
+
+For example, you could track things conditionally...
 
 ```coffee
 $('a#foo').data 'track-function', (data, el) ->
@@ -209,3 +223,8 @@ This will be done automatically if you are running the tests with testem _(see t
   * HomeBrew: `brew install phantomjs`
 
 Simply run `testem`
+
+### To-Do
+
+* pass an element to refresh() to scope to
+* suport binding an element only if it matches a plugins selector rules (this requires some serious thought for the API)

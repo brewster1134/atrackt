@@ -106,23 +106,22 @@ unless String::trim
 
       true
 
-    track: (data, event, options) ->
+    track: (data, options, event) ->
       for pluginName, pluginData of @plugins
-        trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data
+        trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data, event
 
         if data instanceof jQuery
           # check the event is in the plugin's event namespace
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
-            pluginData.send $.extend trackingData,
+            pluginData.send $.extend(trackingData,
               event:  event?.type
               plugin: pluginName
-            , options
+            ), options
 
         else if data instanceof Object
-          options = event if event?
-          pluginData.send $.extend trackingData,
+          pluginData.send $.extend(trackingData,
             plugin: pluginName
-          , options
+          ), options
       true
 
     # PRIVATE METHODS
@@ -188,7 +187,7 @@ unless String::trim
           selectors = data
 
         selectors.on "#{eventType}.atrackt.#{pluginName}", (e) ->
-          Atrackt.track $(@), e
+          Atrackt.track $(@), {}, e
 
         # add elements to the debug console
         if @_debug()
@@ -230,7 +229,7 @@ unless String::trim
       selectors
 
     # builds the object to be passed to the custom send method
-    _getTrackObject: (data) ->
+    _getTrackObject: (data, event) ->
       trackObject = if data instanceof jQuery
         $el = data
 
@@ -240,7 +239,7 @@ unless String::trim
           value: @_getValue $el
 
         # run the custom function if its available (and pass in current data)
-        $el.data('track-function')? $el.data('track-object'), $el
+        $el.data('track-function')? $el.data('track-object'), $el, event
 
         $el.data 'track-object'
 

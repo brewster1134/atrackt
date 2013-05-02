@@ -290,6 +290,16 @@ describe 'Atrackt', ->
         it 'should include the global data', ->
           expect(fooSendSpy.args[0][0].globalFoo).to.equal 'foo'
 
+      context 'with options', ->
+        beforeEach ->
+          el = $('<a></a>')
+          Atrackt.track el,
+            foo: 'bar'
+
+        it 'should call send with the track object', ->
+          expect(fooSendSpy).to.be.called.once
+          expect(fooSendSpy.args[0][1]).to.be.a 'object'
+
       context 'with an element', ->
         beforeEach ->
           el = $('<a></a>')
