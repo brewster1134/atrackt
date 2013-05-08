@@ -2,7 +2,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.3
+@version 0.0.4
 ###
 
 window.Atrackt.registerPlugin 'omniture',
@@ -24,8 +24,8 @@ window.Atrackt.registerPlugin 'omniture',
     delimiters:
       linkName: '/'
       category: '|'
+    linkTrackVars: ['products', 'events']
     propMap:
-      plugin      : 'plugin'
       location    : 'prop1'
       categories  : 'prop2'
       value       : 'prop3'
@@ -35,7 +35,7 @@ window.Atrackt.registerPlugin 'omniture',
   buildSObject: (obj) ->
     switch @options.version
       when 14
-        linkTrackVars = ['products', 'events']
+        linkTrackVars = @options.linkTrackVars
         for key, value of obj
           linkTrackVars.push key
         s.linkTrackVars = linkTrackVars.join(',')

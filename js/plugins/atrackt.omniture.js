@@ -4,7 +4,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.3
+@version 0.0.4
 */
 
 
@@ -35,8 +35,8 @@ https://github.com/brewster1134/atrackt
         linkName: '/',
         category: '|'
       },
+      linkTrackVars: ['products', 'events'],
       propMap: {
-        plugin: 'plugin',
         location: 'prop1',
         categories: 'prop2',
         value: 'prop3',
@@ -47,7 +47,7 @@ https://github.com/brewster1134/atrackt
       var key, linkTrackVars, value;
       switch (this.options.version) {
         case 14:
-          linkTrackVars = ['products', 'events'];
+          linkTrackVars = this.options.linkTrackVars;
           for (key in obj) {
             value = obj[key];
             linkTrackVars.push(key);

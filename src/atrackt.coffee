@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.10
+@version 0.0.11
 @author Ryan Brewster
 ###
 
@@ -22,7 +22,6 @@ unless String::trim
 
     registerPlugin: (pluginName, attrs) ->
       return console.log 'NO SEND METHOD DEFINED' unless typeof attrs?.send is 'function'
-      console.log 'ATRACKT PLUGIN REGISTERED', pluginName, attrs
 
       attrs.elements ||= {}
       attrs.includeSelectors ||= {}
@@ -115,13 +114,10 @@ unless String::trim
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
             pluginData.send $.extend(trackingData,
               event:  event?.type
-              plugin: pluginName
             ), options
 
         else if data instanceof Object
-          pluginData.send $.extend(trackingData,
-            plugin: pluginName
-          ), options
+          pluginData.send trackingData, options
       true
 
     # PRIVATE METHODS
@@ -268,7 +264,7 @@ unless String::trim
       catArray
 
     _getValue: ($el) ->
-      $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class')
+      $el.data('track-value') || $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class')
 
     # build an object of url paramaters.
     # @param pass an optional key to just return that value

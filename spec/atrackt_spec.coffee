@@ -312,9 +312,6 @@ describe 'Atrackt', ->
           expect(fooSendSpy).to.be.called.once
           expect(fooSendSpy.args[0][0]).to.be.a 'object'
 
-        it 'should set the plugin attr to the plugin name', ->
-          expect(fooSendSpy.args[0][0].plugin).to.equal 'fooPlugin'
-
         context 'with a custom function', ->
           beforeEach ->
             el = $('<a></a>')

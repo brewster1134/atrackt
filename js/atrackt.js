@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.10
+@version 0.0.11
 @author Ryan Brewster
 */
 
@@ -29,7 +29,6 @@ https://github.com/brewster1134/atrackt
         if (typeof (attrs != null ? attrs.send : void 0) !== 'function') {
           return console.log('NO SEND METHOD DEFINED');
         }
-        console.log('ATRACKT PLUGIN REGISTERED', pluginName, attrs);
         attrs.elements || (attrs.elements = {});
         attrs.includeSelectors || (attrs.includeSelectors = {});
         attrs.includeElements || (attrs.includeElements = {});
@@ -143,14 +142,11 @@ https://github.com/brewster1134/atrackt
           if (data instanceof jQuery) {
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
               pluginData.send($.extend(trackingData, {
-                event: event != null ? event.type : void 0,
-                plugin: pluginName
+                event: event != null ? event.type : void 0
               }), options);
             }
           } else if (data instanceof Object) {
-            pluginData.send($.extend(trackingData, {
-              plugin: pluginName
-            }), options);
+            pluginData.send(trackingData, options);
           }
         }
         return true;
@@ -243,7 +239,7 @@ https://github.com/brewster1134/atrackt
         return catArray;
       },
       _getValue: function($el) {
-        return $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class');
+        return $el.data('track-value') || $el.attr('title') || $el.attr('name') || $el.text().trim() || $el.val() || $el.attr('id') || $el.attr('class');
       },
       _urlParams: function(key) {
         var paramString, params;

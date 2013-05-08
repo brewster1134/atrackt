@@ -14,14 +14,15 @@ describe 'Plugin: omniture', ->
     before ->
       window.s = {}
       plugin.options.version = 14
+      plugin.options.linkTrackVars = ['foo']
       plugin.buildSObject
-        foo: 'bar'
+        bar: 'bar'
 
     it 'should add to the s object', ->
       expect(s.foo).to_exist
 
     it 'shoule set linkTrackVars', ->
-      expect(s.linkTrackVars).to.equal 'products,events,foo'
+      expect(s.linkTrackVars).to.equal 'foo,bar'
 
   describe '#send', ->
     obj = null
