@@ -52,70 +52,7 @@ That's it!  The settings from your plugin will bind events to elements and you c
 
 ### Advanced Usage
 
-Call `track` to manually track any JS object.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
-
-It accepts 3 arguments.
-
-* [Object]  The data you want to track
-* [Object]  Any options you want to send the plugin to customize tracking
-* [Event]   An event.  If an event is passed, it will be check that the event namespace matches each plugin.
-
-```coffee
-Atrackt.track
-  foo: 'bar'
-```
-
-Call `refresh` if you need to re-scan the dom and re-bind elements based on the `bind` and `unbind` data.
-
-```coffee
-Atrackt.refresh()
-```
-
-Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
-
-It accepts 3 arguments
-
-* [Object]  The generated data being tracked
-* [jQuery Object] The element being tracked
-* [Event] The event that triggered the tracking
-
-For example, you could track things conditionally...
-
-```coffee
-$('a#foo').data 'track-function', (data, el) ->
-  if data.value == 'foo' || el.data('foo') == true
-    data.foo = true
-  else
-    data.foo = false
-```
-
-Call `setGlobalData` to add attributes that will be tracked with every tracking call.  Global data will _NOT_ overwrite the main values provided by Atrackt (location, categories, value, event).
-
-```coffee
-# set globalData for all plugins
-Atrackt.setGlobalData
-  foo: 'bar'
-
-# set globalData for a specific plugin
-Atrackt.plugins['testPlugin'].setGlobalData
-  foo: 'bar'
-```
-
-Call `setCallback` to assign functions to be run before and after the plugin's send function.  Currently the only callbacks supported are 'before' and 'after'
-
-```coffee
-# set before callback for all plugins
-Atrackt.setCallback 'before', (data, options ,event) ->
-
-# set after callback for a specific plugin
-Atrackt.plugins['testPlugin'].setCallback 'after', (data, options ,event) ->
-```
-
-#### Registering Plugins
-
-Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page.
-
-*OR*
+#### `registerPlugin`
 
 Call `registerPlugin` to quickly register a custom plugin.
 
@@ -127,19 +64,7 @@ Atrackt.registerPlugin 'testPlugin',
     # do stuff to the object and send it somewhere
 ```
 
-Call `setOptions` on a specific plugin if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
-
-_setOptions is not available to set options on all plugins at once.  options should be specific to a plugin_
-
-```coffee
-Atrackt.registerPlugin 'testPlugin',
-  send: ->
-  options:
-    foo: 'foo'
-
-Atrackt.plugins['testPlugin'].setOptions
-  foo: 'bar'
-```
+#### `bind` & `unbind`
 
 Typically just creating a send method to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
 
@@ -177,6 +102,89 @@ Atrackt.bind
 
 Atrackt.plugins['testPlugin'].bind
   click: $('div#foo')
+```
+#### `track`
+
+Call 'track' to manually track any JS object.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
+
+It accepts 3 arguments.
+
+* [Object]  The data you want to track
+* [Object]  Any options you want to send the plugin to customize tracking
+* [Event]   An event.  If an event is passed, it will be check that the event namespace matches each plugin.
+
+```coffee
+Atrackt.track
+  foo: 'bar'
+```
+
+#### `refresh`
+
+Call `refresh` if you need to re-scan the dom and re-bind elements based on the `bind` and `unbind` data.
+
+```coffee
+Atrackt.refresh()
+```
+
+Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
+
+It accepts 3 arguments
+
+* [Object]  The generated data being tracked
+* [jQuery Object] The element being tracked
+* [Event] The event that triggered the tracking
+
+For example, you could track things conditionally...
+
+```coffee
+$('a#foo').data 'track-function', (data, el) ->
+  if data.value == 'foo' || el.data('foo') == true
+    data.foo = true
+  else
+    data.foo = false
+```
+
+#### `setOptions`
+
+Call `setOptions` on a specific plugin if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
+
+_setOptions is not available to set options on all plugins at once.  options should be specific to a plugin_
+
+```coffee
+Atrackt.registerPlugin 'testPlugin',
+  send: ->
+  options:
+    foo: 'foo'
+
+Atrackt.plugins['testPlugin'].setOptions
+  foo: 'bar'
+```
+
+
+#### `setGlobalData`
+
+Call `setGlobalData` to add attributes that will be tracked with every tracking call.  Global data will _NOT_ overwrite the main values provided by Atrackt (location, categories, value, event).
+
+```coffee
+# set globalData for all plugins
+Atrackt.setGlobalData
+  foo: 'bar'
+
+# set globalData for a specific plugin
+Atrackt.plugins['testPlugin'].setGlobalData
+  foo: 'bar'
+```
+
+#### `setCallback`
+
+Call `setCallback` to assign functions to be run before and after the plugin's send function.  Currently the only callbacks supported are 'before' and 'after'
+
+```coffee
+# set before callback for all plugins
+Atrackt.setCallback 'before', (data, options ,event) ->
+
+# set after callback for a specific plugin
+Atrackt.plugins['testPlugin'].setCallback 'after', (data, options ,event) ->
 ```
 
 ## Debugging Console
