@@ -247,6 +247,7 @@ Simply run `testem`
 * pass an element to refresh() to scope to
 * suport binding an element only if it matches a plugins selector rules (this requires some serious thought for the API)
 * IE testing
+* Support multiple callbacks
 
 ### CHANGE LOG
 0.12  Added setCallback
