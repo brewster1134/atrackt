@@ -203,7 +203,7 @@ unless String::trim
           Atrackt.track $(@), {}, e
 
         # add elements to the debug console
-        if @_debug()
+        if @_debug?()
           selectors.each ->
             Atrackt._debugEl $(@), pluginName, eventType
 
