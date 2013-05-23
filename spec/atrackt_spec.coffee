@@ -253,6 +253,54 @@ describe 'Atrackt', ->
       it 'should set custom options on the plugin', ->
         expect(Atrackt.plugins['fooPlugin'].options.foo).to.equal 'bar'
 
+    describe '#callbacks', ->
+      before ->
+        window._callbacks = []
+
+        Atrackt.registerPlugin 'callbacks',
+          send: (data, options) ->
+            window._callbacks.push
+              send:
+                data: data
+                options: options
+
+        Atrackt.plugins['callbacks'].setCallback 'before', (data, options ,event) ->
+          window._callbacks.push
+            before:
+              data: data
+              options: options
+              event: event
+
+        Atrackt.plugins['callbacks'].setCallback 'after', (data, options ,event) ->
+          window._callbacks.push
+            after:
+              data: data
+              options: options
+              event: event
+
+        Atrackt.track
+          data: 'data'
+        ,
+          option: 'option'
+        , 'event'
+
+      it 'should call before callback', ->
+        expect(window._callbacks[0].before).to.exist
+        expect(window._callbacks[0].before.data).to.exist
+        expect(window._callbacks[0].before.options).to.exist
+        expect(window._callbacks[0].before.event).to.exist
+
+      it 'should call send', ->
+        expect(window._callbacks[1].send).to.exist
+        expect(window._callbacks[1].send.data).to.exist
+        expect(window._callbacks[1].send.options).to.exist
+
+      it 'should call after callback', ->
+        expect(window._callbacks[2].after).to.exist
+        expect(window._callbacks[2].after.data).to.exist
+        expect(window._callbacks[2].after.options).to.exist
+        expect(window._callbacks[2].after.event).to.exist
+
     describe '#globalData', ->
       before ->
         Atrackt.setGlobalData

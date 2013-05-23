@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.11
+@version 0.0.12
 @author Ryan Brewster
 ###
 
@@ -78,6 +78,11 @@ unless String::trim
         attrs.globalData ||= {}
         $.extend true, attrs.globalData, object
 
+      attrs.setCallback = (name, callback) ->
+        return false unless _.contains(['before', 'after'], name)
+        attrs.callbacks ||= {}
+        attrs.callbacks[name] = callback
+
       # set plugin to global plugins object
       @plugins[pluginName] = attrs
 
@@ -85,6 +90,10 @@ unless String::trim
     setGlobalData: (object) ->
       for pluginName, pluginData of @plugins
         pluginData.setGlobalData object
+
+    setCallback: (name, callback) ->
+      for pluginName, pluginData of @plugins
+        pluginData.setCallback name, callback
 
     bind: (eventsObject) ->
       for pluginName, pluginData of @plugins
@@ -107,8 +116,13 @@ unless String::trim
 
     track: (data, options, event) ->
       for pluginName, pluginData of @plugins
+        # prepare tracking data
         trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data, event
 
+        # call before callback
+        pluginData.callbacks?['before']? trackingData, options, event
+
+        # send the tracking data
         if data instanceof jQuery
           # check the event is in the plugin's event namespace
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
@@ -118,6 +132,9 @@ unless String::trim
 
         else if data instanceof Object
           pluginData.send trackingData, options
+
+        # call after callback
+        pluginData.callbacks?['after']? trackingData, options, event
       true
 
     # PRIVATE METHODS

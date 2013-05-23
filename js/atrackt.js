@@ -3,7 +3,7 @@
 /*
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.11
+@version 0.0.12
 @author Ryan Brewster
 */
 
@@ -87,6 +87,13 @@ https://github.com/brewster1134/atrackt
           attrs.globalData || (attrs.globalData = {});
           return $.extend(true, attrs.globalData, object);
         };
+        attrs.setCallback = function(name, callback) {
+          if (!_.contains(['before', 'after'], name)) {
+            return false;
+          }
+          attrs.callbacks || (attrs.callbacks = {});
+          return attrs.callbacks[name] = callback;
+        };
         return this.plugins[pluginName] = attrs;
       },
       setGlobalData: function(object) {
@@ -96,6 +103,16 @@ https://github.com/brewster1134/atrackt
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
           _results.push(pluginData.setGlobalData(object));
+        }
+        return _results;
+      },
+      setCallback: function(name, callback) {
+        var pluginData, pluginName, _ref, _results;
+        _ref = this.plugins;
+        _results = [];
+        for (pluginName in _ref) {
+          pluginData = _ref[pluginName];
+          _results.push(pluginData.setCallback(name, callback));
         }
         return _results;
       },
@@ -134,11 +151,16 @@ https://github.com/brewster1134/atrackt
         return true;
       },
       track: function(data, options, event) {
-        var pluginData, pluginName, trackingData, _ref;
+        var pluginData, pluginName, trackingData, _ref, _ref1, _ref2;
         _ref = this.plugins;
         for (pluginName in _ref) {
           pluginData = _ref[pluginName];
           trackingData = $.extend(true, {}, pluginData.globalData, this._getTrackObject(data, event));
+          if ((_ref1 = pluginData.callbacks) != null) {
+            if (typeof _ref1['before'] === "function") {
+              _ref1['before'](trackingData, options, event);
+            }
+          }
           if (data instanceof jQuery) {
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
               pluginData.send($.extend(trackingData, {
@@ -147,6 +169,11 @@ https://github.com/brewster1134/atrackt
             }
           } else if (data instanceof Object) {
             pluginData.send(trackingData, options);
+          }
+          if ((_ref2 = pluginData.callbacks) != null) {
+            if (typeof _ref2['after'] === "function") {
+              _ref2['after'](trackingData, options, event);
+            }
           }
         }
         return true;

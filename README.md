@@ -101,6 +101,16 @@ Atrackt.plugins['testPlugin'].setGlobalData
   foo: 'bar'
 ```
 
+Call `setCallback` to assign functions to be run before and after the plugin's send function.  Currently the only callbacks supported are 'before' and 'after'
+
+```coffee
+# set before callback for all plugins
+Atrackt.setCallback 'before', (data, options ,event) ->
+
+# set after callback for a specific plugin
+Atrackt.plugins['testPlugin'].setCallback 'after', (data, options ,event) ->
+```
+
 #### Registering Plugins
 
 Common plugins can be found in `js/plugins` and will self-register themselves by including them on your page.
@@ -228,3 +238,7 @@ Simply run `testem`
 
 * pass an element to refresh() to scope to
 * suport binding an element only if it matches a plugins selector rules (this requires some serious thought for the API)
+* IE testing
+
+### CHANGE LOG
+0.12  Added setCallback
