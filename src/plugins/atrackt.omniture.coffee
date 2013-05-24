@@ -64,7 +64,7 @@ window.Atrackt.registerPlugin 'omniture',
 
     _globalData = {}
     $.each obj, (k,v) =>
-      _globalData[@keyLookup k] = v?.replace(@options.charReplaceRegex, '')
+      _globalData[@keyLookup k] = v?.replace? @options.charReplaceRegex, ''
     _globalData
 
   keyLookup: (key) ->

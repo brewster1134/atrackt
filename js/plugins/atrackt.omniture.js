@@ -72,7 +72,7 @@ https://github.com/brewster1134/atrackt
       }
       _globalData = {};
       $.each(obj, function(k, v) {
-        return _globalData[_this.keyLookup(k)] = v != null ? v.replace(_this.options.charReplaceRegex, '') : void 0;
+        return _globalData[_this.keyLookup(k)] = v != null ? typeof v.replace === "function" ? v.replace(_this.options.charReplaceRegex, '') : void 0 : void 0;
       });
       return _globalData;
     },
