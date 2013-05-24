@@ -212,7 +212,7 @@ https://github.com/brewster1134/atrackt
           selectors.on("" + eventType + ".atrackt." + pluginName, function(e) {
             return Atrackt.track($(this), {}, e);
           });
-          if (_this._debug()) {
+          if (typeof _this._debug === "function" ? _this._debug() : void 0) {
             selectors.each(function() {
               return Atrackt._debugEl($(this), pluginName, eventType);
             });

@@ -250,4 +250,6 @@ Simply run `testem`
 * Support multiple callbacks
 
 ### CHANGE LOG
-0.12  Added setCallback
+
+###### 0.0.12
+* Added setCallback

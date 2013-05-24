@@ -4,7 +4,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.4
+@version 0.0.5
 */
 
 
@@ -25,11 +25,12 @@ https://github.com/brewster1134/atrackt
       if (options.page && (s.t != null)) {
         s.t();
       } else if (s.tl != null) {
-        s.tl(true, 'o', this.buildLinkName(obj));
+        s.tl(options.delay || this.options.delay, 'o', this.buildLinkName(obj));
       }
       return obj;
     },
     options: {
+      delay: 'this',
       version: 14,
       delimiters: {
         linkName: '/',
@@ -73,7 +74,7 @@ https://github.com/brewster1134/atrackt
       }
       _globalData = {};
       $.each(obj, function(k, v) {
-        return _globalData[_this.keyLookup(k)] = v;
+        return _globalData[_this.keyLookup(k)] = v != null ? v.replace(/^[:print]/, '') : void 0;
       });
       return _globalData;
     },
