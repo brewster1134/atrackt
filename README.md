@@ -40,6 +40,26 @@ When an element is tracked, there are several basic values that are included.
 
 * *plugin*: The name of the plugin responsible for tracking the element
 
+#### `Custom Tracking`
+
+Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
+
+It accepts 3 arguments
+
+* [Object]  The generated data being tracked
+* [jQuery Object] The element being tracked
+* [Event] The event that triggered the tracking
+
+For example, you could track things conditionally...
+
+```coffee
+$('a#foo').data 'track-function', (data, el) ->
+  if data.value == 'foo' || el.data('foo') == true
+    data.foo = true
+  else
+    data.foo = false
+```
+
 ## Usage
 
 * Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.js) _(right-click & save as)_
@@ -124,24 +144,6 @@ Call `refresh` if you need to re-scan the dom and re-bind elements based on the 
 
 ```coffee
 Atrackt.refresh()
-```
-
-Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
-
-It accepts 3 arguments
-
-* [Object]  The generated data being tracked
-* [jQuery Object] The element being tracked
-* [Event] The event that triggered the tracking
-
-For example, you could track things conditionally...
-
-```coffee
-$('a#foo').data 'track-function', (data, el) ->
-  if data.value == 'foo' || el.data('foo') == true
-    data.foo = true
-  else
-    data.foo = false
 ```
 
 #### `setOptions`
