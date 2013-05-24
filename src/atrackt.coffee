@@ -130,7 +130,8 @@ unless String::trim
           if !event? || event.handleObj.namespace == "atrackt.#{pluginName}"
             pluginData.send $.extend(trackingData,
               event:  event?.type
-            ), options
+            ), $.extend options,
+              el: data
 
         else if data instanceof Object
           pluginData.send trackingData, options

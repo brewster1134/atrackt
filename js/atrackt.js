@@ -171,7 +171,9 @@ https://github.com/brewster1134/atrackt
             if (!(event != null) || event.handleObj.namespace === ("atrackt." + pluginName)) {
               pluginData.send($.extend(trackingData, {
                 event: event != null ? event.type : void 0
-              }), options);
+              }), $.extend(options, {
+                el: data
+              }));
             }
           } else if (data instanceof Object) {
             pluginData.send(trackingData, options);

@@ -2,7 +2,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.5
+@version 0.0.6
 ###
 
 window.Atrackt.registerPlugin 'omniture',
@@ -16,11 +16,15 @@ window.Atrackt.registerPlugin 'omniture',
     if options.page && s.t?
       s.t()
     else if s.tl?
-      s.tl options.delay || @options.delay, 'o', @buildLinkName obj
+      arg = if options.el?.attr('href')
+        options.el[0]
+      else
+        true
+      s.tl arg, 'o', @buildLinkName obj
     obj
 
   options:
-    delay: 'this'
+    charReplaceRegex: /[^\x20-\x7E]/g
     version: 14
     delimiters:
       linkName: '/'
@@ -60,7 +64,7 @@ window.Atrackt.registerPlugin 'omniture',
 
     _globalData = {}
     $.each obj, (k,v) =>
-      _globalData[@keyLookup k] = v?.replace(/^[:print]/, '')
+      _globalData[@keyLookup k] = v?.replace(@options.charReplaceRegex, '')
     _globalData
 
   keyLookup: (key) ->

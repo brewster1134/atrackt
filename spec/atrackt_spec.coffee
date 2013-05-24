@@ -342,6 +342,8 @@ describe 'Atrackt', ->
           expect(fooSendSpy.args[0][0].globalFoo).to.equal 'foo'
 
       context 'with options', ->
+        el = null
+
         beforeEach ->
           el = $('<a></a>')
           Atrackt.track el,
@@ -353,6 +355,9 @@ describe 'Atrackt', ->
 
         it 'should add the plugin name to the options', ->
           expect(fooSendSpy.args[0][1].plugin).to.exist
+
+        it 'should add the plugin name to the options', ->
+          expect(fooSendSpy.args[0][1].el).to.equal el
 
       context 'with an element', ->
         beforeEach ->

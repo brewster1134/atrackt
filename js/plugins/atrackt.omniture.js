@@ -4,7 +4,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.5
+@version 0.0.6
 */
 
 
@@ -12,7 +12,7 @@ https://github.com/brewster1134/atrackt
 
   window.Atrackt.registerPlugin('omniture', {
     send: function(obj, options) {
-      var _ref;
+      var arg, _ref, _ref1;
       obj.categories = (_ref = obj.categories) != null ? _ref.join(this.options.delimiters.category) : void 0;
       obj = this.translatePropMap(obj);
       if (typeof s === "undefined" || s === null) {
@@ -22,12 +22,13 @@ https://github.com/brewster1134/atrackt
       if (options.page && (s.t != null)) {
         s.t();
       } else if (s.tl != null) {
-        s.tl(options.delay || this.options.delay, 'o', this.buildLinkName(obj));
+        arg = ((_ref1 = options.el) != null ? _ref1.attr('href') : void 0) ? options.el[0] : true;
+        s.tl(arg, 'o', this.buildLinkName(obj));
       }
       return obj;
     },
     options: {
-      delay: 'this',
+      charReplaceRegex: /[^\x20-\x7E]/g,
       version: 14,
       delimiters: {
         linkName: '/',
@@ -71,7 +72,7 @@ https://github.com/brewster1134/atrackt
       }
       _globalData = {};
       $.each(obj, function(k, v) {
-        return _globalData[_this.keyLookup(k)] = v != null ? v.replace(/^[:print]/, '') : void 0;
+        return _globalData[_this.keyLookup(k)] = v != null ? v.replace(_this.options.charReplaceRegex, '') : void 0;
       });
       return _globalData;
     },
