@@ -6,7 +6,7 @@ https://github.com/brewster1134/atrackt
 ###
 
 window.Atrackt.registerPlugin 'omniture',
-  send: (obj, options = {}) ->
+  send: (obj, options) ->
     obj.categories = obj.categories?.join @options.delimiters.category
     obj = @translatePropMap obj
 

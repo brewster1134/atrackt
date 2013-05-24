@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.12
+@version 0.0.13
 @author Ryan Brewster
 ###
 
@@ -114,13 +114,15 @@ unless String::trim
 
       true
 
-    track: (data, options, event) ->
+    track: (data, options = {}, event) ->
       for pluginName, pluginData of @plugins
         # prepare tracking data
         trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data, event
+        $.extend options,
+          plugin: pluginName
 
         # call before callback
-        pluginData.callbacks?['before']? trackingData, options, event
+        pluginData.callbacks?['before']? trackingData, options
 
         # send the tracking data
         if data instanceof jQuery
@@ -134,7 +136,7 @@ unless String::trim
           pluginData.send trackingData, options
 
         # call after callback
-        pluginData.callbacks?['after']? trackingData, options, event
+        pluginData.callbacks?['after']? trackingData, options
       true
 
     # PRIVATE METHODS

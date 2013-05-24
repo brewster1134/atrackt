@@ -22,6 +22,12 @@ describe 'Atrackt', ->
     it 'should create a setOptions function', ->
       expect(Atrackt.plugins['plugin'].setOptions).to.be.a 'function'
 
+    it 'should create a setGlobalData function', ->
+      expect(Atrackt.plugins['plugin'].setGlobalData).to.be.a 'function'
+
+    it 'should create a setCallback function', ->
+      expect(Atrackt.plugins['plugin'].setCallback).to.be.a 'function'
+
     context 'when registering an invalid plugin', ->
       before ->
         Atrackt.registerPlugin 'invalidPlugin'
@@ -282,13 +288,11 @@ describe 'Atrackt', ->
           data: 'data'
         ,
           option: 'option'
-        , 'event'
 
       it 'should call before callback', ->
         expect(window._callbacks[0].before).to.exist
         expect(window._callbacks[0].before.data).to.exist
         expect(window._callbacks[0].before.options).to.exist
-        expect(window._callbacks[0].before.event).to.exist
 
       it 'should call send', ->
         expect(window._callbacks[1].send).to.exist
@@ -299,7 +303,6 @@ describe 'Atrackt', ->
         expect(window._callbacks[2].after).to.exist
         expect(window._callbacks[2].after.data).to.exist
         expect(window._callbacks[2].after.options).to.exist
-        expect(window._callbacks[2].after.event).to.exist
 
     describe '#globalData', ->
       before ->
@@ -346,7 +349,10 @@ describe 'Atrackt', ->
 
         it 'should call send with the track object', ->
           expect(fooSendSpy).to.be.called.once
-          expect(fooSendSpy.args[0][1]).to.be.a 'object'
+          expect(fooSendSpy.args[0][1].foo).to.equal 'bar'
+
+        it 'should add the plugin name to the options', ->
+          expect(fooSendSpy.args[0][1].plugin).to.exist
 
       context 'with an element', ->
         beforeEach ->

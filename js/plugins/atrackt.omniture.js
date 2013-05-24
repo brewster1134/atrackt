@@ -13,9 +13,6 @@ https://github.com/brewster1134/atrackt
   window.Atrackt.registerPlugin('omniture', {
     send: function(obj, options) {
       var _ref;
-      if (options == null) {
-        options = {};
-      }
       obj.categories = (_ref = obj.categories) != null ? _ref.join(this.options.delimiters.category) : void 0;
       obj = this.translatePropMap(obj);
       if (typeof s === "undefined" || s === null) {

@@ -34,6 +34,7 @@ describe 'Plugin: omniture', ->
       obj = plugin.send
         foo: 'foo'
         bar: 'bar'
+      , {}
 
     it 'should not have the original key if it exists in the propMap', ->
       expect(obj.foo).to.not.exist
