@@ -218,31 +218,38 @@ Click the link or visit `demo/index.html?debugTracking=true` to view the debuggi
 
 ### Dependencies
 
-* [CoffeeScript](http://coffeescript.org)
-
-Do **NOT** modify any `.js` files in the `js` directory!  Modify the files in the `src` directory and compile them with coffeescript into the js directory.
-
-This will be done automatically if you are running the tests with testem _(see the [Testing](#testing) section below)_, or you can compile it with the CoffeeScript command line tool.
-
-`coffee -o js/ -c src/*.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee`
-
-## Testing
-
-### Dependencies
-
+* Ruby 1.9.3
+  * [rbenv](https://github.com/sstephenson/rbenv) and [ruby-build](https://github.com/sstephenson/ruby-build)
+    * `rbenv install 1.9.3`
+* Bundler Gem
+  * `gem install bundler`
+* Bundled Gems
+  * `bundle install`
 * Node.js & NPM
-  * From [nodejs.org](http://nodejs.org)
-  * Using a [package manager](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager)
-    * HomeBrew: 'brew install node'
+  * OS X
+    * [HomeBrew](http://mxcl.github.io/homebrew/) _recommended_
+      * 'brew install node'
 * [Testem](https://github.com/airportyh/testem)
   * `npm install testem -g`
 
 ### Optional
 
 * [PhantomJS](http://phantomjs.org)
-  * HomeBrew: `brew install phantomjs`
+  * OS X
+    * [HomeBrew](http://mxcl.github.io/homebrew/) _recommended_
+      * `brew install phantomjs`
+* [Growl](http://growl.info/downloads)
+  * OS X 10.8
 
-Simply run `testem`
+### Compiling
+
+Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Guard will watch for changes and compile them to the `lib` directory.
+
+`bundle exec guard`
+
+## Testing
+
+Simply run `testem`.  Run `testem -g` for Growl support.
 
 ### To-Do
 
@@ -250,11 +257,3 @@ Simply run `testem`
 * suport binding an element only if it matches a plugins selector rules (this requires some serious thought for the API)
 * IE testing
 * Support multiple callbacks
-
-### CHANGE LOG
-
-###### 0.0.12
-* Added setCallback
-
-###### 0.0.13
-* Pass element in send options

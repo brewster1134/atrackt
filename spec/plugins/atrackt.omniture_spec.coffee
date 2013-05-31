@@ -3,7 +3,7 @@ describe 'Plugin: omniture', ->
 
   before ->
     Atrackt.plugins = {}
-    loadJs 'js/plugins/atrackt.omniture'
+    loadJs 'lib/plugins/atrackt.omniture'
     plugin = Atrackt.plugins['omniture']
 
   after ->

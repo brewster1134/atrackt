@@ -1,13 +1,11 @@
 test_page: spec/index.html
-before_tests: coffee -o js/ -c src/*.coffee && coffee -o js/plugins/ -c src/plugins/*.coffee && coffee -c spec/*.coffee
 src_files:
-  - src/**/*.coffee
-  - spec/*.coffee
-  - spec/index.html
+  - .tmp/*_spec.js
+  - lib/*.js
 serve_files:
-  - spec/*
+  - spec/vendor/*.js
+  - .tmp/*_spec.js
 launch_in_dev:
   - phantomjs
 launch_in_ci:
   - phantomjs
-on_exit: rm spec/*.js

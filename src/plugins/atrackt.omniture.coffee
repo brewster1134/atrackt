@@ -69,5 +69,5 @@ window.Atrackt.registerPlugin 'omniture',
 
   keyLookup: (key) ->
     _newKey = @options.propMap[key]
-    console.log 'NO MAPPING FOR "' + key + '" FOUND.' unless _newKey
+    console.log "NO MAPPING FOR: #{key}" unless _newKey
     _newKey || key
