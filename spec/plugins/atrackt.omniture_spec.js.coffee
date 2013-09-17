@@ -69,3 +69,15 @@ describe 'Plugin: omniture', ->
 
     it 'should build a link name', ->
       expect(linkName).to.equal 'foo|bar|baz'
+
+  describe '#translatePropMap', ->
+    pre = null
+    post = null
+
+    before ->
+      pre =
+        integer: 10
+      post = plugin.translatePropMap pre
+
+    it 'should handle any value type', ->
+      expect(post['integer']).to.equal '10'

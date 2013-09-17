@@ -2,7 +2,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.6
+@version 0.0.7
 ###
 
 window.Atrackt.registerPlugin 'omniture',
@@ -64,7 +64,7 @@ window.Atrackt.registerPlugin 'omniture',
 
     _globalData = {}
     $.each obj, (k,v) =>
-      _globalData[@keyLookup k] = v?.replace? @options.charReplaceRegex, ''
+      _globalData[@keyLookup k] = v?.toString().replace? @options.charReplaceRegex, ''
     _globalData
 
   keyLookup: (key) ->

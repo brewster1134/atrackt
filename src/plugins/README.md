@@ -12,3 +12,6 @@
 * Proper `this|true` support
 * Proper regex replace
   * Can be customized with options as `charReplaceRegex` (default `/[^\x20-\x7E]/g` )
+
+###### 0.0.7
+* Supports multiple types for tracked values
