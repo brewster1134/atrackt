@@ -92,6 +92,8 @@ Call 'bind' and 'unbind' to register jquery selectors or jquery objects to autom
 
 The format is an event type as the key, and an array of jquery selectors, or a jquery object as the value.  Any matching selectors or objects will be automatically bound and tracked with the given event.
 
+__NOTE__ To attach events to elements, you will likely need to call bind after the elements have loaded ($ ->), or in the success callback for an ajax request.
+
 ```coffee
 # bind on ALL registered plugins
 Atrackt.bind

@@ -1,4 +1,4 @@
-describe 'Plugin: omniture', ->
+describe 'Plugin: Omniture', ->
   plugin = null
 
   before ->

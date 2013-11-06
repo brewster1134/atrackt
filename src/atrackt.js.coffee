@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.13
+@version 0.0.14
 @author Ryan Brewster
 ###
 
@@ -9,7 +9,7 @@ unless String::trim
   String::trim = ->
     @replace /^\s+|\s+$/g,''
 
-(($, window, document) ->
+(($, _, window, document) ->
 
   # IE Console support
   window.console = { log: -> } unless window.console?
@@ -143,7 +143,7 @@ unless String::trim
     # PRIVATE METHODS
     #
 
-    # compare elements with selectors and remove unneccessary elements
+    # TODO: compare elements with selectors and remove unneccessary elements
     _cleanup: ->
 
     # _collectElements
@@ -188,29 +188,28 @@ unless String::trim
     # @return [jQuery Object] all elements that were bound
     #
     _bind: (pluginName, eventType, data) ->
-      $ =>
-        @_collectElements pluginName, eventType
+      @_collectElements pluginName, eventType
 
-        # unbind all events so we can re-bind them and ensure no duplicate bindings
-        @_unbind pluginName, eventType, data
+      # unbind all events so we can re-bind them and ensure no duplicate bindings
+      @_unbind pluginName, eventType, data
 
-        selectors = $(@plugins[pluginName].elements[eventType])
+      selectors = $(@plugins[pluginName].elements[eventType])
 
-        # further filter the data if data is passed
-        if data instanceof Array
-          selectors = selectors.filter(data.join(','))
-        else if data instanceof jQuery
-          selectors = data
+      # further filter the data if data is passed
+      if data instanceof Array
+        selectors = selectors.filter(data.join(','))
+      else if data instanceof jQuery
+        selectors = data
 
-        selectors.on "#{eventType}.atrackt.#{pluginName}", (e) ->
-          Atrackt.track $(@), {}, e
+      selectors.on "#{eventType}.atrackt.#{pluginName}", (e) ->
+        Atrackt.track $(@), {}, e
 
-        # add elements to the debug console
-        if @_debug?()
-          selectors.each ->
-            Atrackt._debugEl $(@), pluginName, eventType
+      # add elements to the debug console
+      if @_debug?()
+        selectors.each ->
+          Atrackt._debugEl $(@), pluginName, eventType
 
-        selectors
+      selectors
 
     # Unbind any combination of events/jquery selectors and plugins.
     # You can pass a plugin name, an events object, or both.
@@ -299,4 +298,4 @@ unless String::trim
       else
         params
 
-) jQuery, window, document
+) jQuery, _, window, document

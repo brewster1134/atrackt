@@ -2,8 +2,8 @@
   <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-    <script src="../js/atrackt.js"></script>
-    <script src="../js/atrackt.debug.js"></script>
+    <script src="../lib/atrackt.js"></script>
+    <script src="../lib/atrackt.debug.js"></script>
     <script>
       // Register a new plugin called 'test' that just logs to the console.
       Atrackt.registerPlugin('fooPlugin', {
@@ -18,11 +18,13 @@
       });
 
       // Binding click events to all anchor elements with the class 'foo'
-      Atrackt.plugins['fooPlugin'].bind({
-        click: ['a.foo']
-      });
-      Atrackt.plugins['barPlugin'].bind({
-        click: ['a.bar']
+      $(function() {
+        Atrackt.plugins['fooPlugin'].bind({
+          click: ['a.foo']
+        });
+        Atrackt.plugins['barPlugin'].bind({
+          click: ['a.bar']
+        });
       });
 
       // Adding a custom function
