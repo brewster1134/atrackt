@@ -7,10 +7,10 @@ https://github.com/brewster1134/atrackt
 
 window.Atrackt.registerPlugin 'omniture',
   send: (obj, options) ->
+    return console.log 'SITE CATALYST SCRIPT NOT LOADED!' unless s?
+
     obj.categories = obj.categories?.join @options.delimiters.category
     obj = @translatePropMap obj
-
-    return console.log 'SITE CATALYST SCRIPT NOT LOADED!', obj unless s?
 
     @buildSObject obj
     if options.page && s.t?

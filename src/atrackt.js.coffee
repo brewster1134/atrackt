@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.14
+@version 0.0.15
 @author Ryan Brewster
 ###
 
@@ -115,9 +115,11 @@ unless String::trim
       true
 
     track: (data, options = {}, event) ->
+      return false unless trackObject = @_getTrackObject data
+
       for pluginName, pluginData of @plugins
         # prepare tracking data
-        trackingData = $.extend true, {}, pluginData.globalData, @_getTrackObject data, event
+        trackingData = $.extend true, {}, pluginData.globalData, trackObject, event
         $.extend options,
           plugin: pluginName
 
@@ -245,7 +247,11 @@ unless String::trim
 
     # builds the object to be passed to the custom send method
     _getTrackObject: (data, event) ->
-      trackObject = if data instanceof jQuery
+
+      # Convert HTML element to a jquery object
+      data = $(data) if data instanceof HTMLElement
+
+      if data instanceof jQuery
         $el = data
 
         $el.data 'track-object',

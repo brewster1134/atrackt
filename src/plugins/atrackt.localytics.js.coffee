@@ -7,4 +7,6 @@ https://github.com/brewster1134/atrackt
 
 window.Atrackt.registerPlugin 'localytics',
   send: (obj, options) ->
-    localyticsSession?.tagEvent options.localytics.eventName, obj
+    return console.log 'LOCALYTICS SCRIPT NOT LOADED!' unless localyticsSession?
+
+    localyticsSession.tagEvent options.localytics.eventName, obj

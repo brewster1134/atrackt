@@ -359,13 +359,21 @@ describe 'Atrackt', ->
         it 'should add the plugin name to the options', ->
           expect(fooSendSpy.args[0][1].el).to.equal el
 
-      context 'with an element', ->
+      context 'with an HTML element', ->
         beforeEach ->
-          el = $('<a></a>')
+          el = $('<a name="html"></a>')[0]
           Atrackt.track el
 
         it 'should create the data-track-object on the element', ->
-          expect(el.data('track-object')).to.exist
+          expect($(el).data('track-object').value).to.equal 'html'
+
+      context 'with a jquery element', ->
+        beforeEach ->
+          el = $('<a name="jquery"></a>')
+          Atrackt.track el
+
+        it 'should create the data-track-object on the element', ->
+          expect($(el).data('track-object').value).to.equal 'jquery'
 
         it 'should call send with the track object', ->
           expect(fooSendSpy).to.be.called.once
