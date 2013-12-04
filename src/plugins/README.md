@@ -3,6 +3,10 @@
 ###### 0.0.1
 * Just a simple send method!
 
+###### 0.0.2
+* supports detecting when in UIWebView
+* redirects to a `localytics://` style url for UIWebView
+
 ##### Omniture Plugin
 ###### 0.0.5
 * Send method accepts option `delay: 'this'|false`

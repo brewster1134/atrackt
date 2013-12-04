@@ -1,25 +1,71 @@
 describe 'Plugin: Localytics', ->
   plugin = null
+  isUiWebViewStub = null
 
   before ->
-    window.localyticsSession = {}
-
     Atrackt.plugins = {}
     loadJs 'lib/plugins/atrackt.localytics'
     plugin = Atrackt.plugins['localytics']
+    isUiWebViewStub = sinon.stub plugin, '_isUiWebView'
 
   after ->
-    delete window.localyticsSession
-
+    plugin._isUiWebView.restore()
     for event, selectorArray of plugin.events
       $(selectorArray.join(',')).off event
 
-  describe '#send', ->
-    tagEventSpy = null
+  context 'in a UIWebView/HTML5 hybrid', ->
+    before ->
+      isUiWebViewStub.returns true
+
+    describe '#send', ->
+      getRedirectUrlStub = null
+      redirectStub = null
+
+      before ->
+        redirectStub = sinon.stub plugin, '_redirect'
+        getRedirectUrlStub = sinon.stub plugin, '_getRedirectUrl'
+        getRedirectUrlStub.returns 'foo://url'
+
+        plugin.send
+          data: 'foo'
+        ,
+          localytics:
+            eventName: 'bar'
+
+      after ->
+        plugin._redirect.restore()
+        plugin._getRedirectUrl.restore()
+
+      it 'should call getRedirectUrl', ->
+        expect(getRedirectUrlStub).to.be.called.once
+        expect(getRedirectUrlStub).to.be.calledWithExactly
+          data: 'foo'
+        ,
+          eventName: 'bar'
+
+      it 'should call redirect', ->
+        expect(redirectStub).to.be.called.once
+
+    describe '#_getRedirectUrl', ->
+      redirectUrl = null
+
+      before ->
+        redirectUrl = plugin._getRedirectUrl
+          foo: 'bar'
+        ,
+          eventName: 'foo'
+
+      it 'should create the custom url', ->
+        expect(redirectUrl).to.equal 'localytics://?event=foo&attributes={"foo":"bar"}'
+
+  context 'in HTML5', ->
+    callTagMethodStub = null
+    redirectStub = null
 
     before ->
-      tagEventSpy = sinon.spy()
-      window.localyticsSession.tagEvent = tagEventSpy
+      isUiWebViewStub.returns false
+      callTagMethodStub = sinon.stub plugin, '_callTagMethod'
+      redirectStub = sinon.stub plugin, '_redirect'
 
       plugin.send
         data: 'foo'
@@ -27,9 +73,17 @@ describe 'Plugin: Localytics', ->
         localytics:
           eventName: 'bar'
 
-    it 'should call the tagEvent method', ->
-      expect(tagEventSpy).to.be.calledOnce
+    after ->
+      plugin._callTagMethod.restore()
+      plugin._redirect.restore()
 
-    it 'should call the tagEvent method with the correct arguments', ->
-      expect(tagEventSpy).to.be.calledWithExactly 'bar',
-        data: 'foo'
+    describe '#send', ->
+      it 'should call callTagMethod', ->
+        expect(callTagMethodStub).to.be.called.once
+        expect(callTagMethodStub).to.be.calledWithExactly
+          data: 'foo'
+        ,
+          eventName: 'bar'
+
+      it 'should NOT call redirect', ->
+        expect(redirectStub).to.not.be.called
