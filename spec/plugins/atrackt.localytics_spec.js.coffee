@@ -29,8 +29,7 @@ describe 'Plugin: Localytics', ->
         plugin.send
           data: 'foo'
         ,
-          localytics:
-            eventName: 'bar'
+          eventName: 'bar'
 
       after ->
         plugin._redirect.restore()
@@ -78,8 +77,7 @@ describe 'Plugin: Localytics', ->
       plugin.send
         data: 'foo'
       ,
-        localytics:
-          eventName: 'bar'
+        eventName: 'bar'
 
     after ->
       plugin._callTagMethod.restore()

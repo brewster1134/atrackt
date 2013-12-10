@@ -332,14 +332,28 @@ describe 'Atrackt', ->
           expect(fooPlugin.globalData.globalBar).to.equal 'bar'
 
     describe '#track', ->
-      context 'wtih globalData', ->
+      trackPluginSendSpy = null
+
+      before ->
+        Atrackt.plugins = {}
+        Atrackt.registerPlugin 'track',
+          send: ->
+        trackPluginSendSpy = sinon.spy Atrackt.plugins['track'], 'send'
+
+      after ->
+        trackPluginSendSpy.restore()
+
+      afterEach ->
+        trackPluginSendSpy.reset()
+
+      context 'with globalData', ->
         before ->
           Atrackt.setGlobalData
             globalFoo: 'foo'
           Atrackt.track $('a.foo')
 
         it 'should include the global data', ->
-          expect(fooSendSpy.args[0][0].globalFoo).to.equal 'foo'
+          expect(trackPluginSendSpy.args[0][0].globalFoo).to.equal 'foo'
 
       context 'with options', ->
         el = null
@@ -347,17 +361,18 @@ describe 'Atrackt', ->
         beforeEach ->
           el = $('<a></a>')
           Atrackt.track el,
-            foo: 'bar'
+            track:
+              foo: 'bar'
 
         it 'should call send with the track object', ->
-          expect(fooSendSpy).to.be.called.once
-          expect(fooSendSpy.args[0][1].foo).to.equal 'bar'
+          expect(trackPluginSendSpy).to.be.called.once
+          expect(trackPluginSendSpy.args[0][1].foo).to.equal 'bar'
 
         it 'should add the plugin name to the options', ->
-          expect(fooSendSpy.args[0][1].plugin).to.exist
+          expect(trackPluginSendSpy.args[0][1].plugin).to.exist
 
         it 'should add the plugin name to the options', ->
-          expect(fooSendSpy.args[0][1].el).to.equal el
+          expect(trackPluginSendSpy.args[0][1].el).to.equal el
 
       context 'with an HTML element', ->
         beforeEach ->
@@ -376,8 +391,8 @@ describe 'Atrackt', ->
           expect($(el).data('track-object').value).to.equal 'jquery'
 
         it 'should call send with the track object', ->
-          expect(fooSendSpy).to.be.called.once
-          expect(fooSendSpy.args[0][0]).to.be.a 'object'
+          expect(trackPluginSendSpy).to.be.called.once
+          expect(trackPluginSendSpy.args[0][0]).to.be.a 'object'
 
         context 'with a custom function', ->
           beforeEach ->
@@ -395,9 +410,9 @@ describe 'Atrackt', ->
             foo: 'bar'
 
         it 'should call send with the object', ->
-          expect(fooSendSpy).to.be.called.once
-          expect(fooSendSpy.args[0][0].foo).to.equal 'bar'
-          expect(fooSendSpy.args[0][0].location).to.exist
+          expect(trackPluginSendSpy).to.be.called.once
+          expect(trackPluginSendSpy.args[0][0].foo).to.equal 'bar'
+          expect(trackPluginSendSpy.args[0][0].location).to.exist
 
     describe '#refresh', ->
       before ->

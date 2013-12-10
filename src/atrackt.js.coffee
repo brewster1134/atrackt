@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.0.15
+@version 0.1.0
 @author Ryan Brewster
 ###
 
@@ -12,7 +12,7 @@ unless String::trim
 (($, _, window, document) ->
 
   # IE Console support
-  window.console = { log: -> } unless window.console?
+  window.console ||= { log: -> }
 
   window.Atrackt =
     plugins: {}
@@ -120,7 +120,7 @@ unless String::trim
       for pluginName, pluginData of @plugins
         # prepare tracking data
         trackingData = $.extend true, {}, pluginData.globalData, trackObject, event
-        $.extend options,
+        options = $.extend {}, options[pluginName],
           plugin: pluginName
 
         # call before callback

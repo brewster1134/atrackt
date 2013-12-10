@@ -47,9 +47,12 @@ Set `data-track-function` to add a custom function to a specific element.  This 
 
 It accepts 3 arguments
 
-* [Object]  The generated data being tracked
-* [jQuery Object] The element being tracked
-* [Event] The event that triggered the tracking
+* `[Object]`
+  * The generated data to track
+* `[jQuery Object]`
+  * The element being tracked
+* `[String]`
+  * The event that triggered the tracking
 
 For example, you could track things conditionally...
 
@@ -132,13 +135,20 @@ Call 'track' to manually track any JS object.  It will add the additional Atrack
 
 It accepts 3 arguments.
 
-* [Object]  The data you want to track
-* [Object]  Any options you want to send the plugin to customize tracking
-* [Event]   An event.  If an event is passed, it will be check that the event namespace matches each plugin.
+* `[Object]` _required_
+  * The data you want to track
+* `[Object]` _optional_
+  * Any options you want to send the plugin to customize tracking
+  must be namespaced to the plugin!)
+* `[String]` _optional_
+  * An event.  If an event is passed, it will be check that the event namespace matches each plugin.
 
 ```coffee
 Atrackt.track
-  foo: 'bar'
+  data: 'foo'
+,
+  testPlugin:
+    option: 'bar'
 ```
 
 #### `refresh`

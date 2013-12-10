@@ -8,10 +8,10 @@ https://github.com/brewster1134/atrackt
 window.Atrackt.registerPlugin 'localytics',
   send: (obj, options) ->
     if @_isUiWebView()
-      redirectUrl = @_getRedirectUrl obj, options.localytics
+      redirectUrl = @_getRedirectUrl obj, options
       @_redirect redirectUrl
     else
-      @_callTagMethod obj, options.localytics
+      @_callTagMethod obj, options
 
   # HTML5 methods
   #
