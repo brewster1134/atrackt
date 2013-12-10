@@ -2,7 +2,7 @@
 Atrackt Localytics Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.2
+@version 0.0.3
 ###
 
 window.Atrackt.registerPlugin 'localytics',
@@ -28,7 +28,7 @@ window.Atrackt.registerPlugin 'localytics',
 
   _getRedirectUrl: (obj, options) ->
     redirectUrl = "localytics://?event=#{options.eventName}"
-    redirectUrl += "&attributes=#{JSON.stringify(obj)}"
+    redirectUrl += "&attributes=#{JSON.stringify(obj)}" if Object.keys(obj).length
     redirectUrl
 
   _redirect: (url) ->

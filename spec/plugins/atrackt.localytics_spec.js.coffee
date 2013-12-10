@@ -58,6 +58,14 @@ describe 'Plugin: Localytics', ->
       it 'should create the custom url', ->
         expect(redirectUrl).to.equal 'localytics://?event=foo&attributes={"foo":"bar"}'
 
+      context 'when no object is tracked', ->
+        before ->
+          redirectUrl = plugin._getRedirectUrl {},
+            eventName: 'foo'
+
+        it 'should not have attributes', ->
+          expect(redirectUrl).to.equal 'localytics://?event=foo'
+
   context 'in HTML5', ->
     callTagMethodStub = null
     redirectStub = null
