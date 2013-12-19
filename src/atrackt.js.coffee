@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.1.0
+@version 0.1.1
 @author Ryan Brewster
 ###
 
@@ -119,7 +119,7 @@ unless String::trim
 
       for pluginName, pluginData of @plugins
         # prepare tracking data
-        trackingData = $.extend true, {}, pluginData.globalData, trackObject, event
+        trackingData = $.extend true, {}, pluginData.globalData, trackObject
         options = $.extend {}, options[pluginName],
           plugin: pluginName
 

@@ -356,8 +356,6 @@ describe 'Atrackt', ->
           expect(trackPluginSendSpy.args[0][0].globalFoo).to.equal 'foo'
 
       context 'with options', ->
-        el = null
-
         beforeEach ->
           el = $('<a></a>')
           Atrackt.track el,
@@ -413,6 +411,16 @@ describe 'Atrackt', ->
           expect(trackPluginSendSpy).to.be.called.once
           expect(trackPluginSendSpy.args[0][0].foo).to.equal 'bar'
           expect(trackPluginSendSpy.args[0][0].location).to.exist
+
+        context 'with an event', ->
+          beforeEach ->
+            Atrackt.track
+              foo: 'bar'
+            , {},
+              target: 'fooTarget'
+
+          it 'should not contain event data in the tracking object', ->
+            expect(trackPluginSendSpy.args[1][0].target).to.not.exist
 
     describe '#refresh', ->
       before ->
