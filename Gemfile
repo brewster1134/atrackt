@@ -1,7 +1,4 @@
 source 'https://rubygems.org'
-ruby '1.9.3'
-
-gem 'bundler', '>= 1.2.0'
 
 group :development do
   gem 'guard'
@@ -11,7 +8,7 @@ end
 
 # Platform specific gems (set `require: false`)
 group :development do
-  gem 'rb-fsevent', :require => false
+  gem 'rb-fsevent', require: false
   gem 'growl', require: false
   gem 'terminal-notifier-guard', require: false
 end

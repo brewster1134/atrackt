@@ -4,6 +4,9 @@
 * supports detecting when in UIWebView
 * redirects to a `localytics://` style url for UIWebView
 
+###### 0.0.3
+* support for screenEvent: true
+
 ###### 0.0.1
 * Just a simple send method!
 

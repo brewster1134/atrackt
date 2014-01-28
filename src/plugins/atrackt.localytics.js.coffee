@@ -2,7 +2,7 @@
 Atrackt Localytics Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.3
+@version 0.0.4
 ###
 
 window.Atrackt.registerPlugin 'localytics',
@@ -27,7 +27,11 @@ window.Atrackt.registerPlugin 'localytics',
     /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
 
   _getRedirectUrl: (obj, options) ->
-    redirectUrl = "localytics://?event=#{options.eventName}"
+    if options.screenEvent
+      redirectUrl = "localytics://?screenEvent=#{options.eventName}"
+    else
+      redirectUrl = "localytics://?event=#{options.eventName}"
+
     redirectUrl += "&attributes=#{JSON.stringify(obj)}" if Object.keys(obj).length
     redirectUrl
 
