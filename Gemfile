@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 group :development do
   gem 'guard'
   gem 'guard-coffeescript'
-  gem 'json', '~> 1.7.7'
+  gem 'json'
 end
 
 # Platform specific gems (set `require: false`)

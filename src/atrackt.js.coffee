@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 0.1.1
+@version 0.1.2
 @author Ryan Brewster
 ###
 
@@ -249,7 +249,7 @@ unless String::trim
     _getTrackObject: (data, event) ->
 
       # Convert HTML element to a jquery object
-      data = $(data) if data instanceof HTMLElement
+      data = $(data) if data.nodeType == 1
 
       if data instanceof jQuery
         $el = data

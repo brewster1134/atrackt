@@ -1,4 +1,7 @@
 ### CHANGE LOG
+###### 0.1.2
+* Improved compatibility with <IE8
+
 ###### 0.1.1
 * Tracking objects was being polluted with event data
 
