@@ -1,0 +1,21 @@
+a {
+  cursor: pointer;
+  display: block;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid black;
+  margin: 0 auto 20px;
+  text-decoration: none; }
+  a.console-link {
+    background: bisque; }
+  a.track {
+    background: burlywood; }
+
+.set {
+  background: ivory;
+  text-align: center;
+  padding: 30px;
+  border: 1px solid lightgrey;
+  margin-bottom: 30px; }
+
+/*# sourceMappingURL=atrackt_demo.css.map */

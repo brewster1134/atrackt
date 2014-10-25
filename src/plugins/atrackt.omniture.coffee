@@ -2,17 +2,16 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 0.0.7
+@version 1.0.0
 ###
+window.Atrackt.setPlugin 'omniture',
+  send: (data, options) ->
+    return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
 
-window.Atrackt.registerPlugin 'omniture',
-  send: (obj, options) ->
-    return console.log 'SITE CATALYST SCRIPT NOT LOADED!' unless s
+    data._categories = data._categories?.join @options.delimiters.category
+    data = @translatePropMap data
 
-    obj.categories = obj.categories?.join @options.delimiters.category
-    obj = @translatePropMap obj
-
-    @buildSObject obj
+    @buildSObject data
     if options.page && s.t?
       s.t()
     else if s.tl?
@@ -20,10 +19,11 @@ window.Atrackt.registerPlugin 'omniture',
         options.el[0]
       else
         true
-      s.tl arg, 'o', @buildLinkName obj
-    obj
+      s.tl arg, options['trackingType'], @buildLinkName data
+    data
 
   options:
+    trackingType: 'o'
     charReplaceRegex: /[^\x20-\x7E]/g
     version: 14
     delimiters:
@@ -31,10 +31,10 @@ window.Atrackt.registerPlugin 'omniture',
       category: '|'
     linkTrackVars: ['products', 'events']
     propMap:
-      location    : 'prop1'
-      categories  : 'prop2'
-      value       : 'prop3'
-      event       : 'prop4'
+      _location    : 'prop1'
+      _categories  : 'prop2'
+      _value       : 'prop3'
+      _event       : 'prop4'
 
   # omniture specific
   buildSObject: (obj) ->
@@ -52,9 +52,9 @@ window.Atrackt.registerPlugin 'omniture',
 
   buildLinkName: (obj) ->
     linkName = [
-      obj[@options.propMap.location]
-      obj[@options.propMap.categories]
-      obj[@options.propMap.value]
+      obj[@options.propMap._location]
+      obj[@options.propMap._categories]
+      obj[@options.propMap._value]
     ]
 
     linkName.join(@options.delimiters.linkName)
@@ -69,5 +69,5 @@ window.Atrackt.registerPlugin 'omniture',
 
   keyLookup: (key) ->
     _newKey = @options.propMap[key]
-    console.log "NO MAPPING FOR: #{key}" unless _newKey
+    console.error "ATRACKT ERROR: PLUGIN `omniture` - No mapping for `#{key}` in omniture config" unless _newKey
     _newKey || key

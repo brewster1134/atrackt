@@ -1,0 +1,25 @@
+body.atrackt-console {
+  padding-top: 200px; }
+  body.atrackt-console .atrackt-console-active {
+    border: 2px solid orange; }
+  body.atrackt-console #atrackt-console {
+    font-family: monospace;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    overflow: scroll;
+    background-color: white;
+    border-bottom: 1px solid black;
+    z-index: 999; }
+    body.atrackt-console #atrackt-console table {
+      text-align: left;
+      width: 100%; }
+      body.atrackt-console #atrackt-console table tr.atrackt-console-active {
+        background-color: orange; }
+      body.atrackt-console #atrackt-console table tr.error {
+        color: white;
+        background-color: red; }
+
+/*# sourceMappingURL=atrackt.console.css.map */

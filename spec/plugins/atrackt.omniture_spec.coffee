@@ -1,21 +1,12 @@
 describe 'Plugin: Omniture', ->
-  plugin = null
-
-  before ->
-    Atrackt.plugins = {}
-    loadJs 'lib/plugins/atrackt.omniture'
-    plugin = Atrackt.plugins['omniture']
-
-  after ->
-    for event, selectorArray of plugin.events
-      $(selectorArray.join(',')).off event
+  _plugin = Atrackt.plugins['omniture']
 
   describe '#buildSObject', ->
     before ->
       window.s = {}
-      plugin.options.version = 14
-      plugin.options.linkTrackVars = ['foo']
-      plugin.buildSObject
+      _plugin.options.version = 14
+      _plugin.options.linkTrackVars = ['foo']
+      _plugin.buildSObject
         bar: 'bar'
 
     it 'should add to the s object', ->
@@ -28,10 +19,10 @@ describe 'Plugin: Omniture', ->
     obj = null
 
     before ->
-      plugin.options.propMap =
+      _plugin.options.propMap =
         foo: 'prop1'
 
-      obj = plugin.send
+      obj = _plugin._send
         foo: 'foo'
         bar: 'bar'
       , {}
@@ -45,24 +36,24 @@ describe 'Plugin: Omniture', ->
 
   describe '#keyLookup', ->
     before ->
-      plugin.options.propMap =
+      _plugin.options.propMap =
         foo: 'bar'
 
     it 'should lookup from propMap', ->
-      expect(plugin.keyLookup('foo')).to.equal 'bar'
+      expect(_plugin.keyLookup('foo')).to.equal 'bar'
 
   describe '#buildLinkName', ->
     linkName = null
 
     before ->
-      plugin.options.delimiters =
+      _plugin.options.delimiters =
         linkName: '|'
-      plugin.options.propMap =
-        value: 'prop1'
-        location: 'prop2'
-        categories: 'prop3'
+      _plugin.options.propMap =
+        _value: 'prop1'
+        _location: 'prop2'
+        _categories: 'prop3'
 
-      linkName = plugin.buildLinkName
+      linkName = _plugin.buildLinkName
         prop1: 'baz'
         prop2: 'foo'
         prop3: 'bar'
@@ -77,7 +68,7 @@ describe 'Plugin: Omniture', ->
     before ->
       pre =
         integer: 10
-      post = plugin.translatePropMap pre
+      post = _plugin.translatePropMap pre
 
     it 'should handle any value type', ->
       expect(post['integer']).to.equal '10'

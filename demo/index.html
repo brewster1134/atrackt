@@ -1,79 +1,40 @@
 <html>
   <head>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-    <script src="../lib/atrackt.js"></script>
-    <script src="../lib/atrackt.debug.js"></script>
-    <script>
-      // Register a new plugin called 'test' that just logs to the console.
-      Atrackt.registerPlugin('fooPlugin', {
-        send: function(obj) {
-          console.log('TRACK FOO', obj)
-        }
-      });
-      Atrackt.registerPlugin('barPlugin', {
-        send: function(obj) {
-          console.log('TRACK BAR', obj)
-        }
-      });
-
-      // Binding click events to all anchor elements with the class 'foo'
-      $(function() {
-        Atrackt.plugins['fooPlugin'].bind({
-          click: ['a.foo']
-        });
-        Atrackt.plugins['barPlugin'].bind({
-          click: ['a.bar']
-        });
-      });
-
-      // Adding a custom function
-      $(function() {
-        $('#custom').data('track-function', function(data) {
-          data.foo = 'bar';
-          alert("Alert from custom function! Added 'foo' to be tracked.");
-        });
-      });
-    </script>
-    <style>
-      body {
-        text-align: center;
-      }
-      a {
-        cursor: pointer;
-        display: block;
-        margin: 10px;
-        padding: 10px;
-      }
-    </style>
+    <title>Atrackt Demo</title>
+    <link type="text/css" rel="stylesheet" href="../lib/atrackt.console.css">
+    <link type="text/css" rel="stylesheet" media="all" href="atrackt_demo.css"/>
   </head>
-  <body data-track-location="Atrackt Debug Console">
-    <h1>Check the javascript console for more details!</h1>
-    <a href='?debugTracking=true'>Show Debugging Console</a>
-    <div data-track-cat='Main'>
-      <a class="foo" id="custom">Custom Function</a>
-      <div data-track-cat='1st Set'>
-        <a class="foo">Foo1</a>
-        <a class="foo">Foo2</a>
-        <a class="foo">Foo3</a>
-        <a class="foo">Foo3</a>
-        <a class="foo">Foo4</a>
-        <a class="foo">Foo5</a>
+
+  <body>
+    <a class="console-link" href='?atracktConsole'>
+      <h3>Show Debugging Console</h3>
+      Check the javascript console for more details!
+    </a>
+
+    <div data-atrackt-category='Main'>
+      <div class="set" data-atrackt-category='1st Set'>
+        <h2>1st Set</h2>
+        <a class="track" data-atrackt-value="Custom Value">Track w/ Custom Value</a>
       </div>
-      <div data-track-cat='2nd Set'>
-        <a class="bar">Bar1</a>
-        <a class="bar">Bar2</a>
-        <a class="bar">Bar3</a>
-        <a class="bar">Bar4</a>
-        <a class="bar">Bar5</a>
+
+      <div class="set" data-atrackt-category='2nd Set'>
+        <h2>2nd Set</h2>
+        <a class="track" data-atrackt-category='Custom Category'>Track w/ Custom Category</a>
       </div>
-      <div data-track-cat='3rd Set'>
-        <a class="foo bar">FooBar1</a>
-        <a class="foo bar">FooBar2</a>
-        <a class="foo bar">FooBar3</a>
-        <a class="foo bar">FooBar4</a>
-        <a class="foo bar">FooBar5</a>
+
+      <div class="set" data-atrackt-category='3rd Set'>
+        <h2>3rd Set</h2>
+        <a class="track custom">Track w/ Custom Function</a>
       </div>
     </div>
   </body>
+
+  <!-- Dependencies -->
+  <script type="text/javascript" src="../vendor/jquery/dist/jquery.js"></script>
+
+  <!-- Footer Libraries -->
+  <script type="text/javascript" src="../lib/atrackt.js"></script>
+  <script type="text/javascript" src="../lib/atrackt.console.js"></script>
+  <script type="text/javascript" src="atrackt_demo.js"></script>
+
 </html>

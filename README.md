@@ -1,272 +1,214 @@
 # Atrackt
----
-
 A library for making complex tracking & analytics easier.
 
-## Dependencies
-
+### Dependencies
 * [jQuery](http://jquery.com)
-* [Underscore.js](http://underscorejs.org)
 
-## Tracking An Element
+### Quick Usage
+* Load the atrackt core library & any plugin(s)
+  * `<script src="/lib/atrackt.js"></script>`
+  * `<script src="/lib/plugins/atrackt.omniture.js"></script>`
+* Bind something to track
 
-When an element is tracked, there are several basic values that are included.
+```coffee
+Atrackt.setEvent
+  click: 'a, button'
+```
+##### That's it.  When any any button or anchor is clicked on, it will be tracked with omniture.
 
-* *location*: This represents the page that tracking events come from. It will track the first value it finds from the following:
-  * `$('body').data('track-location')` - The custom value attached to the body element's `data-track-location` attribute.
-  * `$(document).attr('title')` - The page title
-  * `document.URL` - The page URL
+## Methods
 
-* *categories*: This represents the elements location on the page.  It traverses the dom from the element and collects data along the way.  Specifically any parent element with the `data-track-cat` value set (including the element itself).
-  * In the exmaple below, if the `a` element is tracked, the value for categories would be an array of `[ 'one', 'two', 'three' ]`
+###### A note on all methods... methods called on `Atrackt` are consider global, and will include all registered plugins.  To target a plugin directly, you can access it through the plugins object.
+
+```coffee
+Atrackt.plugins.omniture.setEvent
+  click: 'a.omniture'
+```
+
+---
+### `setEvent`
+The `setEvent` method accepts a custom event object which uses the event name as the key, and a css selector, jquery object, or html node as the value.
+
+```coffee
+Atrack.setEvent
+  click: '.css-selector'
+  mouseenter: $('.jquery-object')
+  customevent: document.querySelector('.html-node')
+```
+
+You can also pass in an array of multiple object types
+
+```coffee
+Atrack.setEvent
+  click: [ '.css-selector', $('.jquery-object'), document.querySelector('.html-node') ]
+```
+
+---
+### `setData`
+You can add data globally that will always be included with every tracking call using `setData`.
+
+```coffee
+Atrackt.setData
+  foo: 'bar'
+```
+
+---
+### `setOptions`
+You can add options globally that will always be included with every tracking call using `setOptions`.
+
+```coffee
+Atrackt.setOptions
+  foo: 'bar'
+```
+
+---
+### `setCallback`
+Callbacks can be run before or after a tracking call is made.  You must specify `before` or `after`, along with a function that will be run.  Callbacks accepts 2 arguments, 1 for data, and 1 for options.  In `before` callbacks, you can alter those objects and they will be tracked.
+
+```coffee
+Atrackt.setCallback 'before', (data, options) ->
+  data.foo = 'bar'
+  options.foo = 'bar'
+```
+
+---
+### `track`
+Instead of binding elements to events, you can track data directly.  This is helpful for tracking different states of your app.
+
+You can track standard javascript objects, jquery objects, or html nodes.
+
+The `track` method accepts 2 methods, data & options
+
+```coffee
+Atrackt.track
+  fooData: 'bar'
+,
+  fooOption: 'bar'
+```
+
+---
+## Element Tracking
+When an element is tracked, there are several basic values that are included. See more information about each value below.
+
+* `_categories` represent an elements virtual position on the page
+* `_location` represents the page that tracking events come from
+* `_value` represents an elements unique value
+* `_event` type of event (if triggered by an event)
+
+---
+###### `_categories`
+
+It traverses the dom from the element and collects data along the way, in reverse order.  Specifically any parent element with the `data-atrackt-category` value set (including the element itself).
+  * In the example below, if the `a` element is tracked, the value for categories would be an array of `[ 'one', 'two', 'three' ]`
 
 ```html
-<div data-track-cat='one'>
-  <div data-track-cat='two'>
-    <a data-track-cat='three'></a>
+<div data-atrackt-category='one'>
+  <div data-atrackt-category='two'>
+    <a data-atrackt-category='three'></a>
   </div>
 </div>
 ```
 
-* *value*: This reperesents the value of the tracked element.  It will track the first value it finds from the following:
-  * `data-track-value`  A custom value to explicitly set
+---
+###### `_location`
+It will track the first value it finds from the following:
+  * `$('body').data('atrackt-location')` Data attribute on the body
+  * `$(document).attr('title')` The standard page title
+  * `document.URL` The page URL
+
+---
+###### `_value`
+  * `data-atrackt-value`  A custom value to explicitly set
   * `title`             The value of the title attribute
   * `name`              The value of the name attribute
   * `text`              The text value of the element. This contains only text and will not include any HTML.
   * `val`               The value (if a form element)
   * `id`                The value of the id attribute
-  * `class`             The value of the id attribute
+  * `class`             The value of the class attribute
 
-* *event*: This represents the type of event that fired the tracking call.
+---
+###### `_event`
+If triggered by an event, this value will be the name of the event _(eg click, mouseenter, etc)_
 
-* *plugin*: The name of the plugin responsible for tracking the element
-
-#### `Custom Tracking`
-
-Set `data-track-function` to add a custom function to a specific element.  This function will be run before the send method is called.  You can then modify the data or do any number of things before the data is tracked.
-
-It accepts 3 arguments
-
-* `[Object]`
-  * The generated data to track
-* `[jQuery Object]`
-  * The element being tracked
-* `[String]`
-  * The event that triggered the tracking
-
-For example, you could track things conditionally...
+---
+##### Custom Function
+On a per-element basis, you can add a custom function to the the `data-atrackt-function` data attribute that will be called each time that element is tracked. The function accepts 2 arguments, 1 for data, and 1 for options.  You can alter those objects before they are tracked.
 
 ```coffee
-$('a#foo').data 'track-function', (data, el) ->
-  if data.value == 'foo' || el.data('foo') == true
-    data.foo = true
+$('a#foo').data 'atrackt-function', (data, options) ->
+  if options.hasColor
+    data.color = $(@).css('color')
   else
-    data.foo = false
+    data.color = 'none'
 ```
 
-## Usage
+## Creating Plugins
+Creating new plugins for Atrackt is very simple.  At the bare minimum, you need a name, and a `send` method.  The `send` method is where all of the plugin logic should live to interact with whatever tracking strategy you are using.  Look at the source of the included plugins for better examples.
 
-* Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.js) _(right-click & save as)_
-* Add the script to your page
-  * `<script src="atrackt.js"></script>`
-* Add a plugin to your page _([or write your own!](#registering-plugins))_ _AFTER_ `atrackt.js`
-  * `<script src="atrackt.plugin.js"></script>`
-
-That's it!  The settings from your plugin will bind events to elements and you can start tracking!
-
-### Advanced Usage
-
-#### `registerPlugin`
-
-Call `registerPlugin` to quickly register a custom plugin.
+Call `setPlugin` to quickly register a custom plugin.
 
 The minimum a plugin needs is a `send` method.  This is a function that accepts the tracking object, and any additional options as an argument.  You can do additional processing on the object and pass it wherever you need to track it.
 
+---
+#### `setPlugin`
 ```coffee
-Atrackt.registerPlugin 'testPlugin',
-  send: (obj, options) ->
-    # do stuff to the object and send it somewhere
+Atrackt.setPlugin 'testPlugin',
+  send: (data, options) ->
+    # do stuff
 ```
 
-#### `bind` & `unbind`
+## Console
+To better visualize what dom elements you are tracking, you can load the atrackt console.  When the console is loaded, no actual tracking calls will be made. Instead the data that would normally be passed to the plugins will be logged to the console to help with debugging.
 
-Typically just creating a send method to manually track objects is not enough.  Normally you want to bind a whole bunch of elements to an event _(or events)_ to track.
+* Load the atrackt.console library after the atrackt core library
+  * `<script src="/lib/atrackt.js"></script>`
+  * `<script src="/lib/atrackt.console.js"></script>`
+* Visit the page with `?atracktConsole` at the end of thr URL
 
-Call 'bind' and 'unbind' to register jquery selectors or jquery objects to automatically fire tracking events.  These methods accept a special events object.
+You should see a console show up at the top of your page that shows all the elements currently bound to events to be tracked.  When new elements are bound,  the console will update.
 
-The format is an event type as the key, and an array of jquery selectors, or a jquery object as the value.  Any matching selectors or objects will be automatically bound and tracked with the given event.
-
-__NOTE__ To attach events to elements, you will likely need to call bind after the elements have loaded ($ ->), or in the success callback for an ajax request.
-
-```coffee
-# bind on ALL registered plugins
-Atrackt.bind
-  click: ['a']
-  hover: ['a', 'button' ]
-
-# bind on a specific plugin
-Atrackt.plugins['testPlugin'].bind
-  click: ['a']
-  hover: ['a', 'button' ]
-```
-
-The same options are available to `unbind` elements.
+## Mutations
+Sometimes elements you want to track get loaded asynchronously after page load.  Modern browsers support _Mutation Observers_ which you can tap into to make sure new elements you want to track, are automatically bound when they are added.  This code is not included in atrackt, but below is a simple example.
 
 ```coffee
-Atrackt.unbind
-  click: ['a']
+# Get the cross-browser MutationObserver object
+MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
 
-Atrackt.plugins['testPlugin'].unbind
-  click: ['a']
+# Create a mutation observer
+observer = new MutationObserver (mutations) ->
+  for mutation in mutations
+    # loop through mutations and look for added nodes
+    for addedNode in mutation.addedNodes
+      # if added node is an anchor or a button, bind it to a click event
+      for el in addedNode.parentNode?.querySelectorAll?('a, button') || []
+        Atrackt.setEvent
+          click: el
+
+# start observing on the body element after the dom is finished loading
+document.addEventListener 'DOMContentLoaded', ->
+  observer.observe document.body,
+    childList: true
+    subtree: true
 ```
-
-You can also bind/unbind a specific element instead of a selector.  This is helpful if you generate new elements dynamically and need to track them as they are created.
-
-```coffee
-Atrackt.bind
-  click: $('div#foo')
-
-Atrackt.plugins['testPlugin'].bind
-  click: $('div#foo')
-```
-#### `track`
-
-Call 'track' to manually track any JS object.  It will add the additional Atrackt data and pass it to each registered plugin to be tracked.
-
-It accepts 3 arguments.
-
-* `[Object]` _required_
-  * The data you want to track
-* `[Object]` _optional_
-  * Any options you want to send the plugin to customize tracking
-  must be namespaced to the plugin!)
-* `[String]` _optional_
-  * An event.  If an event is passed, it will be check that the event namespace matches each plugin.
-
-```coffee
-Atrackt.track
-  data: 'foo'
-,
-  testPlugin:
-    option: 'bar'
-```
-
-#### `refresh`
-
-Call `refresh` if you need to re-scan the dom and re-bind elements based on the `bind` and `unbind` data.
-
-```coffee
-Atrackt.refresh()
-```
-
-#### `setOptions`
-
-Call `setOptions` on a specific plugin if you need to pass custom options to your plugin.  This will will set attributes on the `options` object in your plugin.  If your plugin already has default options set, the custom options well simply extend over them.
-
-_setOptions is not available to set options on all plugins at once.  options should be specific to a plugin_
-
-```coffee
-Atrackt.registerPlugin 'testPlugin',
-  send: ->
-  options:
-    foo: 'foo'
-
-Atrackt.plugins['testPlugin'].setOptions
-  foo: 'bar'
-```
-
-
-#### `setGlobalData`
-
-Call `setGlobalData` to add attributes that will be tracked with every tracking call.  Global data will _NOT_ overwrite the main values provided by Atrackt (location, categories, value, event).
-
-```coffee
-# set globalData for all plugins
-Atrackt.setGlobalData
-  foo: 'bar'
-
-# set globalData for a specific plugin
-Atrackt.plugins['testPlugin'].setGlobalData
-  foo: 'bar'
-```
-
-#### `setCallback`
-
-Call `setCallback` to assign functions to be run before and after the plugin's send function.  Currently the only callbacks supported are 'before' and 'after'
-
-```coffee
-# set before callback for all plugins
-Atrackt.setCallback 'before', (data, options ,event) ->
-
-# set after callback for a specific plugin
-Atrackt.plugins['testPlugin'].setCallback 'after', (data, options ,event) ->
-```
-
-## Debugging Console
-
-To better visualize what elements you are tracking, you can load the debugging console.
-
-* Download the [script](https://raw.github.com/brewster1134/atrackt/master/js/atrackt.debug.js) _(right-click & save as)_
-* Add the script to your page _AFTER_ `atrackt.js`
-  * `<script src="atrackt.debug.js"></script>`
-
-Simply add the url paramater `debugTracking=true` to the end of any URL to show the debugging console.  For example `http://foo.com?debugTracking=true`
-
-It is a bit crude, but it gives you a visual overview of your elements.
-
-* The console lists all the elements currently being tracked along with their various values.
-* If you hover over an element in the console, it will scroll to that element on your page and highlight it.
-* If you hover over a tracked element on your page, it will scroll to that entry in your console and highlight it.
-* Clicking on a row in the console will refresh any stale data on the element.  This can happen if an element is tracked before it gets added to the dom.  Since it doesn't have any parent elements yet, the categories column will be empty.
-* The debugger will also show you errors if you have any.
-  * If you have multiple elements tracking the same data, they will be highlighted and show the error in the error column. **NOTE** Since duplicate items will have the same ID, the debugging console UI will not be able to scroll to BOTH duplicate elements.  Check your javascript console to see the  offending elements.
 
 ## Demo
-
-Download the project and open `demo/index.html` in your browser.
-
-Click the link or visit `demo/index.html?debugTracking=true` to view the debugging console.
+Download the project and open `demo/index.html` in your browser for a simple demo.  Make sure to include `?atracktConsole` in the url to see the console!
 
 ## Development
 
-### Dependencies
+Development dependencies are handled through [yuyi](https://github.com/brewster1134/yuyi)
 
-* Ruby 1.9.3
-  * [rbenv](https://github.com/sstephenson/rbenv) and [ruby-build](https://github.com/sstephenson/ruby-build)
-    * `rbenv install 1.9.3`
-* Bundler Gem
-  * `gem install bundler`
-* Bundled Gems
-  * `bundle install`
-* Node.js & NPM
-  * OS X
-    * [HomeBrew](http://mxcl.github.io/homebrew/) _recommended_
-      * 'brew install node'
-* [Testem](https://github.com/airportyh/testem)
-  * `npm install testem -g`
+```shell
+gem install yuyi
+yuyi -m https://raw.githubusercontent.com/brewster1134/atrackt/master/yuyi_menu
+bundle install
+bower install
+npm install
+```
 
-### Optional
+Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Testem will watch for changes and compile them to the `lib` directory.
 
-* [PhantomJS](http://phantomjs.org)
-  * OS X
-    * [HomeBrew](http://mxcl.github.io/homebrew/) _recommended_
-      * `brew install phantomjs`
-* [Growl](http://growl.info/downloads)
-  * OS X 10.8
+#### Compiling & Testing
+Testem will handle compiling coffeescript & sass files, and running the tests.
 
-### Compiling
-
-Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Guard will watch for changes and compile them to the `lib` directory.
-
-`bundle exec guard`
-
-## Testing
-
-Simply run `testem`.  Run `testem -g` for Growl support.
-
-### To-Do
-
-* pass an element to refresh() to scope to
-* suport binding an element only if it matches a plugins selector rules (this requires some serious thought for the API)
-* IE testing
-* Support multiple callbacks
+Simply run `testem`.  -or- Run `testem -g` for Growl support.
