@@ -1,11 +1,19 @@
-test_page: spec/index.html
+test_page: spec/index.html?atracktConsole
+before_tests: |
+  bundle exec coffee -co lib src
+  bundle exec coffee -co .tmp spec
+  bundle exec coffee -co demo demo
+  bundle exec sass --update src:lib
+  bundle exec sass --update spec:.tmp
+  bundle exec sass --update demo:demo
 src_files:
-  - .tmp/*_spec.js
-  - lib/*.js
+  - demo/*_demo.coffee
+  - demo/*_demo.sass
+  - spec/**/*_spec.coffee
+  - spec/*_spec.sass
+  - spec/index.html
+  - src/**/*.coffee
+  - src/*.sass
 serve_files:
-  - spec/vendor/*.js
-  - .tmp/*_spec.js
-launch_in_dev:
-  - phantomjs
-launch_in_ci:
-  - phantomjs
+  - .tmp/**/*.js
+  - lib/**/*.js

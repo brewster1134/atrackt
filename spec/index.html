@@ -1,34 +1,44 @@
-<html>
-  <head>
-    <link rel="stylesheet" href="/testem/mocha.css">
-    <style type="text/css">
-      #atrackt-debug{
-        z-index: 1;
-      }
-    </style>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-    <script src="/testem/mocha.js"></script>
-    <script src="/testem.js"></script>
-    <script src="/spec/vendor/chai.js"></script>
-    <script src="/spec/vendor/sinon.js"></script>
-    <script src="/spec/vendor/sinon-chai.js"></script>
-    <script>
+  <html>
+    <head>
+      <title>Atrackt Test</title>
+      <link type="text/css" rel="stylesheet" href="/vendor/mocha/mocha.css">
+      <link type="text/css" rel="stylesheet" href="/lib/atrackt.console.css">
+      <link type="text/css" rel="stylesheet" href="/.tmp/atrackt.console_spec.css">
+    </head>
+
+    <body data-atrackt-location="Atrackt Test">
+      <div id='mocha'></div>
+    </body>
+
+    <!-- Testing Dependencies -->
+    <script type="text/javascript" src="/vendor/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="/vendor/mocha/mocha.js"></script>
+    <script type="text/javascript" src="/vendor/chai/chai.js"></script>
+    <script type="text/javascript" src="/vendor/sinon/lib/sinon.js"></script>
+    <script type="text/javascript" src="/vendor/sinon/lib/sinon/behavior.js"></script>
+    <script type="text/javascript" src="/vendor/sinon/lib/sinon/call.js"></script>
+    <script type="text/javascript" src="/vendor/sinon/lib/sinon/spy.js"></script>
+    <script type="text/javascript" src="/vendor/sinon/lib/sinon/stub.js"></script>
+    <script type="text/javascript" src="/vendor/sinon-chai/lib/sinon-chai.js"></script>
+    <script type="text/javascript" src="/testem.js"></script>
+    <script type="text/javascript">
       mocha.setup('bdd');
-      mocha.setup({ignoreLeaks: true});
       window.expect = chai.expect;
     </script>
-    <script src="/lib/atrackt.js"></script>
-    <script src="/lib/atrackt.debug.js"></script>
-    <script src="/.tmp/spec_helper.js"></script>
-    <script src="/.tmp/atrackt_spec.js"></script>
-    <script src="/.tmp/plugins/atrackt.localytics_spec.js"></script>
-    <script src="/.tmp/plugins/atrackt.omniture_spec.js"></script>
-  </head>
-  <body>
-    <div id='mocha'></div>
-    <script>
-      mocha.run();
+
+    <!-- Footer Libraries -->
+    <script type="text/javascript" src="/lib/atrackt.js"></script>
+    <script type="text/javascript" src="/lib/atrackt.console.js"></script>
+    <script type="text/javascript" src="/lib/plugins/atrackt.localytics.js"></script>
+    <script type="text/javascript" src="/lib/plugins/atrackt.omniture.js"></script>
+
+    <!-- Specs -->
+    <script type="text/javascript" src="/.tmp/spec_helper.js"></script>
+    <script type="text/javascript" src="/.tmp/atrackt_spec.js"></script>
+    <script type="text/javascript" src="/.tmp/plugins/atrackt.localytics_spec.js"></script>
+    <script type="text/javascript" src="/.tmp/plugins/atrackt.omniture_spec.js"></script>
+
+    <script type="text/javascript">
+      mocha.run()
     </script>
-  </body>
 </html>

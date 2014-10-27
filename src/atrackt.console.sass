@@ -1,0 +1,30 @@
+$console-height: 200px
+
+body.atrackt-console
+  padding-top: $console-height
+
+  .atrackt-console-active
+    border: 2px solid orange
+
+  #atrackt-console
+    font-family: monospace
+    position: fixed
+    top: 0
+    left: 0
+    width: 100%
+    height: $console-height
+    overflow: scroll
+    background-color: white
+    border-bottom: 1px solid black
+    z-index: 999
+
+    table
+      text-align: left
+      width: 100%
+
+      tr
+        &.atrackt-console-active
+          background-color: orange
+        &.error
+          color: white
+          background-color: red
