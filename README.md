@@ -26,7 +26,7 @@ Atrackt.plugins.omniture.setEvent
 ```
 
 ---
-### `setEvent`
+#### `setEvent`
 The `setEvent` method accepts a custom event object which uses the event name as the key, and a css selector, jquery object, or html node as the value.
 
 ```coffee
@@ -44,7 +44,7 @@ Atrack.setEvent
 ```
 
 ---
-### `setData`
+#### `setData`
 You can add data globally that will always be included with every tracking call using `setData`.
 
 ```coffee
@@ -53,7 +53,7 @@ Atrackt.setData
 ```
 
 ---
-### `setOptions`
+#### `setOptions`
 You can add options globally that will always be included with every tracking call using `setOptions`.
 
 ```coffee
@@ -62,7 +62,7 @@ Atrackt.setOptions
 ```
 
 ---
-### `setCallback`
+#### `setCallback`
 Callbacks can be run before or after a tracking call is made.  You must specify `before` or `after`, along with a function that will be run.  Callbacks accepts 2 arguments, 1 for data, and 1 for options.  In `before` callbacks, you can alter those objects and they will be tracked.
 
 ```coffee
@@ -72,7 +72,7 @@ Atrackt.setCallback 'before', (data, options) ->
 ```
 
 ---
-### `track`
+#### `track`
 Instead of binding elements to events, you can track data directly.  This is helpful for tracking different states of your app.
 
 You can track standard javascript objects, jquery objects, or html nodes.
@@ -96,7 +96,7 @@ When an element is tracked, there are several basic values that are included. Se
 * `_event` type of event (if triggered by an event)
 
 ---
-###### `_categories`
+#### `_categories`
 
 It traverses the dom from the element and collects data along the way, in reverse order.  Specifically any parent element with the `data-atrackt-category` value set (including the element itself).
   * In the example below, if the `a` element is tracked, the value for categories would be an array of `[ 'one', 'two', 'three' ]`
@@ -110,14 +110,14 @@ It traverses the dom from the element and collects data along the way, in revers
 ```
 
 ---
-###### `_location`
+#### `_location`
 It will track the first value it finds from the following:
   * `$('body').data('atrackt-location')` Data attribute on the body
   * `$(document).attr('title')` The standard page title
   * `document.URL` The page URL
 
 ---
-###### `_value`
+#### `_value`
   * `data-atrackt-value`  A custom value to explicitly set
   * `title`             The value of the title attribute
   * `name`              The value of the name attribute
@@ -127,7 +127,7 @@ It will track the first value it finds from the following:
   * `class`             The value of the class attribute
 
 ---
-###### `_event`
+#### `_event`
 If triggered by an event, this value will be the name of the event _(eg click, mouseenter, etc)_
 
 ---
