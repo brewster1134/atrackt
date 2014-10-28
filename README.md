@@ -1,6 +1,12 @@
 # Atrackt
 A library for making complex tracking & analytics easier.
 
+## Upgrading from 0.x
+* All `data-track-` attributes are now `data-atrackt-`
+* `.bind` is now `.setEvent`
+* `.setGlobalData` is now `.setData`
+* `data-trackt-function` now only accepts 2 arguments (data & options). use `this` to access the element
+
 ### Dependencies
 * [jQuery](http://jquery.com)
 
