@@ -1,5 +1,8 @@
 ### CHANGE LOG
 ##### Localytics Plugin
+###### 1.0.0
+* updated to new api
+
 ###### 0.0.2
 * supports detecting when in UIWebView
 * redirects to a `localytics://` style url for UIWebView
@@ -11,6 +14,9 @@
 * Just a simple send method!
 
 ##### Omniture Plugin
+###### 1.0.0
+* updated to new api
+
 ###### 0.0.7
 * Supports multiple types for tracked values
 

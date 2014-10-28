@@ -99,6 +99,21 @@ describe 'Atrackt', ->
 
       expect($._data($fooEl[0]).events.click[0].namespace).to.equal 'atrackt'
 
+    it 'should bind an array of all types of objects', ->
+      $selectorOneEl = $('<div class="array-selector-one"></div>')
+      $selectorTwoEl = $('<div class="array-selector-two"></div>')
+      $jqueryEl = $('<div class="array-jquery"></div>')
+      $htmlNodeEl = $('<div class="array-html-node"></div>')
+      $('body').append $selectorOneEl, $selectorTwoEl, $jqueryEl, $htmlNodeEl
+
+      Atrackt.setEvent
+        click: [ '.array-selector-one, .array-selector-two', $('.array-jquery'), $('.array-html-node')[0]]
+
+      expect($._data($selectorOneEl[0]).events.click[0].namespace).to.equal 'atrackt'
+      expect($._data($selectorTwoEl[0]).events.click[0].namespace).to.equal 'atrackt'
+      expect($._data($jqueryEl[0]).events.click[0].namespace).to.equal 'atrackt'
+      expect($._data($htmlNodeEl[0]).events.click[0].namespace).to.equal 'atrackt'
+
   describe '#setOptions', ->
     before ->
       Atrackt.setOptions

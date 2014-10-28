@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.0
+@version 1.0.2
 @author Ryan Brewster
 ###
 
@@ -70,33 +70,38 @@ https://github.com/brewster1134/atrackt
         pluginEvent = globalEvent.slice(0)
         pluginEvent.push context.name if context.name
 
-        $(objects).each (index, element) =>
-          @_elements[eventType] ||= []
+        # typecast objects into an array
+        unless objects instanceof Array
+          objects = [objects]
 
-          # if binding on a plugin
-          # ...and the element has not already been bound globally
-          # ...and the element has not already been bound to the plugin
-          if context.name
-            globalIndex = @_elements[eventType].indexOf(element)
+        for object in objects
+          $(object).each (index, element) =>
+            @_elements[eventType] ||= []
 
-            # if element is not in global array...
-            if globalIndex == -1
-              context._elements[eventType] ||= []
+            # if binding on a plugin
+            # ...and the element has not already been bound globally
+            # ...and the element has not already been bound to the plugin
+            if context.name
+              globalIndex = @_elements[eventType].indexOf(element)
 
-              # if element is not in plugin array...
-              if context._elements[eventType].indexOf(element) == -1
-                @_registerElement context, element, eventType
+              # if element is not in global array...
+              if globalIndex == -1
+                context._elements[eventType] ||= []
 
-          # if binding globally
-          # ...and the element has not already been bound globally
-          else if @_elements[eventType].indexOf(element) == -1
-            @_registerElement context, element, eventType
+                # if element is not in plugin array...
+                if context._elements[eventType].indexOf(element) == -1
+                  @_registerElement context, element, eventType
 
-            # loop through plugins and remove global element if it exists
-            for pluginName, pluginData of @plugins
-              pluginIndex = pluginData._elements[eventType]?.indexOf(element)
-              if pluginIndex != -1
-                pluginData._elements[eventType]?.splice pluginIndex, 1
+            # if binding globally
+            # ...and the element has not already been bound globally
+            else if @_elements[eventType].indexOf(element) == -1
+              @_registerElement context, element, eventType
+
+              # loop through plugins and remove global element if it exists
+              for pluginName, pluginData of @plugins
+                pluginIndex = pluginData._elements[eventType]?.indexOf(element)
+                if pluginIndex != -1
+                  pluginData._elements[eventType]?.splice pluginIndex, 1
 
     # Set data that will always be tracked
     #

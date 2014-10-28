@@ -2,7 +2,7 @@
 Atrackt Localytics Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 1.0.0
+@version 1.0.2
 ###
 
 ((root, factory) ->

@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.0
+@version 1.0.2
 @author Ryan Brewster
 ###
 
@@ -12,7 +12,7 @@ https://github.com/brewster1134/atrackt
         'jquery'
         'atrackt'
       ], ($, Atrackt) ->
-        window.Atrackt = new(factory($, Atrackt))
+        window.Atrackt = new(factory($, Atrackt.constructor))
     else
       window.Atrackt = new(factory($, Atrackt.constructor))
 ) @, ($, Atrackt) ->
