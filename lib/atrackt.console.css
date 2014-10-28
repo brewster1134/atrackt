@@ -16,8 +16,9 @@ body.atrackt-console {
     body.atrackt-console #atrackt-console table {
       text-align: left;
       width: 100%; }
-      body.atrackt-console #atrackt-console table tr.atrackt-console-active {
-        background-color: orange; }
       body.atrackt-console #atrackt-console table tr.error {
         color: white;
         background-color: red; }
+      body.atrackt-console #atrackt-console table tr.atrackt-console-active {
+        background-color: orange;
+        border: none; }

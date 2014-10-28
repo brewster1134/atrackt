@@ -1,7 +1,8 @@
 {
   "name": "atrackt",
   "dependencies": {
-    "jquery": "~2.1.1"
+    "jquery": "~2.1.1",
+    "jquery.scrollTo": "~1.4.13"
   },
   "devDependencies": {
     "chai": "~1.9.1",
