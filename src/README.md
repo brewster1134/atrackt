@@ -1,4 +1,8 @@
 ### CHANGE LOG
+###### 1.0.4
+* console loads after document ready and collects all existing element
+* console now has scrolling support on hover
+
 ###### 1.0.2
 * require/amd fix for the console
 * added support for binding arrays of objects

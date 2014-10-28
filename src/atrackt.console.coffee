@@ -11,10 +11,12 @@ https://github.com/brewster1134/atrackt
       define [
         'jquery'
         'atrackt'
+        'jquery.scrollTo'
       ], ($, Atrackt) ->
-        window.Atrackt = new(factory($, Atrackt.constructor))
+        $ ->
+          window.Atrackt = new(factory($, Atrackt.constructor))
     else
-      window.Atrackt = new(factory($, Atrackt.constructor))
+      window.Atrackt = new(factory(window.jQuery, window.Atrackt.constructor))
 ) @, ($, Atrackt) ->
 
   class AtracktConsole extends Atrackt
@@ -44,6 +46,8 @@ https://github.com/brewster1134/atrackt
       $('#atrackt-location', @$console).text @_getLocation()
       $('body').addClass('atrackt-console').prepend @$console
 
+      @_renderConsoleElements()
+
     # Override the custom class to just log tracking data to the console
     #
     setPlugin: (pluginName, plugin) ->
@@ -54,6 +58,22 @@ https://github.com/brewster1134/atrackt
         plugin._send = plugin.send
         plugin.send = (data, options) ->
           console.log plugin.name, data, options
+
+    # Re-render console elements
+    #
+    _renderConsoleElements: ->
+      $('tbody', @$console).empty()
+
+      # Render global elements
+      for eventType, elements of @_elements
+        for element in elements
+          @_renderConsoleElement 'ALL', element, eventType
+
+      # Render all plugin elements
+      for pluginName, plugin of @plugins
+        for eventType, elements of plugin._elements
+          for element in elements
+            @_renderConsoleElement pluginName, element, eventType
 
     # Add console events to elements
     #
@@ -70,6 +90,8 @@ https://github.com/brewster1134/atrackt
     # Add a single element to the console
     #
     _renderConsoleElement: (contextName, element, eventType) ->
+      self = @
+
       # Get element meta data
       trackObject = @_getTrackObject element, eventType
 
@@ -99,6 +121,17 @@ https://github.com/brewster1134/atrackt
       $rowEl.add($trackEl).hover ->
         $rowEl.addClass 'atrackt-console-active'
         $trackEl.addClass 'atrackt-console-active'
+
+        # scroll to hovered element
+        if $.scrollTo
+          if @ == $rowEl[0]
+            $.scrollTo $trackEl, 0,
+              offset:
+                top: -300
+          else if @ == $trackEl[0]
+            self.$console.scrollTo $rowEl, 0
+              offset:
+                top: -50
       , ->
         $rowEl.removeClass 'atrackt-console-active'
         $trackEl.removeClass 'atrackt-console-active'
