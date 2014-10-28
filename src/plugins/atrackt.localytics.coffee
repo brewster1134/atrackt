@@ -5,36 +5,45 @@ https://github.com/brewster1134/atrackt
 @version 1.0.0
 ###
 
-window.Atrackt.setPlugin 'localytics',
-  send: (data, options) ->
-    if @_isUiWebView()
-      redirectUrl = @_getRedirectUrl data, options
-      @_redirect redirectUrl
-    else
-      @_callTagMethod data, options
+((root, factory) ->
+  if typeof define == 'function' && define.amd
+    define [
+      'atrackt'
+    ], (Atrackt) ->
+      factory Atrackt
+  else
+    factory Atrackt
+) @, (Atrackt) ->
 
-  # HTML5 methods
-  #
-  _callTagMethod: (data, options) ->
-    localyticsSession?.tagEvent options.eventName, data
+  window.Atrackt.setPlugin 'localytics',
+    send: (data, options) ->
+      if @_isUiWebView()
+        redirectUrl = @_getRedirectUrl data, options
+        @_redirect redirectUrl
+      else
+        @_callTagMethod data, options
 
-  # UIWebView/HTML5 Hybrid methods
-  #
+    # HTML5 methods
+    #
+    _callTagMethod: (data, options) ->
+      localyticsSession?.tagEvent options.eventName, data
 
-  # Check if being run in UIWebView
-  #
-  _isUiWebView: ->
-    /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
+    # UIWebView/HTML5 Hybrid methods
+    #
 
-  _getRedirectUrl: (data, options) ->
-    redirectUrl = if options.screenEvent
-      "localytics://?screenEvent=#{options.eventName}"
-    else
-      "localytics://?event=#{options.eventName}"
+    # Check if being run in UIWebView
+    #
+    _isUiWebView: ->
+      /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent)
 
+    _getRedirectUrl: (data, options) ->
+      redirectUrl = if options.screenEvent
+        "localytics://?screenEvent=#{options.eventName}"
+      else
+        "localytics://?event=#{options.eventName}"
 
-    redirectUrl += "&attributes=#{JSON.stringify(data)}" if Object.keys(data).length
-    redirectUrl
+      redirectUrl += "&attributes=#{JSON.stringify(data)}" if Object.keys(data).length
+      redirectUrl
 
-  _redirect: (url) ->
-    window.location = url if @_isUiWebView()
+    _redirect: (url) ->
+      window.location = url if @_isUiWebView()
