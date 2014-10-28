@@ -155,11 +155,11 @@ https://github.com/brewster1134/atrackt
     # * add the element to an elements array (global or plugin)
     # * bind the appropriate event (global or plugin)
     #
-    _registerElement: (context, element, event) ->
-      context._elements[event].push element
+    _registerElement: (context, element, eventType) ->
+      context._elements[eventType].push element
 
       # create event namespaces
-      globalEvent = [event, 'atrackt']
+      globalEvent = [eventType, 'atrackt']
       if context.name
         pluginEvent = globalEvent.slice(0)
         pluginEvent.push context.name if context.name
