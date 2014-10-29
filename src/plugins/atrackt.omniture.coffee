@@ -2,35 +2,37 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 1.0.2
+@version 1.0.5
 ###
 
 ((root, factory) ->
   if typeof define == 'function' && define.amd
     define [
+      'jquery'
       'atrackt'
-    ], (Atrackt) ->
-      factory Atrackt
+    ], ($, Atrackt) ->
+      factory $, Atrackt
   else
-    factory Atrackt
-) @, (Atrackt) ->
+    factory $, Atrackt
+) @, ($, Atrackt) ->
 
   window.Atrackt.setPlugin 'omniture',
     send: (data, options) ->
       return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
 
+      $.extend true, @options, options
       data._categories = data._categories?.join @options.delimiters.category
-      data = @translatePropMap data
+      data = @_translatePropMap data
 
-      @buildSObject data
-      if options.page && s.t?
+      @_buildSObject data
+      if @options.page && s.t?
         s.t()
       else if s.tl?
-        arg = if options.el?.attr('href')
-          options.el[0]
+        arg = if @options.el?.attr('href')
+          @options.el[0]
         else
           true
-        s.tl arg, options['trackingType'], @buildLinkName data
+        s.tl arg, @options['trackingType'], @_buildLinkName data
       data
 
     options:
@@ -48,7 +50,7 @@ https://github.com/brewster1134/atrackt
         _event       : 'prop4'
 
     # omniture specific
-    buildSObject: (obj) ->
+    _buildSObject: (obj) ->
       switch @options.version
         when 14
           linkTrackVars = @options.linkTrackVars
@@ -61,7 +63,7 @@ https://github.com/brewster1134/atrackt
           s.contextData = obj
       s
 
-    buildLinkName: (obj) ->
+    _buildLinkName: (obj) ->
       linkName = [
         obj[@options.propMap._location]
         obj[@options.propMap._categories]
@@ -70,15 +72,15 @@ https://github.com/brewster1134/atrackt
 
       linkName.join(@options.delimiters.linkName)
 
-    translatePropMap: (obj) ->
+    _translatePropMap: (obj) ->
       return obj if @options.version > 14
 
       _globalData = {}
       $.each obj, (k,v) =>
-        _globalData[@keyLookup k] = v?.toString().replace? @options.charReplaceRegex, ''
+        _globalData[@_keyLookup k] = v?.toString().replace? @options.charReplaceRegex, ''
       _globalData
 
-    keyLookup: (key) ->
+    _keyLookup: (key) ->
       _newKey = @options.propMap[key]
       console.error "ATRACKT ERROR: PLUGIN `omniture` - No mapping for `#{key}` in omniture config" unless _newKey
       _newKey || key

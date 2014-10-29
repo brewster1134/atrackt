@@ -14,6 +14,9 @@
 * Just a simple send method!
 
 ##### Omniture Plugin
+###### 1.0.5
+* options bugfix
+
 ###### 1.0.0
 * updated to new api
 

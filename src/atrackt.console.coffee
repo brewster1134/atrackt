@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.2
+@version 1.0.5
 @author Ryan Brewster
 ###
 
@@ -46,6 +46,7 @@ https://github.com/brewster1134/atrackt
       $('#atrackt-location', @$console).text @_getLocation()
       $('body').addClass('atrackt-console').prepend @$console
 
+      @_setPlugins()
       @_renderConsoleElements()
 
     # Override the custom class to just log tracking data to the console
@@ -58,6 +59,11 @@ https://github.com/brewster1134/atrackt
         plugin._send = plugin.send
         plugin.send = (data, options) ->
           console.log plugin.name, data, options
+
+    _setPlugins: ->
+      for pluginName, plugin of @plugins
+        unless plugin._send
+          @setPlugin pluginName, plugin
 
     # Re-render console elements
     #
@@ -129,9 +135,9 @@ https://github.com/brewster1134/atrackt
               offset:
                 top: -300
           else if @ == $trackEl[0]
-            self.$console.scrollTo $rowEl, 0
+            self.$console.scrollTo $rowEl, 0,
               offset:
-                top: -50
+                top: -100
       , ->
         $rowEl.removeClass 'atrackt-console-active'
         $trackEl.removeClass 'atrackt-console-active'

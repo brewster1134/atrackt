@@ -1,4 +1,8 @@
 ### CHANGE LOG
+###### 1.0.5
+* console scroll fix
+* console sets existing plugins on load
+
 ###### 1.0.4
 * console loads after document ready and collects all existing element
 * console now has scrolling support on hover
