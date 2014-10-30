@@ -35,7 +35,6 @@ https://github.com/brewster1134/atrackt
 
     send: (data, options) ->
       return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
-      console.log 'dataoptions', data, options
 
       $.extend true, @options, options
       data._categories = data._categories?.join @options.delimiters.category

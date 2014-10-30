@@ -1,4 +1,8 @@
 ### CHANGE LOG
+###### 1.0.7
+* removed polyfill
+* moved plugin scoped option logic
+
 ###### 1.0.6
 * option namespacing
 
