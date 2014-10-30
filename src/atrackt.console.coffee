@@ -6,16 +6,17 @@ https://github.com/brewster1134/atrackt
 ###
 
 ((root, factory) ->
-  if location.href.indexOf('atracktConsole') > -1
-    if typeof define == 'function' && define.amd
-      define [
-        'jquery'
-        'atrackt'
-        'jquery.scrollTo'
-      ], ($, Atrackt) ->
+  if typeof define == 'function' && define.amd
+    define [
+      'jquery'
+      'atrackt'
+      'jquery.scrollTo'
+    ], ($, Atrackt) ->
+      if location.href.indexOf('atracktConsole') > -1
         $ ->
           window.Atrackt = new(factory($, Atrackt.constructor))
-    else
+  else
+    if location.href.indexOf('atracktConsole') > -1
       window.Atrackt = new(factory(window.jQuery, window.Atrackt.constructor))
 ) @, ($, Atrackt) ->
 

@@ -1,4 +1,7 @@
 ### CHANGE LOG
+###### 1.0.6
+* option namespacing
+
 ###### 1.0.5
 * console scroll fix
 * console sets existing plugins on load

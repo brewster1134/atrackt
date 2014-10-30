@@ -210,9 +210,6 @@ describe 'Atrackt', ->
     context 'when tracking an element', ->
       before ->
         $fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
-        $fooEl.data 'atrackt-function', (data, options) ->
-          data['function_data'] = true
-          options['function_option'] = true
 
         Atrackt.plugins['foo-plugin'].track $fooEl,
           track_option: true
@@ -227,20 +224,14 @@ describe 'Atrackt', ->
           global_data: true
           plugin_data: true
           option_data: true
-          function_data: true
         ,
           global_option: true
           plugin_option: true
           track_option: true
-          function_option: true
 
     context 'when tracking by event', ->
       before ->
         $fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
-        $fooEl.data 'atrackt-function', (data, options) ->
-          data['function_data'] = true
-          options['function_option'] = true
-
         $('body').append $fooEl
 
         Atrackt.plugins['foo-plugin'].setEvent
@@ -256,8 +247,73 @@ describe 'Atrackt', ->
           _event: 'click'
           global_data: true
           plugin_data: true
+        ,
+          global_option: true
+          plugin_option: true
+
+    context 'when tracking an element with a custom function', ->
+      before ->
+        $fooEl = $('<a data-atrackt-value="Foo"></a>')
+        $fooEl.data 'atrackt-function', (data, options) ->
+          data['function_data'] = true
+          options['function_option'] = true
+
+        Atrackt.plugins['foo-plugin'].setEvent
+          click: $fooEl
+
+        $fooEl.trigger 'click'
+
+      it 'should call the send method on plugins with data and options', ->
+        expect(pluginSpy).to.be.calledWithExactly
+          _location: 'Atrackt Test'
+          _categories: []
+          _value: 'Foo'
+          _event: 'click'
+          global_data: true
+          plugin_data: true
           function_data: true
         ,
           global_option: true
           plugin_option: true
           function_option: true
+
+    context 'when passing options globally', ->
+      before ->
+        $fooEl = $('<a data-atrackt-value="Foo"></a>')
+
+        Atrackt.track $fooEl,
+          global_option: 'global'
+          global_only: true
+          'foo-plugin':
+            plugin_option: 'track-global-plugin-option'
+            global_option: 'track-global-plugin-overwrite-option'
+
+      it 'should', ->
+        expect(pluginSpy).to.be.calledWithExactly
+          _location: 'Atrackt Test'
+          _categories: []
+          _value: 'Foo'
+          global_data: true
+          plugin_data: true
+        ,
+          global_only: true
+          global_option: 'track-global-plugin-overwrite-option'
+          plugin_option: 'track-global-plugin-option'
+
+    context 'when passing options on a plugin', ->
+      before ->
+        $fooEl = $('<a data-atrackt-value="Foo"></a>')
+
+        Atrackt.plugins['foo-plugin'].track $fooEl,
+          plugin_option: 'track|plugin-option'
+
+      it 'should', ->
+        expect(pluginSpy).to.be.calledWithExactly
+          _location: 'Atrackt Test'
+          _categories: []
+          _value: 'Foo'
+          global_data: true
+          plugin_data: true
+        ,
+          global_option: true
+          plugin_option: 'track|plugin-option'

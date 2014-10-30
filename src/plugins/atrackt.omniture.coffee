@@ -17,24 +17,8 @@ https://github.com/brewster1134/atrackt
 ) @, ($, Atrackt) ->
 
   window.Atrackt.setPlugin 'omniture',
-    send: (data, options) ->
-      return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
 
-      $.extend true, @options, options
-      data._categories = data._categories?.join @options.delimiters.category
-      data = @_translatePropMap data
-
-      @_buildSObject data
-      if @options.page && s.t?
-        s.t()
-      else if s.tl?
-        arg = if @options.el?.attr('href')
-          @options.el[0]
-        else
-          true
-        s.tl arg, @options['trackingType'], @_buildLinkName data
-      data
-
+    # default options
     options:
       trackingType: 'o'
       charReplaceRegex: /[^\x20-\x7E]/g
@@ -48,6 +32,26 @@ https://github.com/brewster1134/atrackt
         _categories  : 'prop2'
         _value       : 'prop3'
         _event       : 'prop4'
+
+    send: (data, options) ->
+      return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
+      console.log 'dataoptions', data, options
+
+      $.extend true, @options, options
+      data._categories = data._categories?.join @options.delimiters.category
+      data = @_translatePropMap data
+
+
+      @_buildSObject data
+      if @options.page && s.t?
+        s.t()
+      else if s.tl?
+        arg = if @options.el?.attr('href')
+          @options.el[0]
+        else
+          true
+        s.tl arg, @options['trackingType'], @_buildLinkName data
+      data
 
     # omniture specific
     _buildSObject: (obj) ->

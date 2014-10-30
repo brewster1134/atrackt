@@ -132,6 +132,10 @@ https://github.com/brewster1134/atrackt
 
       # Loop through each plugin and check if the data should be tracked
       for pluginName, pluginData of @plugins
+        # extract plugin specific data
+        if options[pluginName]
+          $.extend true, options, options[pluginName]
+          delete options[pluginName]
 
         # If tracking is triggered by an event, make sure the event namespace matches the plugin or is global
         if event
