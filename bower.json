@@ -1,14 +1,14 @@
 {
   "name": "atrackt",
   "dependencies": {
-    "jquery": "~2.1.1",
-    "jquery.scrollTo": "~1.4.13"
+    "jquery": "~2",
+    "jquery.scrollTo": "~1"
   },
   "devDependencies": {
-    "chai": "~1.9.1",
-    "chai-as-promised": "~4.1.1",
-    "mocha": "~1.21.4",
-    "sinon": "~1.10.3",
-    "sinon-chai": "~2.5.0"
+    "chai": "~1",
+    "chai-as-promised": "~4",
+    "mocha": "~1",
+    "sinon": "~1",
+    "sinon-chai": "~2"
   }
 }

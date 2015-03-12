@@ -1,4 +1,6 @@
 ### CHANGE LOG
+
+
 ##### Localytics Plugin
 ###### 1.0.0
 * updated to new api
@@ -13,7 +15,11 @@
 ###### 0.0.1
 * Just a simple send method!
 
+
 ##### Omniture Plugin
+###### 1.0.6
+* removed console logs
+
 ###### 1.0.5
 * options bugfix
 

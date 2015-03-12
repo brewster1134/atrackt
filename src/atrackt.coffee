@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.2
+@version 1.0.8
 @author Ryan Brewster
 ###
 
@@ -28,8 +28,8 @@ https://github.com/brewster1134/atrackt
     # PUBLIC METHODS
     #
     setPlugin: (pluginName, plugin) ->
-      throw 'ATRACKT ERROR: `setPlugin` - No plugin name defined' unless pluginName
-      throw "ATRACKT ERROR: `setPlugin` - No send method was defined for `#{pluginName}`." unless typeof plugin?.send == 'function'
+      throw new Error 'ATRACKT ERROR: `setPlugin` - No plugin name defined' unless pluginName
+      throw new Error "ATRACKT ERROR: `setPlugin` - No send method was defined for `#{pluginName}`." unless plugin && typeof plugin.send == 'function'
 
       # Add plugin to global plugins object
       pluginName = pluginName.toLowerCase().replace(/[^a-z]/g, '-')
@@ -56,7 +56,7 @@ https://github.com/brewster1134/atrackt
     # Actual event binding is done from _registerElement
     #
     setEvent: (eventsObject, context = @) ->
-      throw 'ATRACKT ERROR: `setEvent` - You must pass a valid event object.' unless eventsObject
+      throw new Error 'ATRACKT ERROR: `setEvent` - You must pass a valid event object.' unless eventsObject
 
       for eventType, objects of eventsObject
 
@@ -114,7 +114,7 @@ https://github.com/brewster1134/atrackt
       allowedCallbacks = [ 'before', 'after' ]
 
       if allowedCallbacks.indexOf(name) == -1
-        throw "ATRACKT ERROR: `setCallback` - `#{name}` is not a valid callback.  Only callbacks allowed are: #{allowedCallbacks.join(', ')}"
+        throw new Error "ATRACKT ERROR: `setCallback` - `#{name}` is not a valid callback.  Only callbacks allowed are: #{allowedCallbacks.join(', ')}"
 
       context._callbacks[name] ||= []
       context._callbacks[name].push callback
@@ -180,7 +180,7 @@ https://github.com/brewster1134/atrackt
     #
     _track: (plugin, data, options, event) ->
       metaData = @_getTrackObject data, event
-      throw 'ATRACKT ERROR: `track` - Only valid selectors, jquery objects, or html nodes are supported.' unless metaData
+      throw new Error 'ATRACKT ERROR: `track` - Only valid selectors, jquery objects, or html nodes are supported.' unless metaData
 
       # prepare tracking data
       trackingData = $.extend true, {}, @_data, plugin._data, options['_data'] || {}, metaData

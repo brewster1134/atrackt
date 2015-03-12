@@ -1,4 +1,10 @@
 ### CHANGE LOG
+
+
+##### Core
+###### 1.0.8
+* proper error throwing
+
 ###### 1.0.7
 * removed polyfill
 * moved plugin scoped option logic
@@ -38,3 +44,7 @@
 
 ###### 0.0.12
 * Added setCallback
+
+
+##### Console
+###### 1.0.0

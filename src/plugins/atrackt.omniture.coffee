@@ -2,7 +2,7 @@
 Atrackt Omniture Plugin
 https://github.com/brewster1134/atrackt
 @author Ryan Brewster
-@version 1.0.5
+@version 1.0.6
 ###
 
 ((root, factory) ->
@@ -34,7 +34,8 @@ https://github.com/brewster1134/atrackt
         _event       : 'prop4'
 
     send: (data, options) ->
-      return console.error 'ATRACKT ERROR: PLUGIN `omniture` - Site catalyst library not loaded' if typeof s == 'undefined'
+      # return if the site catalyst library isnt loaded
+      return unless s?
 
       $.extend true, @options, options
       data._categories = data._categories?.join @options.delimiters.category
@@ -85,5 +86,4 @@ https://github.com/brewster1134/atrackt
 
     _keyLookup: (key) ->
       _newKey = @options.propMap[key]
-      console.error "ATRACKT ERROR: PLUGIN `omniture` - No mapping for `#{key}` in omniture config" unless _newKey
       _newKey || key

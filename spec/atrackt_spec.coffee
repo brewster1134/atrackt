@@ -1,10 +1,17 @@
 # Setup plugin
 #
+
+# create plugin to test with
 Atrackt.setPlugin 'Foo Plugin',
   send: ->
 _plugin = Atrackt.plugins['foo-plugin']
 
 describe 'Atrackt', ->
+  before ->
+    # make sure the foo plugin is the only registered plugin
+    Atrackt.plugins =
+      'foo-plugin': _plugin
+
   it 'should set the Atrackt object on window', ->
     expect(window.Atrackt).to.exist
 
