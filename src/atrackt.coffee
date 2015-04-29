@@ -1,7 +1,6 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.8
 @author Ryan Brewster
 ###
 
@@ -125,26 +124,35 @@ https://github.com/brewster1134/atrackt
       # Add the plugin name to the options if it exists
       options['_plugin'] = context.name if context?.name
 
-      # Loop through each plugin and check if the data should be tracked
-      for pluginName, pluginData of @plugins
+      trackPlugins = =>
+        # Loop through each plugin and check if the data should be tracked
+        for pluginName, pluginData of @plugins
 
-        # If tracking is triggered by an event, make sure the event namespace matches the plugin or is global
-        if event
-          eventNamespace = event?.handleObj.namespace
-          if eventNamespace == 'atrackt' || eventNamespace == "atrackt.#{pluginName}"
-            @_trackJqueryObject pluginData, data, options, event
-
-        # If tracking without an event, make sure the _plugin option matches if it is set
-        else
-          if !options['_plugin'] || options['_plugin'] == pluginName
-
-            # track jQuery objects
-            if data instanceof jQuery
+          # If tracking is triggered by an event, make sure the event namespace matches the plugin or is global
+          if eventNamespace = event?.handleObj?.namespace
+            if eventNamespace == 'atrackt' || eventNamespace == "atrackt.#{pluginName}"
               @_trackJqueryObject pluginData, data, options, event
 
-            # track everything else (html element or an object)
-            else
-              @_track pluginData, data, options, event
+          # If tracking without an event, make sure the _plugin option matches if it is set
+          else
+            if !options['_plugin'] || options['_plugin'] == pluginName
+
+              # track jQuery objects
+              if data instanceof jQuery
+                @_trackJqueryObject pluginData, data, options, event
+
+              # track everything else (html element or an object)
+              else
+                @_track pluginData, data, options, event
+
+      # track with optional delay (in milliseconds)
+      delay = options['delay']
+      if delay
+        setTimeout ->
+          trackPlugins()
+        , delay
+      else
+        trackPlugins()
 
     # Introduce an element into the Atrackt eco-system
     # * add the element to an elements array (global or plugin)

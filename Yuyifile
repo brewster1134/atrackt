@@ -1,5 +1,5 @@
 sources:
-  yuyi: https://github.com/brewster1134/Yuyi-Rolls/archive/master.zip
+  yuyi: brewster1134/Yuyi-Rolls
 rolls:
   bower:
   bundler:
@@ -7,3 +7,4 @@ rolls:
   phantomjs:
   ruby:
     versions:
+      - 2.1.2
