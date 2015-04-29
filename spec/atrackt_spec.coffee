@@ -160,12 +160,15 @@ describe 'Atrackt', ->
       expect(_plugin._callbacks.after[0]).to.be.a 'function'
 
   describe '#track', ->
+    clock = null
     $fooEl = null
     beforeCallbackSpy = sinon.spy()
     afterCallbackSpy = sinon.spy()
     pluginSpy = sinon.spy _plugin, 'send'
 
     before ->
+      clock = sinon.useFakeTimers()
+
       Atrackt._options = {
         global_option: true
       }
@@ -189,6 +192,7 @@ describe 'Atrackt', ->
         after: [ afterCallbackSpy ]
 
     after ->
+      clock.restore()
       beforeCallbackSpy.reset()
       afterCallbackSpy.reset()
       pluginSpy.reset()
@@ -201,6 +205,8 @@ describe 'Atrackt', ->
           track_option: true
           _data:
             option_data: true
+
+        clock.tick 0
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
@@ -222,6 +228,8 @@ describe 'Atrackt', ->
           track_option: true
           _data:
             option_data: true
+
+        clock.tick 0
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
@@ -246,6 +254,8 @@ describe 'Atrackt', ->
 
         $fooEl.trigger 'click'
 
+        clock.tick 0
+
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
           _location: 'Atrackt Test'
@@ -269,6 +279,8 @@ describe 'Atrackt', ->
           click: $fooEl
 
         $fooEl.trigger 'click'
+
+        clock.tick 0
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
@@ -295,7 +307,9 @@ describe 'Atrackt', ->
             plugin_option: 'track-global-plugin-option'
             global_option: 'track-global-plugin-overwrite-option'
 
-      it 'should', ->
+        clock.tick 0
+
+      it 'should call send with proper data & options', ->
         expect(pluginSpy).to.be.calledWithExactly
           _location: 'Atrackt Test'
           _categories: []
@@ -314,7 +328,9 @@ describe 'Atrackt', ->
         Atrackt.plugins['foo-plugin'].track $fooEl,
           plugin_option: 'track|plugin-option'
 
-      it 'should', ->
+        clock.tick 0
+
+      it 'should call send with proper data & options', ->
         expect(pluginSpy).to.be.calledWithExactly
           _location: 'Atrackt Test'
           _categories: []
@@ -324,3 +340,16 @@ describe 'Atrackt', ->
         ,
           global_option: true
           plugin_option: 'track|plugin-option'
+
+    context 'when using a delay', ->
+      before ->
+        pluginSpy.reset()
+        Atrackt.plugins['foo-plugin'].track
+          track_data: true
+        ,
+          delay: 100
+
+      it 'should call the send method on plugins with data and options', ->
+        expect(pluginSpy).to.not.be.called
+        clock.tick 101
+        expect(pluginSpy).to.be.called

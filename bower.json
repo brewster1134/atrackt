@@ -9,6 +9,7 @@
     "chai-as-promised": "~4",
     "mocha": "~1",
     "sinon": "~1",
-    "sinon-chai": "~2"
+    "sinon-chai": "~2",
+    "lolex": "sinonjs/lolex#~1"
   }
 }

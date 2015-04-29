@@ -1,0 +1,10 @@
+---
+tasks:
+  changelog:
+    file_name: CHANGELOG.md
+  git:
+    remotes:
+    - repo: origin
+      branch: master
+name: atrackt
+version: 1.0.8
