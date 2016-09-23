@@ -125,10 +125,10 @@ It will track the first value it finds from the following:
 ---
 #### `_value`
   * `data-atrackt-value`  A custom value to explicitly set
+  * `val`               The value (if a form element)
   * `title`             The value of the title attribute
   * `name`              The value of the name attribute
   * `text`              The text value of the element. This contains only text and will not include any HTML.
-  * `val`               The value (if a form element)
   * `id`                The value of the id attribute
   * `class`             The value of the class attribute
 
