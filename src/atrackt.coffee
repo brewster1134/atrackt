@@ -1,6 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
+@version 1.0.10
 @author Ryan Brewster
 ###
 
@@ -271,9 +272,9 @@ https://github.com/brewster1134/atrackt
     #
     _getValue: ($el) ->
       $el.data('atrackt-value') ||
+      $el.val()                 ||
       $el.attr('title')         ||
       $el.attr('name')          ||
       $el.text().trim()         ||
-      $el.val()                 ||
       $el.attr('id')            ||
       $el.attr('class')
