@@ -1,4 +1,4 @@
-###### 1.01.10
+###### 1.0.10
 * form element values take precedence over other attributes
 
 ###### 1.0.9
