@@ -6,7 +6,7 @@ https://github.com/brewster1134/atrackt
 ###
 
 ((root, factory) ->
-  if typeof define == 'function' && define.amd
+  if define?.amd
     define [
       'jquery'
     ], ($) ->

@@ -1,5 +1,7 @@
 {
-  "scripts": {
-    "preinstall": "npm install -g bower coffee-script testem"
+  "devDependencies": {
+    "bower": "latest",
+    "coffee-script": "latest",
+    "testem": "latest"
   }
 }

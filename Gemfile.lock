@@ -7,7 +7,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  sass (~> 3.4)
+  sass
 
 BUNDLED WITH
    1.12.5

@@ -1,5 +1,9 @@
 ### CHANGE LOG
 
+##### Sumo Logic Plugin
+###### 0.0.1
+* new plugin skeleton
+
 
 ##### Localytics Plugin
 ###### 1.0.0

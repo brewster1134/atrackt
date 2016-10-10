@@ -1,3 +1,9 @@
+[![dependencies](https://gemnasium.com/badges/github.com/brewster1134/atrackt.svg)](https://gemnasium.com/github.com/brewster1134/atrackt)
+[![docs](http://inch-ci.org/github/brewster1134/atrackt.svg?branch=master)](http://inch-ci.org/github/brewster1134/atrackt)
+[![build](https://travis-ci.org/brewster1134/atrackt.svg?branch=master)](https://travis-ci.org/brewster1134/atrackt)
+[![coverage](https://coveralls.io/repos/brewster1134/atrackt/badge.svg?branch=master)](https://coveralls.io/r/brewster1134/atrackt?branch=master)
+[![code climate](https://codeclimate.com/github/brewster1134/atrackt/badges/gpa.svg)](https://codeclimate.com/github/brewster1134/atrackt)
+
 # Atrackt
 A library for making complex tracking & analytics easier.
 
