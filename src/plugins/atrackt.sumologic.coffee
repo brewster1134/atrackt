@@ -21,3 +21,8 @@ https://github.com/brewster1134/atrackt
 
     send: (data, options) ->
       return unless options['type'] == 'error'
+
+      $.ajax
+        method: 'POST'
+        url: ''
+        data: data
