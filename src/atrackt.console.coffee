@@ -5,20 +5,17 @@ https://github.com/brewster1134/atrackt
 @author Ryan Brewster
 ###
 
-((root, factory) ->
+((factory) ->
   if define?.amd
     define [
       'jquery'
       'atrackt'
       'jquery.scrollTo'
     ], ($, Atrackt) ->
-      if location.href.indexOf('atracktConsole') > -1
-        $ ->
-          window.Atrackt = new(factory($, Atrackt.constructor))
+      factory $, Atrackt.constructor
   else
-    if location.href.indexOf('atracktConsole') > -1
-      window.Atrackt = new(factory(window.jQuery, window.Atrackt.constructor))
-) @, ($, Atrackt) ->
+    factory window.jQuery, window.Atrackt.constructor
+) ($, Atrackt) ->
 
   class AtracktConsole extends Atrackt
 
@@ -142,3 +139,6 @@ https://github.com/brewster1134/atrackt
       , ->
         $rowEl.removeClass 'atrackt-console-active'
         $trackEl.removeClass 'atrackt-console-active'
+
+  if location.href.indexOf('atracktConsole') > -1
+    window.Atrackt = new AtracktConsole

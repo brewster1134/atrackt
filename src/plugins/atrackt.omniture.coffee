@@ -5,16 +5,16 @@ https://github.com/brewster1134/atrackt
 @version 1.0.6
 ###
 
-((root, factory) ->
+((factory) ->
   if define?.amd
     define [
       'jquery'
       'atrackt'
     ], ($, Atrackt) ->
-      factory jQuery, Atrackt
+      factory $, Atrackt
   else
     factory jQuery, Atrackt
-) @, ($, Atrackt) ->
+) ($, Atrackt) ->
 
   window.Atrackt.setPlugin 'omniture',
 
