@@ -16,7 +16,7 @@ https://github.com/brewster1134/atrackt
     factory jQuery, Atrackt
 ) ($, Atrackt) ->
 
-  window.Atrackt.setPlugin 'omniture',
+  Atrackt.setPlugin 'omniture',
 
     # default options
     options:

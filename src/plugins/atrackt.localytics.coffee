@@ -15,7 +15,7 @@ https://github.com/brewster1134/atrackt
     factory Atrackt
 ) (Atrackt) ->
 
-  window.Atrackt.setPlugin 'localytics',
+  Atrackt.setPlugin 'localytics',
     send: (data, options) ->
       if @_isUiWebView()
         redirectUrl = @_getRedirectUrl data, options

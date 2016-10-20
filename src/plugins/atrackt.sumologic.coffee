@@ -16,7 +16,7 @@ https://github.com/brewster1134/atrackt
     factory jQuery, Atrackt
 ) ($, Atrackt) ->
 
-  window.Atrackt.setPlugin 'sumologic',
+  Atrackt.setPlugin 'sumologic',
     options: {}
 
     send: (data, options) ->
