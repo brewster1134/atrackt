@@ -5,7 +5,7 @@ https://github.com/brewster1134/atrackt
 @version 1.0.2
 ###
 
-((root, factory) ->
+((factory) ->
   if define?.amd
     define [
       'atrackt'
@@ -13,9 +13,9 @@ https://github.com/brewster1134/atrackt
       factory Atrackt
   else
     factory Atrackt
-) @, (Atrackt) ->
+) (Atrackt) ->
 
-  window.Atrackt.setPlugin 'localytics',
+  Atrackt.setPlugin 'localytics',
     send: (data, options) ->
       if @_isUiWebView()
         redirectUrl = @_getRedirectUrl data, options

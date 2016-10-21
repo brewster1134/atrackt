@@ -5,15 +5,15 @@ https://github.com/brewster1134/atrackt
 @author Ryan Brewster
 ###
 
-((root, factory) ->
+((factory) ->
   if define?.amd
     define [
       'jquery'
     ], ($) ->
-      window.Atrackt ||= new(factory($))
+      factory $
   else
-    window.Atrackt ||= new(factory($))
-) @, ($) ->
+    factory jQuery
+) ($) ->
 
   class Atrackt
 
@@ -278,3 +278,5 @@ https://github.com/brewster1134/atrackt
       $el.text().trim()         ||
       $el.attr('id')            ||
       $el.attr('class')
+
+  window.Atrackt ||= new Atrackt

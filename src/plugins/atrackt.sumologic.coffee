@@ -5,18 +5,18 @@ https://github.com/brewster1134/atrackt
 @version 0.0.1
 ###
 
-((root, factory) ->
+((factory) ->
   if define?.amd
     define [
       'jquery'
       'atrackt'
     ], ($, Atrackt) ->
-      factory jQuery, Atrackt
+      factory $, Atrackt
   else
-    factory jquery, Atrackt
-) @, ($, Atrackt) ->
+    factory jQuery, Atrackt
+) ($, Atrackt) ->
 
-  window.Atrackt.setPlugin 'sumologic',
+  Atrackt.setPlugin 'sumologic',
     options: {}
 
     send: (data, options) ->
