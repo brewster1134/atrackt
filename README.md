@@ -13,10 +13,10 @@ A library for making complex tracking & analytics easier.
 * `.setGlobalData` is now `.setData`
 * `data-trackt-function` now only accepts 2 arguments (data & options). use `this` to access the element
 
-### Dependencies
+## Dependencies
 * [jQuery](http://jquery.com)
 
-### Quick Usage
+## Quick Usage
 * Load the atrackt core library & any plugin(s)
   * `<script src="/lib/atrackt.js"></script>`
   * `<script src="/lib/plugins/atrackt.omniture.js"></script>`
@@ -183,44 +183,39 @@ You should see a console show up at the top of your page that shows all the elem
 Sometimes elements you want to track get loaded asynchronously after page load.  Modern browsers support _Mutation Observers_ which you can tap into to make sure new elements you want to track, are automatically bound when they are added.  This code is not included in atrackt, but below is a simple example.
 
 ```coffee
-# Get the cross-browser MutationObserver object
-MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+# create a method that can be run on mutations
+# do not worry about checking for only added nodes, or making sure elements do not get bound multiple times.
+# atrackt will prevent duplicates, and not checked for added nodes is much more performant.
+do attachEvents = ->
+  Atrackt.setEvent
+    click: ['a', 'button', '.atrackt-click']
+    change: ['select']
 
-# Create a mutation observer
-observer = new MutationObserver (mutations) ->
-  for mutation in mutations
-    # loop through mutations and look for added nodes
-    for addedNode in mutation.addedNodes
-      # if added node is an anchor or a button, bind it to a click event
-      for el in addedNode.parentNode?.querySelectorAll?('a, button') || []
-        Atrackt.setEvent
-          click: el
+# create an observer that calls your method
+observe = ->
+  observer = new MutationObserver (mutations) ->
+    window.requestAnimationFrame ->
+      attachEvents()
 
-# start observing on the body element after the dom is finished loading
-document.addEventListener 'DOMContentLoaded', ->
   observer.observe document.body,
     childList: true
-    subtree: true
+    subtree: true    
+
+# when the dom is loaded, initialize your observer
+document.addEventListener 'DOMContentLoaded', ->
+  observe()    
 ```
 
 ## Demo
-Download the project and open `demo/index.html` in your browser for a simple demo.  Make sure to include `?atracktConsole` in the url to see the console!
+Download the project and open `demo/index.html` in your browser for a simple demo.  Make sure to include `?atracktConsole` in the url if you want to use the console.
 
 ## Development
 
-Development dependencies are handled through [yuyi](https://github.com/brewster1134/yuyi)
+Dependencies are managed with [Yarn](https://yarnpkg.com)
 
 ```shell
-gem install yuyi
-yuyi -m https://raw.githubusercontent.com/brewster1134/atrackt/master/yuyi_menu
-bundle install
-bower install
-npm install
+yarn              # install dependencies
+yarn exec testem  # compile assets & run tests
 ```
 
 Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Testem will watch for changes and compile them to the `lib` directory.
-
-#### Compiling & Testing
-Testem will handle compiling coffeescript & sass files, and running the tests.
-
-Simply run `testem`.  -or- Run `testem -g` for Growl support.

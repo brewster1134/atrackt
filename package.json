@@ -1,7 +1,18 @@
 {
+  "name": "atrackt",
+  "dependencies": {
+    "jquery": "~3.3",
+    "jquery.scrollto": "~2.1"
+  },
   "devDependencies": {
-    "bower": "latest",
-    "coffee-script": "latest",
-    "testem": "latest"
+    "chai": "~4.1",
+    "chai-as-promised": "~7.1",
+    "coffeescript": "~2.2",
+    "lolex": "~2.3",
+    "mocha": "~5.0",
+    "node-sass": "~4.7",
+    "sinon": "~4.4",
+    "sinon-chai": "~3.0",
+    "testem": "~2.0"
   }
 }

@@ -1,6 +1,5 @@
 language: node_js
 install:
   - bundle install
-  - npm install
-  - bower install
+  - yarn install
 script: testem ci

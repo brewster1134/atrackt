@@ -1,8 +1,4 @@
 engines:
-  # https://github.com/rubysec/bundler-audit
-  bundler-audit:
-    enabled: true
-
   # http://www.coffeelint.org/#options
   coffeelint:
     enabled: true
@@ -19,7 +15,6 @@ ratings:
   paths:
     - '**.coffee'
     - '**.sass'
-    - Gemfile.lock
 
 exclude_paths:
   - vendor
