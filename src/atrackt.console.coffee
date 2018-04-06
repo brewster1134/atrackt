@@ -40,6 +40,7 @@ https://github.com/brewster1134/atrackt
         <div>
       """
 
+      super consoleHtml
       @$console = $(consoleHtml)
       $('#atrackt-location', @$console).text @_getLocation()
       $('body').addClass('atrackt-console').prepend @$console

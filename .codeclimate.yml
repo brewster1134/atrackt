@@ -17,4 +17,4 @@ ratings:
     - '**.sass'
 
 exclude_paths:
-  - vendor
+  - node_modules

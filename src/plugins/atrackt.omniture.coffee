@@ -41,7 +41,6 @@ https://github.com/brewster1134/atrackt
       data._categories = data._categories?.join @options.delimiters.category
       data = @_translatePropMap data
 
-
       @_buildSObject data
       if @options.page && s.t?
         s.t()
@@ -63,7 +62,7 @@ https://github.com/brewster1134/atrackt
           s.linkTrackVars = linkTrackVars.join(',')
 
           $.extend s, obj
-        when 15
+        else
           s.contextData = obj
       s
 

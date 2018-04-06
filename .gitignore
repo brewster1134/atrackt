@@ -1,6 +1,5 @@
 .DS_Store
-/.sass-cache
-/.tmp
-/node_modules
-/vendor
-/yarn-error.log
+.sass-cache
+.tmp
+node_modules
+yarn-error.log

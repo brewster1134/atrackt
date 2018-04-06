@@ -32,7 +32,7 @@ describe 'Plugin: Omniture', ->
         bar: 'bar'
 
     it 'should add to the s object', ->
-      expect(s.foo).to_exist
+      expect(s.bar).to.exist
 
     it 'shoule set linkTrackVars', ->
       expect(s.linkTrackVars).to.equal 'foo,bar'

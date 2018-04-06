@@ -219,3 +219,7 @@ yarn exec testem  # compile assets & run tests
 ```
 
 Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Testem will watch for changes and compile them to the `lib` directory.
+
+## TODO
+* rename location to title
+* rename categories to location

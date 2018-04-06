@@ -1,10 +1,12 @@
 {
   "name": "atrackt",
+  "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
     "jquery": "~3.3",
     "jquery.scrollto": "~2.1"
   },
   "devDependencies": {
+    "babel-cli": "~6.26",
     "chai": "~4.1",
     "chai-as-promised": "~7.1",
     "coffeescript": "~2.2",

@@ -1,5 +1,4 @@
 language: node_js
 install:
-  - bundle install
-  - yarn install
-script: testem ci
+  - yarn
+script: yarn exec testem ci

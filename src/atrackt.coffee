@@ -12,7 +12,7 @@ https://github.com/brewster1134/atrackt
     ], ($) ->
       factory $
   else
-    factory jQuery
+    factory window.jQuery
 ) ($) ->
 
   class Atrackt
