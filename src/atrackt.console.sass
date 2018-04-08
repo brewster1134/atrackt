@@ -1,31 +1,36 @@
-$console-height: 200px
+$console-height: 25vh
 
 body.atrackt-console
   padding-top: $console-height
 
   .atrackt-console-active
-    border: 2px solid orange
+    border: 0.2em solid orange
 
   #atrackt-console
+    height: $console-height
+    border-bottom: 0.1em solid black
+    background-color: white
     font-family: monospace
     position: fixed
-    top: 0
-    left: 0
-    width: 100%
-    height: $console-height
     overflow: scroll
-    background-color: white
-    border-bottom: 1px solid black
-    z-index: 999
+    z-index: 9999
+    width: 100%
+    left: 0
+    top: 0
 
     table
+      margin-bottom: 1em
       text-align: left
       width: 100%
 
-      tr
-        &.error
-          color: white
-          background-color: red
-        &.atrackt-console-active
-          background-color: orange
-          border: none
+      tbody
+        tr
+          cursor: pointer
+          &:nth-child(odd)
+            background-color: whitesmoke
+          &.error
+            background-color: red
+            color: white
+          &.atrackt-console-active
+            background-color: orange
+            border: none

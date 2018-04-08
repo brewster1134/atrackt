@@ -1,21 +1,25 @@
-a {
-  cursor: pointer;
-  display: block;
-  padding: 20px;
+body {
   text-align: center;
-  border: 1px solid black;
-  margin: 0 auto 20px;
-  text-decoration: none; }
-  a.console-link {
-    background: bisque; }
-  a.track {
-    background: burlywood; }
-
-.set {
-  background: ivory;
-  text-align: center;
-  padding: 30px;
-  border: 1px solid lightgrey;
-  margin-bottom: 30px; }
+  padding: 1em; }
+  body a {
+    border: 0.1em solid black;
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+    padding: 1em; }
+    body a.console-link {
+      background: aliceblue;
+      margin-bottom: 1em; }
+    body a.track {
+      background: burlywood; }
+  body [data-atrackt-category] {
+    border: 0.1em solid lightgrey;
+    padding: 1em;
+    margin: 1em; }
+  body #main {
+    background: aliceblue; }
+    body #main .set {
+      text-align: center;
+      background: white; }
 
 /*# sourceMappingURL=../false/atrackt_demo.css.map */

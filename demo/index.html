@@ -7,23 +7,25 @@
 
   <body>
     <a class="console-link" href='?atracktConsole'>
-      <h3>Show Debugging Console</h3>
-      Check the javascript console for more details!
+      <h3>Click here to enable the Atrackt Console</h3>
+      <h5>Open your browser's Developer Tools, and check the Javascript Console for live reporting of tracking data</h5>
     </a>
 
-    <div data-atrackt-category='Main'>
+    <div id="main" data-atrackt-category='Main'>
+      <h2>Main</h2>
+      
       <div class="set" data-atrackt-category='1st Set'>
-        <h2>1st Set</h2>
+        <h3>1st Set</h3>
         <a class="track" data-atrackt-value="Custom Value">Track w/ Custom Value</a>
       </div>
 
       <div class="set" data-atrackt-category='2nd Set'>
-        <h2>2nd Set</h2>
+        <h3>2nd Set</h3>
         <a class="track" data-atrackt-category='Custom Category'>Track w/ Custom Category</a>
       </div>
 
       <div class="set" data-atrackt-category='3rd Set'>
-        <h2>3rd Set</h2>
+        <h3>3rd Set</h3>
         <a class="track custom">Track w/ Custom Function</a>
       </div>
     </div>

@@ -1,26 +1,31 @@
 body.atrackt-console {
-  padding-top: 200px; }
+  padding-top: 25vh; }
   body.atrackt-console .atrackt-console-active {
-    border: 2px solid orange; }
+    border: 0.2em solid orange; }
   body.atrackt-console #atrackt-console {
+    height: 25vh;
+    border-bottom: 0.1em solid black;
+    background-color: white;
     font-family: monospace;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 200px;
     overflow: scroll;
-    background-color: white;
-    border-bottom: 1px solid black;
-    z-index: 999; }
+    z-index: 9999;
+    width: 100%;
+    left: 0;
+    top: 0; }
     body.atrackt-console #atrackt-console table {
+      margin-bottom: 1em;
       text-align: left;
       width: 100%; }
-      body.atrackt-console #atrackt-console table tr.error {
-        color: white;
-        background-color: red; }
-      body.atrackt-console #atrackt-console table tr.atrackt-console-active {
-        background-color: orange;
-        border: none; }
+      body.atrackt-console #atrackt-console table tbody tr {
+        cursor: pointer; }
+        body.atrackt-console #atrackt-console table tbody tr:nth-child(odd) {
+          background-color: whitesmoke; }
+        body.atrackt-console #atrackt-console table tbody tr.error {
+          background-color: red;
+          color: white; }
+        body.atrackt-console #atrackt-console table tbody tr.atrackt-console-active {
+          background-color: orange;
+          border: none; }
 
 /*# sourceMappingURL=../false/atrackt.console.css.map */
