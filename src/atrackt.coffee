@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.10
+@version 1.0.11
 @author Ryan Brewster
 ###
 

@@ -1,7 +1,7 @@
 body.atrackt-console {
   padding-top: 25vh; }
   body.atrackt-console .atrackt-console-active {
-    border: 0.2em solid orange; }
+    border: 0.2em solid orange !important; }
   body.atrackt-console #atrackt-console {
     height: 25vh;
     border-bottom: 0.1em solid black;
@@ -28,4 +28,4 @@ body.atrackt-console {
           background-color: orange;
           border: none; }
 
-/*# sourceMappingURL=../false/atrackt.console.css.map */
+/*# sourceMappingURL=atrackt.console.css.map */

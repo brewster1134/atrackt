@@ -1,9 +1,0 @@
-{
-	"version": 3,
-	"file": "../.tmp/atrackt.console_spec.css",
-	"sources": [
-		"../spec/atrackt.console_spec.sass"
-	],
-	"names": [],
-	"mappings": "AAAA,AAEI,IAFA,AAAA,gBAAgB,CAClB,MAAM,CACJ,YAAY,CAAC;EACX,GAAG,EAAE,KAAK,GAAI"
-}

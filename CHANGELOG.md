@@ -1,3 +1,6 @@
+###### 1.0.11
+* forced hover border when console is enabled
+
 ###### 1.0.10
 * form element values take precedence over other attributes
 
