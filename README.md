@@ -1,7 +1,6 @@
-[![dependencies](https://gemnasium.com/badges/github.com/brewster1134/atrackt.svg)](https://gemnasium.com/github.com/brewster1134/atrackt)
 [![docs](http://inch-ci.org/github/brewster1134/atrackt.svg?branch=master)](http://inch-ci.org/github/brewster1134/atrackt)
 [![build](https://travis-ci.org/brewster1134/atrackt.svg?branch=master)](https://travis-ci.org/brewster1134/atrackt)
-[![coverage](https://coveralls.io/repos/brewster1134/atrackt/badge.svg?branch=master)](https://coveralls.io/r/brewster1134/atrackt?branch=master)
+[![coverage](https://api.codeclimate.com/v1/badges/aa9b7b5f4dae369df0b8/test_coverage)](https://codeclimate.com/github/brewster1134/atrackt/test_coverage)
 [![code climate](https://codeclimate.com/github/brewster1134/atrackt/badges/gpa.svg)](https://codeclimate.com/github/brewster1134/atrackt)
 
 # Atrackt
