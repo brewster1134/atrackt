@@ -1,13 +1,16 @@
 {
   "name": "Atrackt",
   "license": "SEE LICENSE IN LICENSE FILE",
+  "engines": {
+    "node": "~10.6",
+    "npm": "~6.2"
+  },
   "dependencies": {
     "jquery": "~3.3",
     "jquery.scrollto": "~2.1"
   },
   "devDependencies": {
     "//": "warning sinon@4.4.10: Regression introduced (https://github.com/sinonjs/sinon/issues/1756). Use 4.4.9",
-    "babel-cli": "~6.26",
     "chai": "~4.1",
     "chai-as-promised": "~7.1",
     "coffeescript": "~2.2",
