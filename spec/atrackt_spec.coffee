@@ -1,5 +1,7 @@
 # Setup plugin
 #
+# prevent console from logging during tests
+window.console.log = ->
 
 # create plugin to test with
 Atrackt.setPlugin 'Foo Plugin',
@@ -8,6 +10,7 @@ _plugin = Atrackt.plugins['foo-plugin']
 
 describe 'Atrackt', ->
   before ->
+    
     # make sure the foo plugin is the only registered plugin
     Atrackt.plugins =
       'foo-plugin': _plugin
