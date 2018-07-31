@@ -1,6 +1,6 @@
 language: node_js
 node_js:
   - 10.6.0
-install:
-  - yarn
-script: yarn exec testem ci
+yarn:
+  - 1.9.2
+script: yarn run testem ci -l PhantomJS

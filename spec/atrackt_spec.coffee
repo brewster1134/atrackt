@@ -193,9 +193,9 @@ describe 'Atrackt', ->
 
     after ->
       clock.restore()
-      beforeCallbackSpy.reset()
-      afterCallbackSpy.reset()
-      pluginSpy.reset()
+      beforeCallbackSpy.resetHistory()
+      afterCallbackSpy.resetHistory()
+      pluginSpy.resetHistory()
 
     context 'when tracking an object', ->
       before ->
@@ -343,7 +343,7 @@ describe 'Atrackt', ->
 
     context 'when using a delay', ->
       before ->
-        pluginSpy.reset()
+        pluginSpy.resetHistory()
         Atrackt.plugins['foo-plugin'].track
           track_data: true
         ,
