@@ -1,3 +1,6 @@
+###### 1.0.13
+* added element to data object for tracking jquery elements
+
 ###### 1.0.12
 * forced hover border when console is enabled
 

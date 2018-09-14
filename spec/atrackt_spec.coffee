@@ -225,9 +225,9 @@ describe 'Atrackt', ->
 
     context 'when tracking an element', ->
       before ->
-        $fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
+        @$fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
 
-        Atrackt.plugins['foo-plugin'].track $fooEl,
+        Atrackt.plugins['foo-plugin'].track @$fooEl,
           track_option: true
           _data:
             option_data: true
@@ -236,6 +236,7 @@ describe 'Atrackt', ->
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
           _location: 'Atrackt Test'
           _categories: ['Anchor']
           _value: 'Foo'
@@ -249,18 +250,19 @@ describe 'Atrackt', ->
 
     context 'when tracking by event', ->
       before ->
-        $fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
-        $('body').append $fooEl
+        @$fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
+        $('body').append @$fooEl
 
         Atrackt.plugins['foo-plugin'].setEvent
-          click: $fooEl
+          click: @$fooEl
 
-        $fooEl.trigger 'click'
+        @$fooEl.trigger 'click'
 
         clock.tick 0
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
           _location: 'Atrackt Test'
           _categories: ['Anchor']
           _value: 'Foo'
@@ -273,20 +275,21 @@ describe 'Atrackt', ->
 
     context 'when tracking an element with a custom function', ->
       before ->
-        $fooEl = $('<a data-atrackt-value="Foo"></a>')
-        $fooEl.data 'atrackt-function', (data, options) ->
+        @$fooEl = $('<a data-atrackt-value="Foo"></a>')
+        @$fooEl.data 'atrackt-function', (data, options) ->
           data['function_data'] = true
           options['function_option'] = true
 
         Atrackt.plugins['foo-plugin'].setEvent
-          click: $fooEl
+          click: @$fooEl
 
-        $fooEl.trigger 'click'
+        @$fooEl.trigger 'click'
 
         clock.tick 0
 
       it 'should call the send method on plugins with data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
           _location: 'Atrackt Test'
           _categories: []
           _value: 'Foo'
@@ -301,9 +304,9 @@ describe 'Atrackt', ->
 
     context 'when passing options globally', ->
       before ->
-        $fooEl = $('<a data-atrackt-value="Foo"></a>')
+        @$fooEl = $('<a data-atrackt-value="Foo"></a>')
 
-        Atrackt.track $fooEl,
+        Atrackt.track @$fooEl,
           global_option: 'global'
           global_only: true
           'foo-plugin':
@@ -314,6 +317,7 @@ describe 'Atrackt', ->
 
       it 'should call send with proper data & options', ->
         expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
           _location: 'Atrackt Test'
           _categories: []
           _value: 'Foo'
@@ -326,15 +330,16 @@ describe 'Atrackt', ->
 
     context 'when passing options on a plugin', ->
       before ->
-        $fooEl = $('<a data-atrackt-value="Foo"></a>')
+        @$fooEl = $('<a data-atrackt-value="Foo"></a>')
 
-        Atrackt.plugins['foo-plugin'].track $fooEl,
+        Atrackt.plugins['foo-plugin'].track @$fooEl,
           plugin_option: 'track|plugin-option'
 
         clock.tick 0
 
       it 'should call send with proper data & options', ->
         expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
           _location: 'Atrackt Test'
           _categories: []
           _value: 'Foo'

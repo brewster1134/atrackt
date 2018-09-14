@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.11
+@version 1.0.13
 @author Ryan Brewster
 ###
 
@@ -123,7 +123,7 @@ https://github.com/brewster1134/atrackt
     #
     track: (data, options = {}, event, context) ->
       # Add the plugin name to the options if it exists
-      options['_plugin'] = context.name if context?.name
+      options._plugin = context.name if context?.name
 
       trackPlugins = =>
         # Loop through each plugin and check if the data should be tracked
@@ -136,7 +136,7 @@ https://github.com/brewster1134/atrackt
 
           # If tracking without an event, make sure the _plugin option matches if it is set
           else
-            if !options['_plugin'] || options['_plugin'] == pluginName
+            if !options._plugin || options._plugin == pluginName
 
               # track jQuery objects
               if data instanceof jQuery
@@ -147,7 +147,7 @@ https://github.com/brewster1134/atrackt
                 @_track pluginData, data, options, event
 
       # track with optional delay (in milliseconds)
-      delay = options['delay']
+      delay = options.delay
       if delay
         setTimeout ->
           trackPlugins()
@@ -192,21 +192,21 @@ https://github.com/brewster1134/atrackt
       throw new Error 'ATRACKT ERROR: `track` - Only valid selectors, jquery objects, or html nodes are supported.' unless metaData
 
       # prepare tracking data
-      trackingData = $.extend true, {}, @_data, plugin._data, options['_data'] || {}, metaData
+      trackingData = $.extend true, {}, @_data, plugin._data, options._data || {}, metaData
 
       # remove any data in the options & plugin options in the global options
       optionsCopy = $.extend true, {}, options, (options[plugin.name] || {})
-      delete optionsCopy['_data']
+      delete optionsCopy._data
       delete optionsCopy[plugin.name]
 
       trackingOptions = $.extend true, {}, @_options, plugin._options, optionsCopy
 
       # run global before callbacks
-      for callback in (@_callbacks['before'] || [])
+      for callback in (@_callbacks.before || [])
         callback?(trackingData, trackingOptions)
 
       # run plugin before callbacks
-      for callback in (plugin._callbacks['before'] || [])
+      for callback in (plugin._callbacks.before || [])
         callback?(trackingData, trackingOptions)
 
       # run the custom function if it exists
@@ -218,11 +218,11 @@ https://github.com/brewster1134/atrackt
       plugin.send trackingData, trackingOptions
 
       # run plugin after callbacks
-      for callback in (plugin._callbacks['after'] || [])
+      for callback in (plugin._callbacks.after || [])
         callback?(trackingData, trackingOptions)
 
       # run global after callbacks
-      for callback in (@_callbacks['after'] || [])
+      for callback in (@_callbacks.after || [])
         callback?(trackingData, trackingOptions)
 
     # Gets default meta data
@@ -235,15 +235,16 @@ https://github.com/brewster1134/atrackt
         $el = $(data)
 
         data =
+          _el: data
           _categories: @_getCategories $el
           _value: @_getValue $el
 
       # add location
-      data['_location'] = @_getLocation()
+      data._location = @_getLocation()
 
       # add event if it exists
       if event?.type
-        data['_event'] = event.type
+        data._event = event.type
 
       return data
 

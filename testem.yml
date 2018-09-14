@@ -1,8 +1,8 @@
 test_page: spec/index.html?atracktConsole
 before_tests: |
-  yarn run coffee -cto lib/ src/
-  yarn run coffee -cto .tmp/ spec/
-  yarn run coffee -cto demo/ demo/
+  yarn run coffee --no-header -cto lib/ src/
+  yarn run coffee --no-header -cto .tmp/ spec/
+  yarn run coffee --no-header -cto demo/ demo/
   yarn run node-sass --source-map lib src/ -o lib/
   yarn run node-sass --source-map .tmp spec/ -o .tmp/
   yarn run node-sass --source-map demo demo/ -o demo/
