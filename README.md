@@ -220,5 +220,8 @@ yarn exec testem  # compile assets & run tests
 Do **NOT** modify any `.js` files!  Modify the coffee files in the `src` directory.  Testem will watch for changes and compile them to the `lib` directory.
 
 ## TODO
+* easily include extra data for both elements and objects (via js w/out atrackt-function)
+* easily include/change data for tracking objects (via js w/out atrackt-function)
+* allow setting data and event via Atrackt.track
 * rename location to title
 * rename categories to location
