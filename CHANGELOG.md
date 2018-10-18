@@ -1,3 +1,6 @@
+###### 1.1.0
+* serialized value for form support
+
 ###### 1.0.13
 * added element to data object for tracking jquery elements
 

@@ -1,7 +1,7 @@
 ###
 Atrackt Tracking Library
 https://github.com/brewster1134/atrackt
-@version 1.0.13
+@version 1.1.0
 @author Ryan Brewster
 ###
 
@@ -273,7 +273,10 @@ https://github.com/brewster1134/atrackt
     #
     _getValue: ($el) ->
       $el.data('atrackt-value') ||
-      $el.val()                 ||
+      if $el.is 'form'
+        $el.serializeArray()
+      else
+        $el.val()               ||
       $el.attr('title')         ||
       $el.attr('name')          ||
       $el.text().trim()         ||

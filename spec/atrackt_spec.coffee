@@ -199,8 +199,8 @@ describe 'Atrackt', ->
       beforeCallbackSpy.resetHistory()
       afterCallbackSpy.resetHistory()
       pluginSpy.resetHistory()
-
-    context 'when tracking an object', ->
+    
+    context 'when tracking anything', ->  
       before ->
         Atrackt.plugins['foo-plugin'].track
           track_data: true
@@ -211,7 +211,7 @@ describe 'Atrackt', ->
 
         clock.tick 0
 
-      it 'should call the send method on plugins with data and options', ->
+      it 'should allow tracking extra data and options', ->
         expect(pluginSpy).to.be.calledWithExactly
           _location: 'Atrackt Test'
           global_data: true
@@ -223,14 +223,28 @@ describe 'Atrackt', ->
           plugin_option: true
           track_option: true
 
+    context 'when tracking an object', ->
+      before ->
+        Atrackt.plugins['foo-plugin'].track
+          track_data: true
+
+        clock.tick 0
+
+      it 'should call the send method on plugins with data and options', ->
+        expect(pluginSpy).to.be.calledWithExactly
+          _location: 'Atrackt Test'
+          global_data: true
+          plugin_data: true
+          track_data: true
+        ,
+          global_option: true
+          plugin_option: true
+
     context 'when tracking an element', ->
       before ->
         @$fooEl = $('<a data-atrackt-category="Anchor" data-atrackt-value="Foo"></a>')
 
         Atrackt.plugins['foo-plugin'].track @$fooEl,
-          track_option: true
-          _data:
-            option_data: true
 
         clock.tick 0
 
@@ -242,11 +256,32 @@ describe 'Atrackt', ->
           _value: 'Foo'
           global_data: true
           plugin_data: true
-          option_data: true
         ,
           global_option: true
           plugin_option: true
-          track_option: true
+
+    context 'when tracking a form', ->
+      before ->
+        @$fooEl = $('<form data-atrackt-category="Form"><input name="form_input" value="form_value"/></form>')
+
+        Atrackt.plugins['foo-plugin'].track @$fooEl,
+
+        clock.tick 0
+
+      it 'should have an object for the value', ->
+        expect(pluginSpy).to.be.calledWithExactly
+          _el: @$fooEl[0]
+          _location: 'Atrackt Test'
+          _categories: ['Form']
+          _value: [
+            name: 'form_input'
+            value: 'form_value'
+          ]
+          global_data: true
+          plugin_data: true
+        ,
+          global_option: true
+          plugin_option: true
 
     context 'when tracking by event', ->
       before ->
