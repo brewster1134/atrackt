@@ -1,0 +1,20 @@
+{
+  "author": "R Brewster <brewster1134+atrackt@gmail.com>",
+  "browser": "./lib/atrackt.js",
+  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "description": "A single API for developers to track to multiple analytics services",
+  "homepage": "https://github.com/brewster1134/atrackt",
+  "license": "CC-BY-NC-ND-4.0",
+  "name": "atrackt",
+  "repository": "github:brewster1134/atrackt",
+  "version": "2.0.0",
+  "engines": {
+    "node": ">=12"
+  },
+  "keywords": [
+    "analytics",
+    "api",
+    "middleware",
+    "tracking"
+  ]
+}
