@@ -1,3 +1,4 @@
+!.npmrc
 .dist
 .npmrc
 *.log

@@ -32,7 +32,8 @@
   "publishConfig": {
     "access": "public",
     "directory": ".dist",
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "scope": "@atrackt"
   },
   "scripts": {
     "prepublish": "webpack --config webpack.coffee",
