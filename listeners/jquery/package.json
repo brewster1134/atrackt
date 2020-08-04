@@ -1,0 +1,14 @@
+{
+  "author": "R Brewster <brewster1134+git@gmail.com>",
+  "browser": "jquery.js",
+  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "description": "Atrackt event listener using jQuery",
+  "homepage": "https://github.com/brewster1134/atrackt/tree/master/listeners/jquery#readme",
+  "license": "CC-BY-NC-ND-4.0",
+  "name": "@atrackt/listener-jquery",
+  "repository": "github:brewster1134/atrackt",
+  "version": "1.0.0",
+  "dependencies": {
+    "@atrackt/core": "^1"
+  }
+}

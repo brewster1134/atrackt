@@ -1,0 +1,14 @@
+{
+  "author": "R Brewster <brewster1134+git@gmail.com>",
+  "browser": "adobe-analytics.js",
+  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "description": "Atrackt plugin for Adobe Analytics (Omniture / SiteCatalyst)",
+  "homepage": "https://github.com/brewster1134/atrackt/tree/master/plugins/adobe-analytics#readme",
+  "license": "CC-BY-NC-ND-4.0",
+  "name": "@atrackt/plugin-adobe-analytics",
+  "repository": "github:brewster1134/atrackt",
+  "version": "1.0.0",
+  "dependencies": {
+    "@atrackt/core": "^1"
+  }
+}

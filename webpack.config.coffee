@@ -5,8 +5,8 @@ module.exports =
   mode: 'development'
   target: 'web'
   entry:
-    atrackt: './core/atrackt.coffee'
-    console: './core/atrackt.console.coffee'
+    atrackt: './core/atrackt/atrackt.coffee'
+    console: './core/atrackt/atrackt.console.coffee'
     dom: './listeners/dom/dom.coffee'
     jquery: './listeners/jquery/jquery.coffee'
   module:
@@ -34,8 +34,8 @@ module.exports =
   ]
   resolve:
     alias:
-      atrackt: path.resolve __dirname, 'core', 'atrackt.coffee'
+      atrackt: path.resolve __dirname, 'core', 'atrackt', 'atrackt.coffee'
     modules: [
-      path.resolve __dirname, 'core'
+      path.resolve __dirname, 'core', 'atrackt'
       path.resolve __dirname, 'node_modules'
     ]

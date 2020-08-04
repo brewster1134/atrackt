@@ -35,3 +35,5 @@ A library for making complex tracking & analytics easier
 - add CI (github actions/travis/circle)
 - add readme badges
 - add configuration dot-files
+
+##### [Creative Commons Attribution NonCommercial NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.txt)

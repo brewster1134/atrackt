@@ -1,0 +1,11 @@
+{
+  "author": "R Brewster <brewster1134+git@gmail.com>",
+  "browser": "atrackt.js",
+  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "description": "Atrackt core library",
+  "homepage": "https://github.com/brewster1134/atrackt/tree/master/core/atrackt#readme",
+  "license": "CC-BY-NC-ND-4.0",
+  "name": "@atrackt/core",
+  "repository": "github:brewster1134/atrackt",
+  "version": "1.0.0"
+}

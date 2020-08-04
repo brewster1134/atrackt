@@ -1,18 +1,12 @@
 {
   "author": "R Brewster <brewster1134+atrackt@gmail.com>",
-  "browser": "core/atrackt.coffee",
   "bugs": "https://github.com/brewster1134/atrackt/issues",
   "description": "A single API for developers to easily implement multiple analytics services",
   "homepage": "https://github.com/brewster1134/atrackt",
   "license": "CC-BY-NC-ND-4.0",
   "name": "atrackt",
+  "private": true,
   "repository": "github:brewster1134/atrackt",
-  "version": "2.0.0",
-  "babel": {
-    "presets": [
-      "@babel/env"
-    ]
-  },
   "devDependencies": {
     "@babel/core": "^7",
     "@babel/preset-env": "^7",
@@ -42,5 +36,10 @@
   ],
   "scripts": {
     "build": "webpack"
-  }
+  },
+  "workspaces": [
+    "core/*",
+    "listeners/*",
+    "plugins/*"
+  ]
 }

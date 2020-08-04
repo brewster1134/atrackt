@@ -1,0 +1,15 @@
+{
+  "npmClient": "yarn",
+  "packages": ["core/*", "listeners/*", "plugins/*"],
+  "useWorkspaces": true,
+  "version": "independent",
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "ignoreChanges": ["package.json", "*.md", "*.test.*"],
+      "message": "version bump",
+      "registry": "https://npm.pkg.github.com",
+      "yes": true
+    }
+  }
+}

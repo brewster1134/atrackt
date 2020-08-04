@@ -1,7 +1,6 @@
-import 'systematize/systematize.scss'
 import 'atrackt.console.sass'
 
-Atrackt = require 'atrackt'
+import Atrackt from 'atrackt'
 
 class AtracktConsole extends Atrackt
   constructor: ->
