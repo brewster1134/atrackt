@@ -23,7 +23,6 @@ A library for making complex tracking & analytics easier
 
 - webpack
   - add copy-pkg-json-webpack-plugin
-  - generate LICENSE file
   - generate CHANGELOG
   - copy README.md, LICENSE, CHANGELOG
   - build demo

@@ -2,11 +2,11 @@
 path = require 'path'
 
 module.exports =
-  mode: 'development'
   target: 'web'
+  watch: true
   entry:
+    'atrackt.console': './core/atrackt/atrackt.console.coffee'
     atrackt: './core/atrackt/atrackt.coffee'
-    console: './core/atrackt/atrackt.console.coffee'
     dom: './listeners/dom/dom.coffee'
     jquery: './listeners/jquery/jquery.coffee'
   module:
@@ -22,6 +22,7 @@ module.exports =
     ,
       test: /\.s[ac]ss$/
       use: [
+        'style-loader'
         'css-loader'
         'sass-loader'
       ]
@@ -39,3 +40,6 @@ module.exports =
       path.resolve __dirname, 'core', 'atrackt'
       path.resolve __dirname, 'node_modules'
     ]
+  watchOptions: {
+    ignored: /node_modules/
+  }

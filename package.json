@@ -3,7 +3,7 @@
   "bugs": "https://github.com/brewster1134/atrackt/issues",
   "description": "A single API for developers to easily implement multiple analytics services",
   "homepage": "https://github.com/brewster1134/atrackt",
-  "license": "CC-BY-NC-ND-4.0",
+  "license": "SEE LICENSE IN LICENSE",
   "name": "atrackt",
   "private": true,
   "repository": "github:brewster1134/atrackt",
@@ -16,9 +16,11 @@
     "css-loader": "^4",
     "sass": "^1",
     "sass-loader": "^9",
-    "systematize": "^3",
+    "style-loader": "^1",
     "webpack": "^4",
-    "webpack-cli": "^3"
+    "webpack-cli": "^3",
+    "webpack-dev-server": "^3",
+    "webpack-merge": "^5"
   },
   "engines": {
     "node": ">=10"
@@ -35,7 +37,9 @@
     "tracking"
   ],
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "demo": "webpack-dev-server --config webpack.dev.coffee",
+    "reset": "git clean -fdx && yarn"
   },
   "workspaces": [
     "core/*",

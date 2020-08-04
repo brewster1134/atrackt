@@ -1,9 +1,12 @@
-$ ->
-  Atrackt.setPlugin 'Demo Plugin',
-    send: ->
+import 'atrackt.demo.sass'
+import Atrackt from 'atrackt'
 
-  Atrackt.setEvent
-    click: '.track'
+# $ ->
+#   Atrackt.setPlugin 'Demo Plugin',
+#     send: ->
 
-  $('a.custom').data 'atrackt-function', ->
-    console.log 'Custom Function Called!'
+#   Atrackt.setEvent
+#     click: '.track'
+
+#   $('a.custom').data 'atrackt-function', ->
+#     console.log 'Custom Function Called!'
