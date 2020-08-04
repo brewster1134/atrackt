@@ -1,20 +1,47 @@
 {
   "author": "R Brewster <brewster1134+atrackt@gmail.com>",
-  "browser": "./lib/atrackt.js",
+  "browser": "core/atrackt.coffee",
   "bugs": "https://github.com/brewster1134/atrackt/issues",
-  "description": "A single API for developers to track to multiple analytics services",
+  "description": "A single API for developers to easily implement multiple analytics services",
   "homepage": "https://github.com/brewster1134/atrackt",
   "license": "CC-BY-NC-ND-4.0",
   "name": "atrackt",
   "repository": "github:brewster1134/atrackt",
   "version": "2.0.0",
-  "engines": {
-    "node": ">=12"
+  "babel": {
+    "presets": [
+      "@babel/env"
+    ]
   },
+  "devDependencies": {
+    "@babel/core": "^7",
+    "@babel/preset-env": "^7",
+    "clean-webpack-plugin": "^3",
+    "coffee-loader": "^1",
+    "coffeescript": "^2",
+    "css-loader": "^4",
+    "sass": "^1",
+    "sass-loader": "^9",
+    "systematize": "^3",
+    "webpack": "^4",
+    "webpack-cli": "^3",
+    "yargs-parser": "^18"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "files": [
+    "atrackt.js",
+    "listeners/**/!(*.test).js",
+    "plugins/**/!(*.test).js"
+  ],
   "keywords": [
     "analytics",
     "api",
     "middleware",
     "tracking"
-  ]
+  ],
+  "scripts": {
+    "build": "webpack"
+  }
 }

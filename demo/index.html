@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Atrackt Demo</title>
+    <link type="text/css" rel="stylesheet" href="/atrackt.console.css" />
+    <link type="text/css" rel="stylesheet" href="/demo/atrackt.demo.css" />
+
+    <script type="text/javascript" src="/atrackt.js" defer></script>
+    <script type="text/javascript" src="/atrackt.console.js" defer></script>
+    <script type="text/javascript" src="/demo/atrackt.demo.js" defer></script>
+  </head>
+
+  <body>
+    <a class="console-link" href="?atracktConsole">
+      <h3>Click here to enable the Atrackt Console</h3>
+      <h5>Check your browser's javascript console for real-time logging of tracking data</h5>
+    </a>
+
+    <div id="main" data-atrackt-category="Main">
+      <h2>Main</h2>
+
+      <div class="set" data-atrackt-category="1st Set">
+        <h3>1st Set</h3>
+        <a class="track" data-atrackt-value="Custom Value">Track w/ Custom Value</a>
+      </div>
+
+      <div class="set" data-atrackt-category="2nd Set">
+        <h3>2nd Set</h3>
+        <a class="track" data-atrackt-category="Custom Category">Track w/ Custom Category</a>
+      </div>
+
+      <div class="set" data-atrackt-category="3rd Set">
+        <h3>3rd Set</h3>
+        <a class="track custom">Track w/ Custom Function</a>
+      </div>
+    </div>
+  </body>
+</html>

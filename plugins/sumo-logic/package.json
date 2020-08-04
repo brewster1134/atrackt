@@ -1,0 +1,17 @@
+{
+  "author": "R Brewster <brewster1134+git@gmail.com>",
+  "browser": "sumo-logic.js",
+  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "description": "> TODO: description",
+  "homepage": "https://github.com/brewster1134/atrackt/tree/master/plugins/sumo-logic#readme",
+  "license": "CC-BY-NC-ND-4.0",
+  "name": "sumo-logic",
+  "repository": "github:brewster1134/atrackt",
+  "version": "1.0.0",
+  "keywords": [
+    "sumo-logic"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}
