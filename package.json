@@ -10,7 +10,6 @@
   "devDependencies": {
     "@babel/core": "^7",
     "@babel/preset-env": "^7",
-    "clean-webpack-plugin": "^3",
     "coffee-loader": "^1",
     "coffeescript": "^2",
     "css-loader": "^4",
@@ -27,9 +26,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.coffee",
-    "demo": "webpack-dev-server --config webpack.dev.coffee",
-    "reset": "git clean -fdx && yarn"
+    "demo": "webpack-dev-server --config webpack.coffee",
+    "reset": "git clean -dfx && yarn"
   },
   "workspaces": [
     "src/*",

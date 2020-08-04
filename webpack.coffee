@@ -1,12 +1,23 @@
-{ CleanWebpackPlugin } = require 'clean-webpack-plugin'
 path = require 'path'
 
 module.exports =
+  mode: 'development'
   target: 'web'
+  watch: true
+  devtool: 'eval-source-map'
+  devServer:
+    watchContentBase: true
+    contentBase: [
+      'demo'
+      'listeners'
+      'plugins'
+      'src'
+    ]
   entry:
     # core
-    core: './src/core/core.coffee'
     console: './src/core/console.coffee'
+    core: './src/core/core.coffee'
+    demo: './demo/demo.coffee'
 
     # listeners
     dom: './listeners/dom/dom.coffee'
@@ -33,14 +44,11 @@ module.exports =
         'sass-loader'
       ]
     ]
-  output:
-    filename: '[name].js'
-    path: path.resolve __dirname, '.dist'
-  plugins: [
-    new CleanWebpackPlugin()
-  ]
   resolve:
     modules: [
+      path.resolve __dirname, 'demo'
       path.resolve __dirname, 'node_modules'
       path.resolve __dirname, 'src', 'core'
     ]
+  watchOptions:
+    ignored: /node_modules/

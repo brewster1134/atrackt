@@ -7,8 +7,15 @@
   "license": "SEE LICENSE IN LICENSE",
   "name": "@atrackt/plugin-sumo-logic",
   "repository": "github:brewster1134/atrackt",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "dependencies": {
-    "@atrackt/core": "^1"
+    "@atrackt/core": "^0"
+  },
+  "files": [
+    "sumo-logic.js"
+  ],
+  "scripts": {
+    "prepublish": "webpack --config webpack.coffee",
+    "postpublish": "git clean -dfx"
   }
 }
