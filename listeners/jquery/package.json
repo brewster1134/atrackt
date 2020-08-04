@@ -9,7 +9,7 @@
   "repository": "github:atrackt/atrackt",
   "version": "0.0.0",
   "dependencies": {
-    "@atrackt/core": "^0"
+    "@atrackt/core": "^0.0.0"
   },
   "files": [
     "jquery.js"

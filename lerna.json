@@ -7,7 +7,7 @@
     "publish": {
       "ignoreChanges": ["package.json", "*.md", "*.test.*"],
       "message": "version bump",
-      "registry": "https://npm.pkg.github.com"
+      "registry": "https://registry.npmjs.org"
     }
   }
 }
