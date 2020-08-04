@@ -7,9 +7,9 @@
   "license": "SEE LICENSE IN LICENSE",
   "name": "@atrackt/plugin-adobe-analytics",
   "repository": "github:atrackt/atrackt",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.2-alpha.0",
   "dependencies": {
-    "@atrackt/core": "^0.0.1-alpha.0"
+    "@atrackt/core": "^0.0.2-alpha.0"
   },
   "files": [
     "adobe-analytics.js"
