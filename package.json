@@ -1,12 +1,12 @@
 {
   "author": "R Brewster <brewster1134+atrackt@gmail.com>",
-  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "bugs": "https://github.com/atrackt/atrackt/issues",
   "description": "A single API for developers to easily implement multiple analytics services",
-  "homepage": "https://github.com/brewster1134/atrackt",
+  "homepage": "https://github.com/atrackt/atrackt",
   "license": "SEE LICENSE IN LICENSE",
   "name": "atrackt",
   "private": true,
-  "repository": "github:brewster1134/atrackt",
+  "repository": "github:atrackt/atrackt",
   "devDependencies": {
     "@babel/core": "^7",
     "@babel/preset-env": "^7",

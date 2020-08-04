@@ -1,12 +1,12 @@
 {
   "author": "R Brewster <brewster1134+git@gmail.com>",
   "browser": "sumo-logic.coffee",
-  "bugs": "https://github.com/brewster1134/atrackt/issues",
+  "bugs": "https://github.com/atrackt/atrackt/issues",
   "description": "Atrackt plugin for SumoLogic",
-  "homepage": "https://github.com/brewster1134/atrackt/tree/master/plugins/sumo-logic#readme",
+  "homepage": "https://github.com/atrackt/atrackt/tree/master/plugins/sumo-logic#readme",
   "license": "SEE LICENSE IN LICENSE",
   "name": "@atrackt/plugin-sumo-logic",
-  "repository": "github:brewster1134/atrackt",
+  "repository": "github:atrackt/atrackt",
   "version": "0.0.0",
   "dependencies": {
     "@atrackt/core": "^0"
