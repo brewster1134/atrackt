@@ -1,6 +1,6 @@
 {
   "author": "R Brewster <brewster1134+git@gmail.com>",
-  "browser": "sumo-logic.js",
+  "browser": "sumo-logic.coffee",
   "bugs": "https://github.com/brewster1134/atrackt/issues",
   "description": "Atrackt plugin for SumoLogic",
   "homepage": "https://github.com/brewster1134/atrackt/tree/master/plugins/sumo-logic#readme",

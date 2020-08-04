@@ -1,6 +1,6 @@
 {
   "author": "R Brewster <brewster1134+git@gmail.com>",
-  "browser": "dom.js",
+  "browser": "dom.coffee",
   "bugs": "https://github.com/brewster1134/atrackt/issues",
   "description": "Atrackt event listener using vanilla javascript",
   "homepage": "https://github.com/brewster1134/atrackt/tree/master/listeners/dom#readme",

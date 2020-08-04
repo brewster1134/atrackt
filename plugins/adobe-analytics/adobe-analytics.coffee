@@ -1,6 +1,6 @@
-import Atrackt from 'atrackt'
+import Core from '@atrackt/core'
 
-class Omniture extends Atrackt
+class Omniture extends Core
   constructor: ->
 
 export default Omniture

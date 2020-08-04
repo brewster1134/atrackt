@@ -1,6 +1,6 @@
-import Atrackt from 'atrackt'
+import Core from '@atrackt/core'
 
-class Jquery extends Atrackt
+class Jquery extends Core
   constructor: ->
 
 export default Jquery

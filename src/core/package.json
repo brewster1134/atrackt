@@ -1,6 +1,6 @@
 {
   "author": "R Brewster <brewster1134+git@gmail.com>",
-  "browser": "atrackt.js",
+  "browser": "core.coffee",
   "bugs": "https://github.com/brewster1134/atrackt/issues",
   "description": "Atrackt core library",
   "homepage": "https://github.com/brewster1134/atrackt/tree/master/atrackt/core#readme",
@@ -8,13 +8,21 @@
   "name": "@atrackt/core",
   "repository": "github:brewster1134/atrackt",
   "version": "1.0.0",
-  "devDependencies": {
-    "systematize": "^3"
-  },
   "keywords": [
+    "adobe",
     "analytics",
     "api",
-    "middleware",
+    "developer",
+    "dom",
+    "event",
+    "jquery",
+    "library",
+    "listener",
+    "omniture",
+    "platform",
+    "sitecatalyst",
+    "sumologic",
+    "tool",
     "tracking"
   ]
 }

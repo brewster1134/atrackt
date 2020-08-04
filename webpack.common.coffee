@@ -3,12 +3,18 @@ path = require 'path'
 
 module.exports =
   target: 'web'
-  watch: true
   entry:
-    'atrackt.console': './core/atrackt/atrackt.console.coffee'
-    atrackt: './core/atrackt/atrackt.coffee'
+    # core
+    core: './src/core/core.coffee'
+    console: './src/core/console.coffee'
+
+    # listeners
     dom: './listeners/dom/dom.coffee'
     jquery: './listeners/jquery/jquery.coffee'
+
+    # plugins
+    'adobe-analytics': './plugins/adobe-analytics/adobe-analytics.coffee'
+    'sumo-logic': './plugins/sumo-logic/sumo-logic.coffee'
   module:
     rules: [
       test: /\.coffee$/
@@ -34,12 +40,7 @@ module.exports =
     new CleanWebpackPlugin()
   ]
   resolve:
-    alias:
-      atrackt: path.resolve __dirname, 'core', 'atrackt', 'atrackt.coffee'
     modules: [
-      path.resolve __dirname, 'core', 'atrackt'
       path.resolve __dirname, 'node_modules'
+      path.resolve __dirname, 'src', 'core'
     ]
-  watchOptions: {
-    ignored: /node_modules/
-  }

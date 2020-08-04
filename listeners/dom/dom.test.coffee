@@ -1,4 +1,4 @@
-import Dom from 'dom'
+import Dom from '@atrackt/listener-dom'
 
 describe Dom, ->
     it 'needs tests'

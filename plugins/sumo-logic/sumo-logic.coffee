@@ -1,6 +1,6 @@
-import Atrackt from 'atrackt'
+import Core from '@atrackt/core'
 
-class SumoLogic extends Atrackt
+class SumoLogic extends Core
   constructor: ->
 
 export default SumoLogic

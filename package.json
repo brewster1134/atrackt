@@ -17,6 +17,7 @@
     "sass": "^1",
     "sass-loader": "^9",
     "style-loader": "^1",
+    "systematize": "^3",
     "webpack": "^4",
     "webpack-cli": "^3",
     "webpack-dev-server": "^3",
@@ -25,24 +26,13 @@
   "engines": {
     "node": ">=10"
   },
-  "files": [
-    "atrackt.js",
-    "listeners/**/!(*.test).js",
-    "plugins/**/!(*.test).js"
-  ],
-  "keywords": [
-    "analytics",
-    "api",
-    "middleware",
-    "tracking"
-  ],
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.prod.coffee",
     "demo": "webpack-dev-server --config webpack.dev.coffee",
     "reset": "git clean -fdx && yarn"
   },
   "workspaces": [
-    "core/*",
+    "src/*",
     "listeners/*",
     "plugins/*"
   ]

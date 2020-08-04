@@ -1,5 +1,5 @@
-import 'atrackt.demo.sass'
-import Atrackt from 'atrackt'
+import 'demo.sass'
+import Core from '@atrackt/core'
 
 # $ ->
 #   Atrackt.setPlugin 'Demo Plugin',

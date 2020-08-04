@@ -4,17 +4,21 @@ path = require 'path'
 
 module.exports = merge common,
   mode: 'development'
+  watch: true
   devServer:
     watchContentBase: true
     contentBase: [
-      'core'
+      'src'
       'demo'
       'listeners'
       'plugins'
     ]
   entry:
-    demo: './demo/atrackt.demo.coffee'
+    demo: './demo/demo.coffee'
   resolve:
     modules: [
       path.resolve __dirname, 'demo'
     ]
+  watchOptions: {
+    ignored: /node_modules/
+  }
