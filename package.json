@@ -24,8 +24,7 @@
     "sass-loader": "^9",
     "systematize": "^3",
     "webpack": "^4",
-    "webpack-cli": "^3",
-    "yargs-parser": "^18"
+    "webpack-cli": "^3"
   },
   "engines": {
     "node": ">=10"
