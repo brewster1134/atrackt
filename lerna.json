@@ -5,6 +5,7 @@
   "version": "independent",
   "command": {
     "publish": {
+      "conventionalCommits": true,
       "ignoreChanges": ["package.json", "*.md", "*.test.*"],
       "message": "version bump",
       "registry": "https://registry.npmjs.org"
